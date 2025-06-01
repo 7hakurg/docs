@@ -1,0 +1,105 @@
+---
+title: Add a Website
+description: "Learn how to add Oppla to your website and start tracking user behavior"
+---
+
+# Add a Website
+
+Follow these steps to add Oppla to your website and start tracking user behavior.
+
+## Installation
+
+### 1. Add the Tracking Script
+
+Add the following script to your website's `<head>` section:
+
+```html
+<script>
+  (function(p,r,o,d,i,o){p[i]=p[i]||function(){(p[i].q=p[i].q||[]).push(arguments)};
+  o=r.createElement('script');o.async=1;o.src=d;r.head.appendChild(o);
+  })(window,document,'script','https://cdn.oppla.app/tracker.js','oppla');
+</script>
+```
+
+### 2. Initialize Oppla
+
+Initialize Oppla with your project ID:
+
+```javascript
+oppla('init', 'YOUR_PROJECT_ID');
+```
+
+## Configuration
+
+### Basic Configuration
+
+Configure basic tracking settings:
+
+```javascript
+oppla('config', {
+  trackPageViews: true,
+  trackClicks: true,
+  trackForms: true,
+  debug: false
+});
+```
+
+### Advanced Configuration
+
+Add advanced tracking options:
+
+```javascript
+oppla('config', {
+  // Enable automatic tracking
+  autoTrack: {
+    pageViews: true,
+    clicks: true,
+    forms: true,
+    scroll: true
+  },
+  
+  // Configure session settings
+  session: {
+    timeout: 30, // minutes
+    extendOnActivity: true
+  },
+  
+  // Set up custom domains
+  domains: ['yourdomain.com', 'app.yourdomain.com']
+});
+```
+
+## Verification
+
+### Testing the Installation
+
+1. Open your website in a browser
+2. Open the browser's developer tools
+3. Check the Network tab for requests to `cdn.oppla.app`
+4. Verify that the Oppla script is loaded
+5. Check the Console for any initialization messages
+
+### Common Issues
+
+- **Script not loading**: Check your network connection and ensure the script URL is correct
+- **No data appearing**: Verify your project ID and check for any console errors
+- **Cross-domain issues**: Ensure your domains are properly configured in the Oppla dashboard
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Track Events"
+    icon="chart-line"
+    href="/analytics/track-events"
+  >
+    Learn how to track custom events
+  </Card>
+  <Card
+    title="User Identification"
+    icon="user-check"
+    href="/journey/identify-users"
+  >
+    Set up user identification
+  </Card>
+</CardGroup> 

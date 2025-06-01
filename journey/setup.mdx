@@ -1,0 +1,244 @@
+---
+title: Project Setup
+description: "Learn how to set up and configure your Oppla project for journeys"
+---
+
+# Project Setup
+
+Learn how to set up and configure your Oppla project for creating and managing journeys.
+
+## Initial Setup
+
+### Basic Configuration
+
+```javascript
+oppla.init({
+  projectId: 'your-project-id',
+  journeys: {
+    enabled: true,
+    defaultSettings: {
+      frequency: 'once',
+      analytics: {
+        enabled: true
+      }
+    }
+  }
+});
+```
+
+### Advanced Configuration
+
+```javascript
+oppla.init({
+  projectId: 'your-project-id',
+  journeys: {
+    enabled: true,
+    defaultSettings: {
+      frequency: 'once',
+      analytics: {
+        enabled: true,
+        trackViews: true,
+        trackInteractions: true
+      },
+      styling: {
+        theme: 'light',
+        colors: {
+          primary: '#2563EB',
+          secondary: '#10B981'
+        }
+      }
+    }
+  }
+});
+```
+
+## Project Structure
+
+### Basic Structure
+
+```javascript
+oppla.journey('onboarding', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Welcome to Oppla!'
+    },
+    {
+      type: 'tooltip',
+      content: 'This is a tooltip',
+      target: '#feature-button'
+    }
+  ]
+});
+```
+
+### Modular Structure
+
+```javascript
+// Define reusable steps
+const welcomeStep = {
+  type: 'banner',
+  content: 'Welcome to Oppla!'
+};
+
+const featureStep = {
+  type: 'tooltip',
+  content: 'This is a feature',
+  target: '#feature-button'
+};
+
+// Use in journey
+oppla.journey('modular', {
+  steps: [welcomeStep, featureStep]
+});
+```
+
+## Configuration Options
+
+### Global Settings
+
+```javascript
+oppla.configure({
+  journeys: {
+    defaultSettings: {
+      frequency: 'once',
+      analytics: {
+        enabled: true
+      },
+      styling: {
+        theme: 'light'
+      }
+    },
+    storage: {
+      type: 'localStorage',
+      prefix: 'oppla_'
+    },
+    debug: {
+      enabled: true,
+      level: 'info'
+    }
+  }
+});
+```
+
+### Journey-Specific Settings
+
+```javascript
+oppla.journey('custom-settings', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Custom settings'
+    }
+  ],
+  settings: {
+    frequency: 'periodic',
+    period: '7d',
+    analytics: {
+      enabled: true,
+      customEvents: [
+        {
+          name: 'custom_event',
+          properties: {
+            journey_name: 'custom-settings'
+          }
+        }
+      ]
+    }
+  }
+});
+```
+
+## Environment Configuration
+
+### Development
+
+```javascript
+oppla.init({
+  projectId: 'dev-project-id',
+  environment: 'development',
+  journeys: {
+    enabled: true,
+    debug: {
+      enabled: true,
+      level: 'debug'
+    }
+  }
+});
+```
+
+### Production
+
+```javascript
+oppla.init({
+  projectId: 'prod-project-id',
+  environment: 'production',
+  journeys: {
+    enabled: true,
+    debug: {
+      enabled: false
+    }
+  }
+});
+```
+
+## Security
+
+### API Keys
+
+```javascript
+oppla.init({
+  projectId: 'your-project-id',
+  apiKey: 'your-api-key',
+  journeys: {
+    enabled: true,
+    security: {
+      requireApiKey: true,
+      allowedDomains: ['your-domain.com']
+    }
+  }
+});
+```
+
+### Data Protection
+
+```javascript
+oppla.init({
+  projectId: 'your-project-id',
+  journeys: {
+    enabled: true,
+    security: {
+      dataProtection: {
+        encryptUserData: true,
+        maskSensitiveFields: ['email', 'phone']
+      }
+    }
+  }
+});
+```
+
+## Best Practices
+
+1. **Use Environment Variables**: Store sensitive data in environment variables
+2. **Enable Debug Mode**: Use debug mode during development
+3. **Configure Security**: Set up proper security measures
+4. **Test Thoroughly**: Test journeys in different environments
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Compare Metrics"
+    icon="chart-line"
+    href="/journey/compare"
+  >
+    Learn about comparing metrics
+  </Card>
+  <Card
+    title="Disable Local Tracking"
+    icon="ban"
+    href="/journey/disable-tracking"
+  >
+    Learn about disabling local tracking
+  </Card>
+</CardGroup> 

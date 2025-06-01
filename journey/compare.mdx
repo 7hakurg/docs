@@ -1,0 +1,217 @@
+---
+title: Compare Metrics
+description: "Learn how to compare and analyze journey metrics in Oppla"
+---
+
+# Compare Metrics
+
+Learn how to compare and analyze journey metrics to measure performance and make data-driven decisions.
+
+## Basic Comparison
+
+### Compare Journey Performance
+
+```javascript
+oppla.analytics.compare({
+  journeys: ['welcome', 'onboarding'],
+  metrics: ['view_count', 'completion_rate'],
+  timeRange: 'last_30_days'
+});
+```
+
+### Compare Step Performance
+
+```javascript
+oppla.analytics.compare({
+  journeys: ['feature-tour'],
+  steps: [0, 1, 2],
+  metrics: ['view_count', 'interaction_rate'],
+  timeRange: 'last_7_days'
+});
+```
+
+## Time-Based Comparison
+
+### Compare Time Periods
+
+```javascript
+oppla.analytics.compare({
+  journeys: ['welcome'],
+  metrics: ['view_count', 'completion_rate'],
+  timeRange: {
+    current: 'last_30_days',
+    previous: 'previous_30_days'
+  }
+});
+```
+
+### Compare Custom Dates
+
+```javascript
+oppla.analytics.compare({
+  journeys: ['onboarding'],
+  metrics: ['view_count', 'completion_rate'],
+  timeRange: {
+    current: {
+      start: '2024-01-01',
+      end: '2024-01-31'
+    },
+    previous: {
+      start: '2023-12-01',
+      end: '2023-12-31'
+    }
+  }
+});
+```
+
+## Segment Comparison
+
+### Compare User Segments
+
+```javascript
+oppla.analytics.compare({
+  journeys: ['welcome'],
+  metrics: ['view_count', 'completion_rate'],
+  segments: [
+    {
+      name: 'premium',
+      condition: 'user.plan === "premium"'
+    },
+    {
+      name: 'free',
+      condition: 'user.plan === "free"'
+    }
+  ]
+});
+```
+
+### Compare Custom Segments
+
+```javascript
+oppla.analytics.compare({
+  journeys: ['onboarding'],
+  metrics: ['view_count', 'completion_rate'],
+  segments: [
+    {
+      name: 'new_users',
+      condition: 'user.isNew === true'
+    },
+    {
+      name: 'returning_users',
+      condition: 'user.isNew === false'
+    }
+  ]
+});
+```
+
+## Advanced Comparison
+
+### Compare Multiple Metrics
+
+```javascript
+oppla.analytics.compare({
+  journeys: ['welcome', 'onboarding'],
+  metrics: [
+    'view_count',
+    'completion_rate',
+    'average_time',
+    'interaction_rate'
+  ],
+  timeRange: 'last_30_days',
+  groupBy: 'day'
+});
+```
+
+### Compare with Custom Calculations
+
+```javascript
+oppla.analytics.compare({
+  journeys: ['feature-tour'],
+  metrics: [
+    'view_count',
+    'completion_rate',
+    {
+      name: 'engagement_score',
+      calculation: '(view_count * 0.4) + (completion_rate * 0.6)'
+    }
+  ],
+  timeRange: 'last_30_days'
+});
+```
+
+## Visualization
+
+### Basic Chart
+
+```javascript
+oppla.analytics.visualize({
+  type: 'line',
+  data: {
+    journeys: ['welcome', 'onboarding'],
+    metrics: ['view_count'],
+    timeRange: 'last_30_days'
+  },
+  options: {
+    title: 'Journey Views Over Time',
+    xAxis: {
+      type: 'time',
+      title: 'Date'
+    },
+    yAxis: {
+      title: 'Views'
+    }
+  }
+});
+```
+
+### Advanced Chart
+
+```javascript
+oppla.analytics.visualize({
+  type: 'bar',
+  data: {
+    journeys: ['welcome', 'onboarding'],
+    metrics: ['view_count', 'completion_rate'],
+    timeRange: 'last_30_days',
+    groupBy: 'journey'
+  },
+  options: {
+    title: 'Journey Performance Comparison',
+    xAxis: {
+      title: 'Journey'
+    },
+    yAxis: {
+      title: 'Value'
+    },
+    legend: {
+      position: 'top'
+    }
+  }
+});
+```
+
+## Best Practices
+
+1. **Choose Relevant Metrics**: Select metrics that align with your goals
+2. **Use Appropriate Time Ranges**: Compare similar time periods
+3. **Segment Meaningfully**: Create relevant user segments
+4. **Visualize Effectively**: Use appropriate chart types
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Disable Local Tracking"
+    icon="ban"
+    href="/journey/disable-tracking"
+  >
+    Learn about disabling local tracking
+  </Card>
+  <Card
+    title="Journey Management"
+    icon="cog"
+    href="/journey/management"
+  >
+    Learn about journey management
+  </Card>
+</CardGroup> 

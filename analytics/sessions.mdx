@@ -1,0 +1,135 @@
+---
+title: Sessions
+description: "Learn how to track and analyze user sessions in Oppla"
+---
+
+# Sessions
+
+Learn how Oppla tracks and analyzes user sessions to understand user behavior.
+
+## What are Sessions?
+
+A session represents a single visit to your website or application. Oppla automatically tracks sessions and provides insights into:
+
+- Session duration
+- User paths
+- Engagement metrics
+- Conversion rates
+
+## Session Configuration
+
+### Basic Settings
+
+Configure basic session settings during initialization:
+
+```javascript
+oppla('config', {
+  session: {
+    timeout: 30, // minutes
+    extendOnActivity: true
+  }
+});
+```
+
+### Advanced Settings
+
+Customize session behavior:
+
+```javascript
+oppla('config', {
+  session: {
+    // Session timeout in minutes
+    timeout: 30,
+    
+    // Extend session on user activity
+    extendOnActivity: true,
+    
+    // Track session start/end
+    trackStart: true,
+    trackEnd: true,
+    
+    // Custom session properties
+    properties: {
+      source: 'direct',
+      medium: 'web'
+    }
+  }
+});
+```
+
+## Session Events
+
+### Automatic Events
+
+Oppla automatically tracks these session events:
+
+- Session Started
+- Session Ended
+- Session Extended
+
+### Manual Tracking
+
+Track custom session events:
+
+```javascript
+// Track session milestone
+oppla('track', 'Session Milestone', {
+  milestone: 'first_interaction',
+  timeInSession: 120 // seconds
+});
+
+// Track session goal
+oppla('track', 'Session Goal', {
+  goal: 'product_viewed',
+  value: 1
+});
+```
+
+## Session Analysis
+
+### Key Metrics
+
+Track important session metrics:
+
+- **Duration**: How long users stay
+- **Depth**: Number of pages viewed
+- **Bounce Rate**: Single-page sessions
+- **Conversion Rate**: Goal completion
+
+### User Paths
+
+Analyze common user paths:
+
+```javascript
+oppla('track', 'User Path', {
+  path: ['home', 'products', 'checkout'],
+  duration: 300, // seconds
+  completed: true
+});
+```
+
+## Best Practices
+
+1. **Set Appropriate Timeouts**: Balance between session accuracy and user experience
+2. **Track Key Milestones**: Identify important moments in the user journey
+3. **Monitor Bounce Rates**: Identify potential issues with engagement
+4. **Analyze Paths**: Understand common user flows
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Compare"
+    icon="chart-line"
+    href="/analytics/compare"
+  >
+    Compare session metrics over time
+  </Card>
+  <Card
+    title="Data Tags"
+    icon="tag"
+    href="/analytics/data-tags"
+  >
+    Organize your session data
+  </Card>
+</CardGroup> 

@@ -1,0 +1,171 @@
+---
+title: Node Client
+description: "Learn how to use Oppla's Node.js client for server-side tracking"
+---
+
+# Node Client
+
+Learn how to use Oppla's Node.js client for server-side tracking and analytics.
+
+## Installation
+
+Install the Oppla Node.js client:
+
+```bash
+npm install @oppla/node
+# or
+yarn add @oppla/node
+```
+
+## Basic Usage
+
+### Initialize the Client
+
+```javascript
+const Oppla = require('@oppla/node');
+
+const oppla = new Oppla({
+  projectId: 'YOUR_PROJECT_ID',
+  apiKey: 'YOUR_API_KEY'
+});
+```
+
+### Track Events
+
+```javascript
+// Track a simple event
+await oppla.track({
+  event: 'Order Completed',
+  userId: 'user_123',
+  properties: {
+    orderId: 'order_123',
+    amount: 99.99
+  }
+});
+
+// Track with additional context
+await oppla.track({
+  event: 'Payment Processed',
+  userId: 'user_123',
+  timestamp: new Date(),
+  context: {
+    ip: '192.168.1.1',
+    userAgent: 'Mozilla/5.0...'
+  },
+  properties: {
+    paymentId: 'pay_123',
+    amount: 99.99,
+    currency: 'USD'
+  }
+});
+```
+
+## User Management
+
+### Identify Users
+
+```javascript
+await oppla.identify({
+  userId: 'user_123',
+  traits: {
+    name: 'John Doe',
+    email: 'john@example.com',
+    plan: 'premium',
+    signupDate: new Date()
+  }
+});
+```
+
+### Update User Properties
+
+```javascript
+await oppla.identify({
+  userId: 'user_123',
+  traits: {
+    lastLogin: new Date(),
+    loginCount: 5
+  }
+});
+```
+
+## Batch Operations
+
+### Track Multiple Events
+
+```javascript
+await oppla.batch([
+  {
+    event: 'Page Viewed',
+    userId: 'user_123',
+    properties: { path: '/products' }
+  },
+  {
+    event: 'Product Viewed',
+    userId: 'user_123',
+    properties: { productId: 'prod_123' }
+  }
+]);
+```
+
+### Identify Multiple Users
+
+```javascript
+await oppla.batch([
+  {
+    identify: {
+      userId: 'user_123',
+      traits: { name: 'John Doe' }
+    }
+  },
+  {
+    identify: {
+      userId: 'user_456',
+      traits: { name: 'Jane Smith' }
+    }
+  }
+]);
+```
+
+## Error Handling
+
+```javascript
+try {
+  await oppla.track({
+    event: 'Order Completed',
+    userId: 'user_123'
+  });
+} catch (error) {
+  console.error('Failed to track event:', error);
+  
+  // Handle specific error types
+  if (error.code === 'RATE_LIMIT') {
+    // Implement retry logic
+  }
+}
+```
+
+## Best Practices
+
+1. **Use Environment Variables**: Store API keys securely
+2. **Implement Retry Logic**: Handle rate limits and network issues
+3. **Batch When Possible**: Reduce API calls
+4. **Validate Data**: Ensure required fields are present
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Google Tag Manager"
+    icon="tag"
+    href="/analytics/google-tag-manager"
+  >
+    Integrate with Google Tag Manager
+  </Card>
+  <Card
+    title="Data Tags"
+    icon="tag"
+    href="/analytics/data-tags"
+  >
+    Organize your server-side data
+  </Card>
+</CardGroup> 

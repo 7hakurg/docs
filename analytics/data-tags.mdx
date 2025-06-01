@@ -1,0 +1,141 @@
+---
+title: Data Tags
+description: "Learn how to organize and segment your data using tags in Oppla"
+---
+
+# Data Tags
+
+Learn how to use data tags to organize, segment, and analyze your tracking data in Oppla.
+
+## What are Data Tags?
+
+Data tags are labels you can add to your events and users to:
+
+- Organize related data
+- Create segments
+- Filter analytics
+- Group similar events
+
+## Adding Tags to Events
+
+### Basic Tagging
+
+Add tags to your events:
+
+```javascript
+oppla('track', 'Button Clicked', {
+  buttonId: 'signup-button',
+  tags: ['conversion', 'signup', 'homepage']
+});
+```
+
+### Tag Categories
+
+Organize tags into categories:
+
+```javascript
+oppla('track', 'Feature Used', {
+  feature: 'search',
+  tags: {
+    category: 'core-feature',
+    priority: 'high',
+    stage: 'beta'
+  }
+});
+```
+
+## User Tags
+
+### Adding User Tags
+
+Tag users for segmentation:
+
+```javascript
+oppla('identify', {
+  userId: 'user_123',
+  traits: {
+    name: 'John Doe',
+    tags: ['premium', 'active', 'beta-tester']
+  }
+});
+```
+
+### Updating User Tags
+
+Update user tags over time:
+
+```javascript
+oppla('identify', {
+  userId: 'user_123',
+  traits: {
+    tags: {
+      add: ['power-user'],
+      remove: ['beta-tester']
+    }
+  }
+});
+```
+
+## Tag Management
+
+### Best Practices
+
+1. **Be Consistent**: Use consistent tag names
+2. **Be Specific**: Use descriptive tags
+3. **Be Organized**: Group related tags
+4. **Be Careful**: Don't use too many tags
+
+### Common Tag Categories
+
+- User type (e.g., 'free', 'premium')
+- Feature usage (e.g., 'uses-search', 'uses-analytics')
+- User stage (e.g., 'new', 'active', 'churned')
+- Campaign (e.g., 'summer-sale', 'winter-promo')
+
+## Using Tags in Analysis
+
+### Filtering Data
+
+Filter your analytics by tags:
+
+```javascript
+// Get events with specific tags
+oppla.analytics.getEvents({
+  tags: ['conversion', 'signup']
+});
+
+// Get users with specific tags
+oppla.analytics.getUsers({
+  tags: ['premium', 'active']
+});
+```
+
+### Creating Segments
+
+Create user segments based on tags:
+
+```javascript
+oppla.analytics.createSegment({
+  name: 'Power Users',
+  tags: ['premium', 'active', 'power-user']
+});
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Compare"
+    icon="chart-line"
+    href="/analytics/compare"
+  >
+    Compare tagged data over time
+  </Card>
+  <Card
+    title="Node Client"
+    icon="server"
+    href="/analytics/node-client"
+  >
+    Server-side tag management
+  </Card>
+</CardGroup> 

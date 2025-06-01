@@ -1,0 +1,137 @@
+---
+title: Journey Overview
+description: "Learn about Oppla's journey features for creating guided user experiences"
+---
+
+# Journey Overview
+
+Oppla's journey features help you create engaging, guided experiences for your users.
+
+## What are Journeys?
+
+Journeys are multi-step user experiences that guide users through your product:
+
+- Onboarding flows
+- Feature discovery tours
+- Product walkthroughs
+- Interactive tutorials
+
+## Key Features
+
+### Step Types
+
+Create engaging experiences with different step types:
+
+- **Tooltips**: Highlight specific UI elements
+- **Modals**: Display important information
+- **Banners**: Show announcements or notifications
+- **Wait Steps**: Control flow timing
+- **Fork Steps**: Create conditional paths
+
+### Customization
+
+Customize your journeys to match your brand:
+
+- Colors and typography
+- Animations and transitions
+- Custom CSS
+- Responsive design
+
+## Creating Journeys
+
+<CardGroup cols={2}>
+  <Card
+    title="Steps Editor"
+    icon="pen-to-square"
+    href="/journey/steps-editor"
+  >
+    Learn how to create and edit journey steps
+  </Card>
+  <Card
+    title="Start a Flow"
+    icon="play"
+    href="/journey/start-flow"
+  >
+    Configure when and how journeys start
+  </Card>
+</CardGroup>
+
+## Journey Management
+
+### Frequency Control
+
+Control how often users see your journeys:
+
+```javascript
+oppla.journey('onboarding', {
+  frequency: 'once',
+  steps: [
+    {
+      type: 'tooltip',
+      target: '#signup-button',
+      content: 'Click here to get started!'
+    }
+  ]
+});
+```
+
+### Segmentation
+
+Target specific user segments:
+
+```javascript
+oppla.journey('feature-tour', {
+  segment: {
+    plan: 'premium',
+    lastLogin: '>7d'
+  },
+  steps: [
+    // Journey steps
+  ]
+});
+```
+
+## Project Setup
+
+<CardGroup cols={2}>
+  <Card
+    title="Projects"
+    icon="folder"
+    href="/journey/projects"
+  >
+    Organize your journeys into projects
+  </Card>
+  <Card
+    title="Project Domains"
+    icon="globe"
+    href="/journey/project-domains"
+  >
+    Configure domains for your projects
+  </Card>
+</CardGroup>
+
+## Analytics Integration
+
+Track journey performance:
+
+- Completion rates
+- Drop-off points
+- User engagement
+- Conversion impact
+
+<CardGroup cols={2}>
+  <Card
+    title="Journey Analytics"
+    icon="chart-line"
+    href="/journey/analytics"
+  >
+    Monitor journey performance
+  </Card>
+  <Card
+    title="Integrations"
+    icon="plug"
+    href="/journey/integrations"
+  >
+    Connect with other tools
+  </Card>
+</CardGroup> 

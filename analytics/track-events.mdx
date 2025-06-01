@@ -1,0 +1,139 @@
+---
+title: Track Events
+description: "Learn how to track events and user interactions in Oppla"
+---
+
+# Track Events
+
+Learn how to track events and user interactions in your application using Oppla.
+
+## Basic Event Tracking
+
+Track simple events with a name and optional properties:
+
+```javascript
+oppla('track', 'Button Clicked', {
+  buttonId: 'signup-button',
+  page: 'homepage'
+});
+```
+
+## Event Properties
+
+Add detailed properties to your events:
+
+```javascript
+oppla('track', 'Purchase Completed', {
+  // Order details
+  orderId: '12345',
+  amount: 99.99,
+  currency: 'USD',
+  items: ['product1', 'product2'],
+  
+  // User context
+  userId: 'user_123',
+  userType: 'premium',
+  
+  // Custom properties
+  source: 'homepage',
+  campaign: 'summer_sale'
+});
+```
+
+## Common Event Types
+
+### Page Views
+
+Track page views automatically or manually:
+
+```javascript
+// Automatic tracking (configured in init)
+oppla('config', {
+  trackPageViews: true
+});
+
+// Manual tracking
+oppla('track', 'Page Viewed', {
+  path: '/products',
+  title: 'Products Page',
+  referrer: 'https://google.com'
+});
+```
+
+### User Actions
+
+Track user interactions:
+
+```javascript
+// Button clicks
+oppla('track', 'Button Clicked', {
+  buttonId: 'checkout-button',
+  buttonText: 'Checkout Now'
+});
+
+// Form submissions
+oppla('track', 'Form Submitted', {
+  formId: 'contact-form',
+  formType: 'contact'
+});
+
+// Link clicks
+oppla('track', 'Link Clicked', {
+  linkId: 'pricing-link',
+  linkText: 'View Pricing',
+  destination: '/pricing'
+});
+```
+
+### E-commerce Events
+
+Track e-commerce activities:
+
+```javascript
+// Product viewed
+oppla('track', 'Product Viewed', {
+  productId: 'prod_123',
+  name: 'Premium Plan',
+  price: 99.99
+});
+
+// Add to cart
+oppla('track', 'Added to Cart', {
+  productId: 'prod_123',
+  quantity: 1,
+  price: 99.99
+});
+
+// Checkout started
+oppla('track', 'Checkout Started', {
+  orderId: 'order_123',
+  total: 99.99,
+  items: ['prod_123']
+});
+```
+
+## Best Practices
+
+1. **Be Consistent**: Use consistent event names and property names
+2. **Be Specific**: Include relevant context in event properties
+3. **Be Organized**: Group related events with similar naming patterns
+4. **Be Careful**: Don't include sensitive user data in events
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Sessions"
+    icon="clock"
+    href="/analytics/sessions"
+  >
+    Learn about session tracking
+  </Card>
+  <Card
+    title="Data Tags"
+    icon="tag"
+    href="/analytics/data-tags"
+  >
+    Organize your data with tags
+  </Card>
+</CardGroup> 

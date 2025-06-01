@@ -1,0 +1,173 @@
+---
+title: Tooltip Steps
+description: "Learn how to create and customize tooltip steps in Oppla journeys"
+---
+
+# Tooltip Steps
+
+Learn how to create and customize tooltip steps to highlight specific UI elements in your journeys.
+
+## Basic Usage
+
+Create a simple tooltip:
+
+```javascript
+oppla.journey('onboarding', {
+  steps: [
+    {
+      type: 'tooltip',
+      target: '#signup-button',
+      content: 'Click here to get started!'
+    }
+  ]
+});
+```
+
+## Customization
+
+### Basic Properties
+
+```javascript
+oppla.journey('feature-tour', {
+  steps: [
+    {
+      type: 'tooltip',
+      target: '#search-box',
+      content: 'Search for anything',
+      title: 'Search Feature',
+      placement: 'bottom',
+      arrow: true
+    }
+  ]
+});
+```
+
+### Advanced Styling
+
+```javascript
+oppla.journey('custom-tour', {
+  steps: [
+    {
+      type: 'tooltip',
+      target: '#premium-feature',
+      content: 'Try our premium features',
+      style: {
+        backgroundColor: '#2563EB',
+        color: '#FFFFFF',
+        borderRadius: '8px',
+        padding: '12px',
+        fontSize: '14px',
+        maxWidth: '300px'
+      }
+    }
+  ]
+});
+```
+
+## Positioning
+
+### Placement Options
+
+- `top`: Above the target
+- `bottom`: Below the target
+- `left`: To the left of the target
+- `right`: To the right of the target
+- `auto`: Automatically choose the best position
+
+```javascript
+oppla.journey('positioning-demo', {
+  steps: [
+    {
+      type: 'tooltip',
+      target: '#element1',
+      content: 'Top tooltip',
+      placement: 'top'
+    },
+    {
+      type: 'tooltip',
+      target: '#element2',
+      content: 'Bottom tooltip',
+      placement: 'bottom'
+    }
+  ]
+});
+```
+
+### Offset and Padding
+
+```javascript
+oppla.journey('spacing-demo', {
+  steps: [
+    {
+      type: 'tooltip',
+      target: '#element',
+      content: 'Custom spacing',
+      offset: 10, // pixels from target
+      padding: 20 // internal padding
+    }
+  ]
+});
+```
+
+## Interaction
+
+### Click Handling
+
+```javascript
+oppla.journey('interactive-tour', {
+  steps: [
+    {
+      type: 'tooltip',
+      target: '#button',
+      content: 'Click this button',
+      onClick: function() {
+        // Handle click
+        console.log('Tooltip clicked');
+      }
+    }
+  ]
+});
+```
+
+### Show/Hide Conditions
+
+```javascript
+oppla.journey('conditional-tour', {
+  steps: [
+    {
+      type: 'tooltip',
+      target: '#feature',
+      content: 'Premium feature',
+      showIf: function() {
+        return user.isPremium;
+      }
+    }
+  ]
+});
+```
+
+## Best Practices
+
+1. **Be Concise**: Keep tooltip content short and clear
+2. **Be Visible**: Ensure tooltips don't overlap with other UI elements
+3. **Be Responsive**: Test tooltips on different screen sizes
+4. **Be Accessible**: Use proper contrast and readable text
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Modal Steps"
+    icon="window-maximize"
+    href="/journey/modal"
+  >
+    Learn about modal steps
+  </Card>
+  <Card
+    title="Banner Steps"
+    icon="rectangle-ad"
+    href="/journey/banner"
+  >
+    Learn about banner steps
+  </Card>
+</CardGroup> 

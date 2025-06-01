@@ -1,0 +1,194 @@
+---
+title: Banner Steps
+description: "Learn how to create and customize banner steps in Oppla journeys"
+---
+
+# Banner Steps
+
+Learn how to create and customize banner steps to display notifications and announcements in your journeys.
+
+## Basic Usage
+
+Create a simple banner:
+
+```javascript
+oppla.journey('announcement', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Welcome to Oppla! Get started with our platform.',
+      position: 'top'
+    }
+  ]
+});
+```
+
+## Customization
+
+### Basic Properties
+
+```javascript
+oppla.journey('feature-banner', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'New feature available!',
+      position: 'bottom',
+      duration: 5000,
+      showCloseButton: true,
+      backgroundColor: '#2563EB',
+      textColor: '#FFFFFF'
+    }
+  ]
+});
+```
+
+### Advanced Styling
+
+```javascript
+oppla.journey('custom-banner', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Special offer: 50% off!',
+      style: {
+        backgroundColor: '#10B981',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        padding: '16px 24px',
+        margin: '16px',
+        fontSize: '16px',
+        fontWeight: '500'
+      }
+    }
+  ]
+});
+```
+
+## Content Types
+
+### Rich Content
+
+```javascript
+oppla.journey('rich-banner', {
+  steps: [
+    {
+      type: 'banner',
+      content: `
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span>🎉</span>
+          <div>
+            <strong>New Update Available!</strong>
+            <p style="margin: 4px 0 0;">Check out our latest features</p>
+          </div>
+        </div>
+      `,
+      contentType: 'html'
+    }
+  ]
+});
+```
+
+### Interactive Content
+
+```javascript
+oppla.journey('action-banner', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Want to learn more?',
+      buttons: [
+        {
+          text: 'Learn More',
+          onClick: function() {
+            // Handle click
+            console.log('Learn More clicked');
+          },
+          style: {
+            backgroundColor: '#FFFFFF',
+            color: '#2563EB',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '4px',
+            marginLeft: '12px'
+          }
+        }
+      ]
+    }
+  ]
+});
+```
+
+## Positioning
+
+### Fixed Positions
+
+```javascript
+oppla.journey('positioned-banner', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'System maintenance in 5 minutes',
+      position: 'top-right',
+      offset: {
+        top: '20px',
+        right: '20px'
+      }
+    }
+  ]
+});
+```
+
+### Responsive Behavior
+
+```javascript
+oppla.journey('responsive-banner', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Mobile-friendly notification',
+      position: 'bottom',
+      responsive: {
+        mobile: {
+          position: 'bottom',
+          fullWidth: true
+        },
+        tablet: {
+          position: 'bottom-right',
+          width: '300px'
+        },
+        desktop: {
+          position: 'top-right',
+          width: '400px'
+        }
+      }
+    }
+  ]
+});
+```
+
+## Best Practices
+
+1. **Be Concise**: Keep banner content short and clear
+2. **Be Timely**: Show banners at appropriate moments
+3. **Be Unobtrusive**: Don't interfere with user tasks
+4. **Be Consistent**: Use consistent styling and positioning
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Wait Steps"
+    icon="clock"
+    href="/journey/wait"
+  >
+    Learn about wait steps
+  </Card>
+  <Card
+    title="Fork Steps"
+    icon="code-branch"
+    href="/journey/fork"
+  >
+    Learn about fork steps
+  </Card>
+</CardGroup> 

@@ -1,55 +1,109 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Prodio Documentation",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#2563EB",
+    "light": "#3B82F6",
+    "dark": "#1D4ED8"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Overview",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Introduction",
             "pages": [
               "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Essentials",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "quickstart"
             ]
           }
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "Analytics",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "Getting Started",
             "pages": [
-              "api-reference/introduction"
+              "analytics/add-website",
+              "analytics/track-events",
+              "analytics/sessions",
+              "analytics/compare"
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Advanced Features",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "analytics/data-tags",
+              "analytics/node-client",
+              "analytics/script",
+              "analytics/tracker"
+            ]
+          },
+          {
+            "group": "How To",
+            "pages": [
+              "analytics/disable-local-tracking",
+              "analytics/track-outbound-clicks",
+              "analytics/google-tag-manager"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Journey",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "journey/overview",
+              "journey/install-flows",
+              "journey/identify-users",
+              "journey/concepts"
+            ]
+          },
+          {
+            "group": "Journey Creation",
+            "pages": [
+              "journey/steps-editor",
+              "journey/start-flow",
+              "journey/frequency",
+              "journey/segmentation",
+              "journey/preview-flow",
+              "journey/enable-flow"
+            ]
+          },
+          {
+            "group": "Step Types",
+            "pages": [
+              "journey/tooltip",
+              "journey/modal",
+              "journey/banner",
+              "journey/wait",
+              "journey/fork"
+            ]
+          },
+          {
+            "group": "Project Setup",
+            "pages": [
+              "journey/projects",
+              "journey/project-domains",
+              "journey/reset-user-progress"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Billing",
+        "groups": [
+          {
+            "group": "Pricing",
+            "pages": [
+              "billing/limits",
+              "billing/estimating-usage-costs"
             ]
           }
         ]
@@ -59,18 +113,13 @@
       "anchors": [
         {
           "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
+          "href": "https://docs.prodio.app/docs",
           "icon": "book-open-cover"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Support",
+          "href": "mailto:support@prodio.app",
+          "icon": "envelope"
         }
       ]
     }
@@ -83,20 +132,19 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@prodio.app"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://app.prodio.app"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/prodio",
+      "linkedin": "https://linkedin.com/company/prodio"
     }
   }
 }

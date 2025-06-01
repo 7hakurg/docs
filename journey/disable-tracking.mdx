@@ -1,0 +1,226 @@
+---
+title: Disable Local Tracking
+description: "Learn how to disable local tracking in Oppla journeys"
+---
+
+# Disable Local Tracking
+
+Learn how to disable local tracking in your Oppla journeys for privacy and compliance purposes.
+
+## Basic Usage
+
+### Disable Tracking for a Journey
+
+```javascript
+oppla.journey('privacy-focused', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Privacy-focused message'
+    }
+  ],
+  settings: {
+    tracking: {
+      enabled: false
+    }
+  }
+});
+```
+
+### Disable Tracking Globally
+
+```javascript
+oppla.init({
+  projectId: 'your-project-id',
+  journeys: {
+    enabled: true,
+    defaultSettings: {
+      tracking: {
+        enabled: false
+      }
+    }
+  }
+});
+```
+
+## Selective Tracking
+
+### Disable Specific Events
+
+```javascript
+oppla.journey('selective-tracking', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Selective tracking message'
+    }
+  ],
+  settings: {
+    tracking: {
+      enabled: true,
+      events: {
+        view: false,
+        interaction: true,
+        completion: false
+      }
+    }
+  }
+});
+```
+
+### Disable User Properties
+
+```javascript
+oppla.journey('privacy-user', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Privacy-focused user message'
+    }
+  ],
+  settings: {
+    tracking: {
+      enabled: true,
+      userProperties: {
+        enabled: false,
+        allowed: ['journey_status']
+      }
+    }
+  }
+});
+```
+
+## Privacy Compliance
+
+### GDPR Compliance
+
+```javascript
+oppla.journey('gdpr-compliant', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'GDPR-compliant message'
+    }
+  ],
+  settings: {
+    tracking: {
+      enabled: true,
+      privacy: {
+        gdpr: {
+          enabled: true,
+          requireConsent: true,
+          consentTypes: ['analytics', 'marketing']
+        }
+      }
+    }
+  }
+});
+```
+
+### CCPA Compliance
+
+```javascript
+oppla.journey('ccpa-compliant', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'CCPA-compliant message'
+    }
+  ],
+  settings: {
+    tracking: {
+      enabled: true,
+      privacy: {
+        ccpa: {
+          enabled: true,
+          requireOptOut: true
+        }
+      }
+    }
+  }
+});
+```
+
+## Advanced Configuration
+
+### Conditional Tracking
+
+```javascript
+oppla.journey('conditional-tracking', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Conditional tracking message'
+    }
+  ],
+  settings: {
+    tracking: {
+      enabled: true,
+      conditions: {
+        type: 'function',
+        check: function() {
+          return user.hasGivenConsent;
+        }
+      }
+    }
+  }
+});
+```
+
+### Custom Privacy Rules
+
+```javascript
+oppla.journey('custom-privacy', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Custom privacy message'
+    }
+  ],
+  settings: {
+    tracking: {
+      enabled: true,
+      privacy: {
+        rules: [
+          {
+            type: 'user-property',
+            property: 'location',
+            action: 'mask'
+          },
+          {
+            type: 'event',
+            name: 'sensitive_action',
+            action: 'disable'
+          }
+        ]
+      }
+    }
+  }
+});
+```
+
+## Best Practices
+
+1. **Be Transparent**: Clearly communicate tracking policies
+2. **Respect Privacy**: Follow privacy regulations and user preferences
+3. **Minimize Data**: Only collect necessary information
+4. **Secure Data**: Protect collected data appropriately
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Journey Management"
+    icon="cog"
+    href="/journey/management"
+  >
+    Learn about journey management
+  </Card>
+  <Card
+    title="Analytics Integration"
+    icon="chart-bar"
+    href="/journey/analytics"
+  >
+    Learn about analytics integration
+  </Card>
+</CardGroup> 

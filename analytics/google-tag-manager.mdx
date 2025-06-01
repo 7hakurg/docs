@@ -1,0 +1,144 @@
+---
+title: Google Tag Manager
+description: "Learn how to integrate Oppla with Google Tag Manager"
+---
+
+# Google Tag Manager
+
+Learn how to integrate Oppla with Google Tag Manager (GTM) for easier tracking implementation.
+
+## Setup
+
+### 1. Create a Custom HTML Tag
+
+In Google Tag Manager:
+
+1. Go to Tags > New
+2. Click on Tag Configuration
+3. Select "Custom HTML"
+4. Add the Oppla tracking code:
+
+```html
+<script>
+  (function(p,r,o,d,i,o){p[i]=p[i]||function(){(p[i].q=p[i].q||[]).push(arguments)};
+  o=r.createElement('script');o.async=1;o.src=d;r.head.appendChild(o);
+  })(window,document,'script','https://cdn.oppla.app/tracker.js','oppla');
+
+  oppla('init', 'YOUR_PROJECT_ID');
+</script>
+```
+
+### 2. Configure Triggers
+
+Set up triggers for when the tag should fire:
+
+- **All Pages**: For basic tracking
+- **Specific Pages**: For targeted tracking
+- **User Interactions**: For event tracking
+
+## Event Tracking
+
+### Track Page Views
+
+```javascript
+// In GTM Custom HTML tag
+oppla('track', 'Page Viewed', {
+  path: window.location.pathname,
+  title: document.title,
+  referrer: document.referrer
+});
+```
+
+### Track User Interactions
+
+```javascript
+// In GTM Custom HTML tag
+oppla('track', 'Button Clicked', {
+  buttonId: '{{Click ID}}',
+  buttonText: '{{Click Text}}',
+  page: '{{Page Path}}'
+});
+```
+
+## Data Layer Integration
+
+### Push to Data Layer
+
+```javascript
+// In your website code
+window.dataLayer.push({
+  'event': 'opplaEvent',
+  'eventName': 'Purchase Completed',
+  'eventProperties': {
+    'orderId': '12345',
+    'amount': 99.99
+  }
+});
+```
+
+### Listen for Data Layer Events
+
+```javascript
+// In GTM Custom HTML tag
+window.dataLayer.push = function(e) {
+  if (e.event === 'opplaEvent') {
+    oppla('track', e.eventName, e.eventProperties);
+  }
+};
+```
+
+## User Identification
+
+### Identify Users
+
+```javascript
+// In GTM Custom HTML tag
+oppla('identify', {
+  userId: '{{User ID}}',
+  traits: {
+    name: '{{User Name}}',
+    email: '{{User Email}}',
+    plan: '{{User Plan}}'
+  }
+});
+```
+
+## Best Practices
+
+1. **Use Variables**: Store Oppla project ID in GTM variables
+2. **Test in Preview**: Always test in GTM preview mode
+3. **Use Data Layer**: Push events to data layer for consistency
+4. **Monitor Performance**: Check tag loading impact
+
+## Common Issues
+
+### Tag Not Loading
+
+- Check GTM container code is properly installed
+- Verify trigger conditions
+- Check for JavaScript errors
+
+### Events Not Tracking
+
+- Verify data layer pushes
+- Check event names and properties
+- Ensure proper timing of tag loading
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Track Events"
+    icon="chart-line"
+    href="/analytics/track-events"
+  >
+    Learn more about event tracking
+  </Card>
+  <Card
+    title="Data Tags"
+    icon="tag"
+    href="/analytics/data-tags"
+  >
+    Organize your GTM events
+  </Card>
+</CardGroup> 

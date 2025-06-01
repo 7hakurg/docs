@@ -1,0 +1,201 @@
+---
+title: Modal Steps
+description: "Learn how to create and customize modal steps in Oppla journeys"
+---
+
+# Modal Steps
+
+Learn how to create and customize modal steps to display important information in your journeys.
+
+## Basic Usage
+
+Create a simple modal:
+
+```javascript
+oppla.journey('welcome', {
+  steps: [
+    {
+      type: 'modal',
+      title: 'Welcome to Oppla!',
+      content: 'Get started with our platform in minutes.'
+    }
+  ]
+});
+```
+
+## Customization
+
+### Basic Properties
+
+```javascript
+oppla.journey('feature-intro', {
+  steps: [
+    {
+      type: 'modal',
+      title: 'New Feature Available',
+      content: 'Try our new analytics dashboard',
+      size: 'medium',
+      showCloseButton: true,
+      showBackdrop: true
+    }
+  ]
+});
+```
+
+### Advanced Styling
+
+```javascript
+oppla.journey('custom-modal', {
+  steps: [
+    {
+      type: 'modal',
+      title: 'Premium Features',
+      content: 'Upgrade to access premium features',
+      style: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: '12px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        maxWidth: '500px',
+        padding: '24px'
+      },
+      titleStyle: {
+        fontSize: '24px',
+        color: '#2563EB',
+        marginBottom: '16px'
+      },
+      contentStyle: {
+        fontSize: '16px',
+        lineHeight: '1.5',
+        color: '#4B5563'
+      }
+    }
+  ]
+});
+```
+
+## Content Types
+
+### Rich Content
+
+```javascript
+oppla.journey('rich-content', {
+  steps: [
+    {
+      type: 'modal',
+      title: 'Getting Started',
+      content: `
+        <h3>Welcome to Oppla!</h3>
+        <p>Here's what you can do:</p>
+        <ul>
+          <li>Track user behavior</li>
+          <li>Create user journeys</li>
+          <li>Analyze data</li>
+        </ul>
+      `,
+      contentType: 'html'
+    }
+  ]
+});
+```
+
+### Media Content
+
+```javascript
+oppla.journey('media-modal', {
+  steps: [
+    {
+      type: 'modal',
+      title: 'Watch Tutorial',
+      content: {
+        type: 'video',
+        url: 'https://example.com/tutorial.mp4',
+        autoplay: false
+      }
+    }
+  ]
+});
+```
+
+## Interaction
+
+### Buttons
+
+```javascript
+oppla.journey('action-modal', {
+  steps: [
+    {
+      type: 'modal',
+      title: 'Ready to Start?',
+      content: 'Begin your journey with Oppla',
+      buttons: [
+        {
+          text: 'Get Started',
+          onClick: function() {
+            // Handle click
+            console.log('Get Started clicked');
+          },
+          primary: true
+        },
+        {
+          text: 'Learn More',
+          onClick: function() {
+            // Handle click
+            console.log('Learn More clicked');
+          }
+        }
+      ]
+    }
+  ]
+});
+```
+
+### Form Integration
+
+```javascript
+oppla.journey('form-modal', {
+  steps: [
+    {
+      type: 'modal',
+      title: 'Contact Us',
+      content: `
+        <form id="contact-form">
+          <input type="email" placeholder="Your email" />
+          <textarea placeholder="Your message"></textarea>
+          <button type="submit">Send</button>
+        </form>
+      `,
+      contentType: 'html',
+      onSubmit: function(formData) {
+        // Handle form submission
+        console.log('Form submitted:', formData);
+      }
+    }
+  ]
+});
+```
+
+## Best Practices
+
+1. **Be Focused**: Keep modal content focused on a single topic
+2. **Be Clear**: Use clear headings and concise content
+3. **Be Responsive**: Ensure modals work well on all devices
+4. **Be Accessible**: Include proper ARIA labels and keyboard navigation
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Banner Steps"
+    icon="rectangle-ad"
+    href="/journey/banner"
+  >
+    Learn about banner steps
+  </Card>
+  <Card
+    title="Wait Steps"
+    icon="clock"
+    href="/journey/wait"
+  >
+    Learn about wait steps
+  </Card>
+</CardGroup> 

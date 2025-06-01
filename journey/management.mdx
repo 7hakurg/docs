@@ -1,0 +1,249 @@
+---
+title: Journey Management
+description: "Learn how to manage and configure journeys in Oppla"
+---
+
+# Journey Management
+
+Learn how to manage and configure journeys in Oppla, including frequency control, segmentation, and analytics integration.
+
+## Basic Configuration
+
+Configure a basic journey:
+
+```javascript
+oppla.journey('welcome', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Welcome to Oppla!'
+    }
+  ],
+  settings: {
+    frequency: 'once',
+    segment: 'all-users'
+  }
+});
+```
+
+## Frequency Control
+
+### Show Once
+
+```javascript
+oppla.journey('one-time', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'One-time message'
+    }
+  ],
+  settings: {
+    frequency: 'once'
+  }
+});
+```
+
+### Show Periodically
+
+```javascript
+oppla.journey('periodic', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Periodic reminder'
+    }
+  ],
+  settings: {
+    frequency: 'periodic',
+    period: '7d' // Show every 7 days
+  }
+});
+```
+
+### Show on Specific Dates
+
+```javascript
+oppla.journey('scheduled', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Scheduled message'
+    }
+  ],
+  settings: {
+    frequency: 'scheduled',
+    startDate: '2024-01-01',
+    endDate: '2024-12-31'
+  }
+});
+```
+
+## User Segmentation
+
+### Basic Segmentation
+
+```javascript
+oppla.journey('segmented', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Segmented message'
+    }
+  ],
+  settings: {
+    segment: {
+      type: 'user-property',
+      property: 'plan',
+      value: 'premium'
+    }
+  }
+});
+```
+
+### Complex Segmentation
+
+```javascript
+oppla.journey('complex-segment', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Complex segmented message'
+    }
+  ],
+  settings: {
+    segment: {
+      type: 'and',
+      conditions: [
+        {
+          type: 'user-property',
+          property: 'plan',
+          value: 'premium'
+        },
+        {
+          type: 'user-property',
+          property: 'isNew',
+          value: true
+        }
+      ]
+    }
+  }
+});
+```
+
+## Analytics Integration
+
+### Track Journey Events
+
+```javascript
+oppla.journey('tracked', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Tracked message'
+    }
+  ],
+  settings: {
+    analytics: {
+      trackViews: true,
+      trackInteractions: true,
+      customEvents: [
+        {
+          name: 'journey_started',
+          properties: {
+            journey_name: 'tracked'
+          }
+        }
+      ]
+    }
+  }
+});
+```
+
+### A/B Testing
+
+```javascript
+oppla.journey('ab-test', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'A/B test message'
+    }
+  ],
+  settings: {
+    abTest: {
+      enabled: true,
+      variant: 'A',
+      weight: 0.5
+    }
+  }
+});
+```
+
+## Advanced Configuration
+
+### Conditional Activation
+
+```javascript
+oppla.journey('conditional', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Conditional message'
+    }
+  ],
+  settings: {
+    activation: {
+      type: 'condition',
+      condition: function() {
+        return user.isLoggedIn && user.hasCompletedOnboarding;
+      }
+    }
+  }
+});
+```
+
+### Journey Dependencies
+
+```javascript
+oppla.journey('dependent', {
+  steps: [
+    {
+      type: 'banner',
+      content: 'Dependent message'
+    }
+  ],
+  settings: {
+    dependencies: {
+      required: ['welcome', 'onboarding'],
+      optional: ['tutorial']
+    }
+  }
+});
+```
+
+## Best Practices
+
+1. **Plan Frequency**: Choose appropriate frequency settings
+2. **Segment Carefully**: Create meaningful user segments
+3. **Track Progress**: Enable analytics for journey insights
+4. **Test Thoroughly**: Test journeys with different user segments
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Analytics Integration"
+    icon="chart-bar"
+    href="/journey/analytics"
+  >
+    Learn about analytics integration
+  </Card>
+  <Card
+    title="Project Setup"
+    icon="cog"
+    href="/journey/setup"
+  >
+    Learn about project setup
+  </Card>
+</CardGroup> 

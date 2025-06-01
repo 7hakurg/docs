@@ -1,0 +1,109 @@
+---
+title: Analytics Overview
+description: "Learn about Oppla's analytics features and capabilities"
+---
+
+# Analytics Overview
+
+Oppla's analytics platform helps you understand user behavior and make data-driven decisions.
+
+## Key Features
+
+### User Behavior Tracking
+
+Track how users interact with your product:
+
+- Page views and navigation patterns
+- Feature usage and engagement
+- User flows and conversion funnels
+- Custom event tracking
+
+### Session Analysis
+
+Analyze user sessions to understand behavior:
+
+- Session duration and frequency
+- User paths and navigation
+- Drop-off points and conversion rates
+- Real-time user activity
+
+### Data Comparison
+
+Compare metrics across different time periods:
+
+- Day-over-day analysis
+- Week-over-week trends
+- Month-over-month growth
+- Custom date range comparisons
+
+## Getting Started
+
+<CardGroup cols={2}>
+  <Card
+    title="Add Your Website"
+    icon="globe"
+    href="/analytics/add-website"
+  >
+    Learn how to add Oppla to your website
+  </Card>
+  <Card
+    title="Track Events"
+    icon="chart-line"
+    href="/analytics/track-events"
+  >
+    Set up event tracking for your application
+  </Card>
+</CardGroup>
+
+## Advanced Features
+
+### Data Tags
+
+Use data tags to segment and analyze your data:
+
+```javascript
+oppla('track', 'Button Clicked', {
+  buttonId: 'signup-button',
+  page: 'homepage',
+  category: 'conversion'
+});
+```
+
+### Custom Properties
+
+Add custom properties to your events:
+
+```javascript
+oppla('track', 'Purchase Completed', {
+  orderId: '12345',
+  amount: 99.99,
+  currency: 'USD',
+  items: ['product1', 'product2']
+});
+```
+
+## Integration Options
+
+Oppla offers multiple integration methods:
+
+- JavaScript SDK
+- Node.js client
+- REST API
+- Google Tag Manager
+
+<CardGroup cols={2}>
+  <Card
+    title="Node Client"
+    icon="server"
+    href="/analytics/node-client"
+  >
+    Server-side tracking with Node.js
+  </Card>
+  <Card
+    title="Google Tag Manager"
+    icon="tag"
+    href="/analytics/google-tag-manager"
+  >
+    Integrate with Google Tag Manager
+  </Card>
+</CardGroup> 
