@@ -18,29 +18,56 @@ Data tags are labels you can add to your events and users to:
 
 ## Adding Tags to Events
 
-### Basic Tagging
+### Using Data Attributes
 
-Add tags to your events:
+Add tags to your events using data attributes:
+
+```html
+<!-- Basic tagging -->
+<button 
+  id="signup-button" 
+  data-oppla-event="Button Clicked"
+  data-oppla-event-tags="conversion,signup,homepage">
+  Sign up
+</button>
+
+<!-- Tag categories -->
+<button 
+  id="search-button" 
+  data-oppla-event="Feature Used"
+  data-oppla-event-feature="search"
+  data-oppla-event-tags-category="core-feature"
+  data-oppla-event-tags-priority="high"
+  data-oppla-event-tags-stage="beta">
+  Search
+</button>
+```
+
+### Using JavaScript
+
+Add tags programmatically:
 
 ```javascript
-oppla('track', 'Button Clicked', {
+// Browser implementation
+window.oppla.track('Button Clicked', {
   buttonId: 'signup-button',
   tags: ['conversion', 'signup', 'homepage']
 });
-```
 
-### Tag Categories
-
-Organize tags into categories:
-
-```javascript
-oppla('track', 'Feature Used', {
+// With tag categories
+window.oppla.track('Feature Used', {
   feature: 'search',
   tags: {
     category: 'core-feature',
     priority: 'high',
     stage: 'beta'
   }
+});
+
+// Node.js implementation
+oppla.track('Button Clicked', {
+  buttonId: 'signup-button',
+  tags: ['conversion', 'signup', 'homepage']
 });
 ```
 
@@ -51,7 +78,17 @@ oppla('track', 'Feature Used', {
 Tag users for segmentation:
 
 ```javascript
-oppla('identify', {
+// Browser implementation
+window.oppla.identify({
+  userId: 'user_123',
+  traits: {
+    name: 'John Doe',
+    tags: ['premium', 'active', 'beta-tester']
+  }
+});
+
+// Node.js implementation
+oppla.identify({
   userId: 'user_123',
   traits: {
     name: 'John Doe',
@@ -65,7 +102,19 @@ oppla('identify', {
 Update user tags over time:
 
 ```javascript
-oppla('identify', {
+// Browser implementation
+window.oppla.identify({
+  userId: 'user_123',
+  traits: {
+    tags: {
+      add: ['power-user'],
+      remove: ['beta-tester']
+    }
+  }
+});
+
+// Node.js implementation
+oppla.identify({
   userId: 'user_123',
   traits: {
     tags: {
@@ -99,14 +148,18 @@ oppla('identify', {
 Filter your analytics by tags:
 
 ```javascript
-// Get events with specific tags
-oppla.analytics.getEvents({
+// Browser implementation
+window.oppla.analytics.getEvents({
   tags: ['conversion', 'signup']
 });
 
-// Get users with specific tags
-oppla.analytics.getUsers({
+window.oppla.analytics.getUsers({
   tags: ['premium', 'active']
+});
+
+// Node.js implementation
+oppla.analytics.getEvents({
+  tags: ['conversion', 'signup']
 });
 ```
 
@@ -115,6 +168,13 @@ oppla.analytics.getUsers({
 Create user segments based on tags:
 
 ```javascript
+// Browser implementation
+window.oppla.analytics.createSegment({
+  name: 'Power Users',
+  tags: ['premium', 'active', 'power-user']
+});
+
+// Node.js implementation
 oppla.analytics.createSegment({
   name: 'Power Users',
   tags: ['premium', 'active', 'power-user']
@@ -125,7 +185,7 @@ oppla.analytics.createSegment({
 
 <CardGroup cols={2}>
   <Card
-    title="Compare"
+    title="Compare Metrics"
     icon="chart-line"
     href="/analytics/compare"
   >

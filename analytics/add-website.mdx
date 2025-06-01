@@ -26,7 +26,7 @@ Add the following script to your website's `<head>` section:
 Initialize Oppla with your project ID:
 
 ```javascript
-oppla('init', 'YOUR_PROJECT_ID');
+window.oppla.init('YOUR_PROJECT_ID');
 ```
 
 ## Configuration
@@ -36,7 +36,7 @@ oppla('init', 'YOUR_PROJECT_ID');
 Configure basic tracking settings:
 
 ```javascript
-oppla('config', {
+window.oppla.config({
   trackPageViews: true,
   trackClicks: true,
   trackForms: true,
@@ -49,7 +49,7 @@ oppla('config', {
 Add advanced tracking options:
 
 ```javascript
-oppla('config', {
+window.oppla.config({
   // Enable automatic tracking
   autoTrack: {
     pageViews: true,

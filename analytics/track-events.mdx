@@ -7,12 +7,39 @@ description: "Learn how to track events and user interactions in Oppla"
 
 Learn how to track events and user interactions in your application using Oppla.
 
-## Basic Event Tracking
+## Using Data Attributes
 
-Track simple events with a name and optional properties:
+Track events by adding data attributes to your HTML elements:
+
+```html
+<!-- Basic event tracking -->
+<button id="signup-button" data-oppla-event="Signup button">
+  Sign up
+</button>
+
+<!-- Event tracking with additional data -->
+<button 
+  id="signup-button" 
+  data-oppla-event="Signup button"
+  data-oppla-event-buttonId="signup-button"
+  data-oppla-event-page="homepage">
+  Sign up
+</button>
+```
+
+## Using JavaScript
+
+Track events programmatically using the Oppla object:
 
 ```javascript
-oppla('track', 'Button Clicked', {
+// Browser implementation
+window.oppla.track('Button Clicked', {
+  buttonId: 'signup-button',
+  page: 'homepage'
+});
+
+// Node.js implementation
+oppla.track('Button Clicked', {
   buttonId: 'signup-button',
   page: 'homepage'
 });
@@ -23,7 +50,8 @@ oppla('track', 'Button Clicked', {
 Add detailed properties to your events:
 
 ```javascript
-oppla('track', 'Purchase Completed', {
+// Browser implementation
+window.oppla.track('Purchase Completed', {
   // Order details
   orderId: '12345',
   amount: 99.99,
@@ -38,6 +66,11 @@ oppla('track', 'Purchase Completed', {
   source: 'homepage',
   campaign: 'summer_sale'
 });
+
+// Node.js implementation
+oppla.track('Purchase Completed', {
+  // Same properties as above
+});
 ```
 
 ## Common Event Types
@@ -48,12 +81,13 @@ Track page views automatically or manually:
 
 ```javascript
 // Automatic tracking (configured in init)
-oppla('config', {
+window.oppla.init({
+  projectId: 'your-project-id',
   trackPageViews: true
 });
 
 // Manual tracking
-oppla('track', 'Page Viewed', {
+window.oppla.track('Page Viewed', {
   path: '/products',
   title: 'Products Page',
   referrer: 'https://google.com'
@@ -64,25 +98,35 @@ oppla('track', 'Page Viewed', {
 
 Track user interactions:
 
-```javascript
-// Button clicks
-oppla('track', 'Button Clicked', {
-  buttonId: 'checkout-button',
-  buttonText: 'Checkout Now'
-});
+```html
+<!-- Button clicks -->
+<button 
+  id="checkout-button" 
+  data-oppla-event="Button Clicked"
+  data-oppla-event-buttonId="checkout-button"
+  data-oppla-event-buttonText="Checkout Now">
+  Checkout Now
+</button>
 
-// Form submissions
-oppla('track', 'Form Submitted', {
-  formId: 'contact-form',
-  formType: 'contact'
-});
+<!-- Form submissions -->
+<form 
+  id="contact-form" 
+  data-oppla-event="Form Submitted"
+  data-oppla-event-formId="contact-form"
+  data-oppla-event-formType="contact">
+  <!-- form content -->
+</form>
 
-// Link clicks
-oppla('track', 'Link Clicked', {
-  linkId: 'pricing-link',
-  linkText: 'View Pricing',
-  destination: '/pricing'
-});
+<!-- Link clicks -->
+<a 
+  id="pricing-link" 
+  data-oppla-event="Link Clicked"
+  data-oppla-event-linkId="pricing-link"
+  data-oppla-event-linkText="View Pricing"
+  data-oppla-event-destination="/pricing"
+  href="/pricing">
+  View Pricing
+</a>
 ```
 
 ### E-commerce Events
@@ -90,27 +134,44 @@ oppla('track', 'Link Clicked', {
 Track e-commerce activities:
 
 ```javascript
-// Product viewed
-oppla('track', 'Product Viewed', {
+// Browser implementation
+window.oppla.track('Product Viewed', {
   productId: 'prod_123',
   name: 'Premium Plan',
   price: 99.99
 });
 
-// Add to cart
-oppla('track', 'Added to Cart', {
+window.oppla.track('Added to Cart', {
   productId: 'prod_123',
   quantity: 1,
   price: 99.99
 });
 
-// Checkout started
-oppla('track', 'Checkout Started', {
+window.oppla.track('Checkout Started', {
   orderId: 'order_123',
   total: 99.99,
   items: ['prod_123']
 });
+
+// Node.js implementation
+oppla.track('Product Viewed', {
+  productId: 'prod_123',
+  name: 'Premium Plan',
+  price: 99.99
+});
 ```
+
+## Important Notes
+
+1. **Data Attributes**:
+   - Event data cannot be sent without an event name
+   - All event data will be saved as strings
+   - Other event listeners inside the element will not be triggered
+
+2. **JavaScript Method**:
+   - Use for dynamic data
+   - Supports all data types (numbers, dates, booleans, etc.)
+   - Allows for more complex tracking logic
 
 ## Best Practices
 

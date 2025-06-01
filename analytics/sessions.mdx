@@ -1,125 +1,179 @@
 ---
 title: Sessions
-description: "Learn how to track and analyze user sessions in Oppla"
+description: "Learn how Oppla automatically tracks and analyzes user sessions"
 ---
 
 # Sessions
 
-Learn how Oppla tracks and analyzes user sessions to understand user behavior.
+Oppla automatically tracks user sessions to help you understand user behavior and engagement patterns. No additional configuration is needed beyond initializing Oppla.
 
 ## What are Sessions?
 
-A session represents a single visit to your website or application. Oppla automatically tracks sessions and provides insights into:
+A session in Oppla represents a continuous period of user activity on your website or application. Sessions help you understand:
 
-- Session duration
-- User paths
-- Engagement metrics
-- Conversion rates
+- How users interact with your content
+- When and how users engage with features
+- User journey patterns and flow
+- Conversion and drop-off points
 
-## Session Configuration
+## Automatic Session Tracking
 
-### Basic Settings
-
-Configure basic session settings during initialization:
+Sessions are tracked automatically once Oppla is initialized:
 
 ```javascript
-oppla('config', {
-  session: {
-    timeout: 30, // minutes
-    extendOnActivity: true
-  }
+// Browser implementation
+window.oppla.init({
+  projectId: 'your-project-id'
 });
-```
 
-### Advanced Settings
-
-Customize session behavior:
-
-```javascript
-oppla('config', {
-  session: {
-    // Session timeout in minutes
-    timeout: 30,
-    
-    // Extend session on user activity
-    extendOnActivity: true,
-    
-    // Track session start/end
-    trackStart: true,
-    trackEnd: true,
-    
-    // Custom session properties
-    properties: {
-      source: 'direct',
-      medium: 'web'
-    }
-  }
+// Node.js implementation
+oppla.init({
+  projectId: 'your-project-id'
 });
 ```
 
 ## Session Events
 
-### Automatic Events
-
 Oppla automatically tracks these session events:
 
-- Session Started
-- Session Ended
-- Session Extended
+```javascript
+// Session Started
+{
+  event: 'session_started',
+  properties: {
+    timestamp: '2024-03-20T10:00:00Z',
+    sessionId: 'abc123',
+    referrer: 'https://google.com',
+    userAgent: 'Mozilla/5.0...'
+  }
+}
 
-### Manual Tracking
+// Session Ended
+{
+  event: 'session_ended',
+  properties: {
+    timestamp: '2024-03-20T10:30:00Z',
+    sessionId: 'abc123',
+    duration: 1800, // seconds
+    pageViews: 5
+  }
+}
 
-Track custom session events:
+// Session Extended
+{
+  event: 'session_extended',
+  properties: {
+    timestamp: '2024-03-20T10:15:00Z',
+    sessionId: 'abc123',
+    extensionCount: 1
+  }
+}
+```
+
+## Tracking Events
+
+### Using Data Attributes
+
+To track events, simply add a special data property to the element you want to track:
+
+```html
+<!-- Basic event tracking -->
+<button id="signup-button" data-oppla-event="Signup button">
+  Sign up
+</button>
+
+<!-- Event tracking with additional data -->
+<button 
+  id="signup-button" 
+  data-oppla-event="Signup button"
+  data-oppla-event-email="bob@aol.com"
+  data-oppla-event-id="123">
+  Sign up
+</button>
+```
+
+The additional properties will be recorded with the event:
+```javascript
+{
+  event: 'Signup button',
+  properties: {
+    email: 'bob@aol.com',
+    id: '123'
+  }
+}
+```
+
+### Using JavaScript
+
+You can also track events manually using the Oppla object:
 
 ```javascript
-// Track session milestone
-oppla('track', 'Session Milestone', {
-  milestone: 'first_interaction',
-  timeInSession: 120 // seconds
+// Browser implementation
+const button = document.getElementById('signup-button');
+button.onclick = () => window.oppla.track('Signup button');
+
+// With additional properties
+button.onclick = () => window.oppla.track('Signup button', {
+  email: 'bob@aol.com',
+  id: '123'
 });
 
-// Track session goal
-oppla('track', 'Session Goal', {
-  goal: 'product_viewed',
-  value: 1
+// Node.js implementation
+oppla.track('Signup button', {
+  email: 'bob@aol.com',
+  id: '123'
 });
 ```
 
-## Session Analysis
+### Important Notes
 
-### Key Metrics
+1. **Data Attributes**:
+   - Event data cannot be sent without an event name
+   - All event data will be saved as strings
+   - Other event listeners inside the element will not be triggered
 
-Track important session metrics:
+2. **JavaScript Method**:
+   - Use for dynamic data
+   - Supports all data types (numbers, dates, booleans, etc.)
+   - Allows for more complex tracking logic
 
-- **Duration**: How long users stay
-- **Depth**: Number of pages viewed
-- **Bounce Rate**: Single-page sessions
-- **Conversion Rate**: Goal completion
+## Viewing Events
 
-### User Paths
+Tracked events are available in your Oppla dashboard:
 
-Analyze common user paths:
-
-```javascript
-oppla('track', 'User Path', {
-  path: ['home', 'products', 'checkout'],
-  duration: 300, // seconds
-  completed: true
-});
-```
+1. Navigate to the Events page
+2. View event properties under the Properties tab
+3. See a breakdown of all custom data values
 
 ## Best Practices
 
-1. **Set Appropriate Timeouts**: Balance between session accuracy and user experience
-2. **Track Key Milestones**: Identify important moments in the user journey
-3. **Monitor Bounce Rates**: Identify potential issues with engagement
-4. **Analyze Paths**: Understand common user flows
+1. **Initialize Early**: 
+   - Initialize Oppla as early as possible in your application
+   - This ensures accurate session tracking from the start
+
+2. **Track Key Milestones**:
+   - First interaction
+   - Feature discovery
+   - Conversion attempts
+   - Goal completion
+
+3. **Monitor Session Quality**:
+   - Bounce rates
+   - Time on site
+   - Page views per session
+   - Conversion rates
+
+4. **Analyze User Paths**:
+   - Common entry points
+   - Popular navigation patterns
+   - Drop-off points
+   - Conversion paths
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Compare"
+    title="Compare Metrics"
     icon="chart-line"
     href="/analytics/compare"
   >
@@ -130,6 +184,6 @@ oppla('track', 'User Path', {
     icon="tag"
     href="/analytics/data-tags"
   >
-    Organize your session data
+    Organize your session data with tags
   </Card>
 </CardGroup> 

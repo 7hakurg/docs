@@ -62,7 +62,15 @@ Compare metrics across different time periods:
 Use data tags to segment and analyze your data:
 
 ```javascript
-oppla('track', 'Button Clicked', {
+// Browser implementation
+window.oppla.track('Button Clicked', {
+  buttonId: 'signup-button',
+  page: 'homepage',
+  category: 'conversion'
+});
+
+// Node.js implementation
+oppla.track('Button Clicked', {
   buttonId: 'signup-button',
   page: 'homepage',
   category: 'conversion'
@@ -74,7 +82,16 @@ oppla('track', 'Button Clicked', {
 Add custom properties to your events:
 
 ```javascript
-oppla('track', 'Purchase Completed', {
+// Browser implementation
+window.oppla.track('Purchase Completed', {
+  orderId: '12345',
+  amount: 99.99,
+  currency: 'USD',
+  items: ['product1', 'product2']
+});
+
+// Node.js implementation
+oppla.track('Purchase Completed', {
   orderId: '12345',
   amount: 99.99,
   currency: 'USD',
@@ -86,8 +103,8 @@ oppla('track', 'Purchase Completed', {
 
 Oppla offers multiple integration methods:
 
-- JavaScript SDK
-- Node.js client
+- JavaScript SDK (Browser)
+- Node.js client (Server)
 - REST API
 - Google Tag Manager
 

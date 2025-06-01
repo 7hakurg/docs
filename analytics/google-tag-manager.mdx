@@ -24,7 +24,7 @@ In Google Tag Manager:
   o=r.createElement('script');o.async=1;o.src=d;r.head.appendChild(o);
   })(window,document,'script','https://cdn.oppla.app/tracker.js','oppla');
 
-  oppla('init', 'YOUR_PROJECT_ID');
+  window.oppla.init('YOUR_PROJECT_ID');
 </script>
 ```
 
@@ -42,7 +42,7 @@ Set up triggers for when the tag should fire:
 
 ```javascript
 // In GTM Custom HTML tag
-oppla('track', 'Page Viewed', {
+window.oppla.track('Page Viewed', {
   path: window.location.pathname,
   title: document.title,
   referrer: document.referrer
@@ -53,7 +53,7 @@ oppla('track', 'Page Viewed', {
 
 ```javascript
 // In GTM Custom HTML tag
-oppla('track', 'Button Clicked', {
+window.oppla.track('Button Clicked', {
   buttonId: '{{Click ID}}',
   buttonText: '{{Click Text}}',
   page: '{{Page Path}}'
@@ -82,7 +82,7 @@ window.dataLayer.push({
 // In GTM Custom HTML tag
 window.dataLayer.push = function(e) {
   if (e.event === 'opplaEvent') {
-    oppla('track', e.eventName, e.eventProperties);
+    window.oppla.track(e.eventName, e.eventProperties);
   }
 };
 ```
@@ -93,7 +93,7 @@ window.dataLayer.push = function(e) {
 
 ```javascript
 // In GTM Custom HTML tag
-oppla('identify', {
+window.oppla.identify({
   userId: '{{User ID}}',
   traits: {
     name: '{{User Name}}',
