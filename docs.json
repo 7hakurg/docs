@@ -97,13 +97,14 @@
         ]
       },
       {
-        "tab": "Billing",
+        "tab": "Feedback",
         "groups": [
           {
-            "group": "Pricing",
+            "group": "Overview",
             "pages": [
-              "billing/limits",
-              "billing/estimating-usage-costs"
+              "feedback/overview",
+              "feedback/customization",
+              "feedback/analytics"
             ]
           }
         ]
@@ -120,6 +121,11 @@
           "anchor": "Support",
           "href": "mailto:support@oppla.ai",
           "icon": "envelope"
+        },
+        {
+          "anchor": "Dashboard",
+          "href": "https://app.oppla.ai",
+          "icon": "arrow-square-out"
         }
       ]
     }

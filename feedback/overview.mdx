@@ -1,0 +1,175 @@
+---
+title: Feedback Overview
+description: "Learn how to integrate and use Oppla's Feedback feature"
+---
+
+# Feedback
+
+Oppla's Feedback feature allows you to collect user feedback, ideas, and feature requests directly from your application. This guide will help you integrate and customize the feedback functionality.
+
+## Installation
+
+Install the Feedback package:
+
+```bash
+npm install @oppla-ai/feedback
+# or
+yarn add @oppla-ai/feedback
+```
+
+## Basic Integration
+
+### Initialize Feedback
+
+Create a Feedback component to initialize the feedback system:
+
+```typescript
+"use client";
+
+import { useEffect } from "react";
+import { init } from "@oppla-ai/feedback"
+
+interface FeedbackProps {
+  name?: string;
+  email?: string;
+  id?: string;
+  phone_number?: string;
+  job_title?: string;
+}
+
+export const Feedback = ({ 
+  name,
+  email,
+  id,
+  phone_number,
+  job_title
+}: FeedbackProps) => {
+  useEffect(() => {
+    const properties = {
+      name: name || "",
+      email: email || "",
+      id: id || "",
+      phone_number: phone_number || "",
+      job_title: job_title || ""
+    };
+    
+    try {
+      init({
+        organizationId: "YOUR_ORGANIZATION_ID",
+        websiteId: "YOUR_WEBSITE_ID",
+        properties
+      });
+    } catch (error) {
+      console.error('Error initializing feedback:', error);
+    }
+  }, [name, email, id, phone_number, job_title])
+  
+  return null;
+};
+```
+
+### Open Feedback Panel
+
+Add a button or link to open the feedback panel:
+
+```typescript
+import { publicFeedback } from "@oppla-ai/feedback"
+
+// In your component:
+<div 
+  onClick={(e) => {
+    e.preventDefault();
+    publicFeedback({
+      form: {
+        title: "Your Feedback",
+        description: "We would love to hear from you"
+      },
+      config: {
+        primaryColor: "#6366f1",
+        heading: {
+          ideas: "💡 Ideas",
+          announcement: "🔥 Recent Updates",
+          roadMap: "🛣️ Roadmap"
+        }
+      }
+    });
+  }}
+  className="flex items-center gap-2 text-sm text-muted hover:underline cursor-pointer"
+>
+  <IconBox Icon={MessagesSquare}/> Feedback
+</div>
+```
+
+## Configuration Options
+
+### Form Configuration
+
+Customize the feedback form:
+
+```typescript
+publicFeedback({
+  form: {
+    title: "Your Feedback", // Custom title
+    description: "We would love to hear from you", // Custom description
+    // Add more form customization options
+  }
+});
+```
+
+### Visual Configuration
+
+Customize the appearance:
+
+```typescript
+publicFeedback({
+  config: {
+    primaryColor: "#6366f1", // Custom primary color
+    heading: {
+      ideas: "💡 Ideas",
+      announcement: "🔥 Recent Updates",
+      roadMap: "🛣️ Roadmap"
+    }
+    // Add more visual customization options
+  }
+});
+```
+
+## Best Practices
+
+1. **Initialize Early**: Initialize the feedback system as early as possible in your application
+2. **User Context**: Provide user information when available for better feedback context
+3. **Strategic Placement**: Place feedback triggers in relevant locations
+4. **Clear Call-to-Action**: Use clear and inviting language for feedback buttons
+
+## Common Issues
+
+### Initialization Errors
+
+- Verify organization and website IDs
+- Check for network connectivity
+- Ensure proper user properties format
+
+### Panel Not Opening
+
+- Check for JavaScript errors
+- Verify event handler implementation
+- Ensure proper component mounting
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Customization"
+    icon="palette"
+    href="/feedback/customization"
+  >
+    Learn how to customize the feedback form
+  </Card>
+  <Card
+    title="Analytics"
+    icon="chart-line"
+    href="/feedback/analytics"
+  >
+    Track and analyze feedback data
+  </Card>
+</CardGroup> 

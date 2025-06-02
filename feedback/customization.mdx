@@ -1,0 +1,191 @@
+---
+title: Feedback Customization
+description: "Learn how to customize the feedback form and panel in Oppla"
+---
+
+# Feedback Customization
+
+Learn how to customize the appearance and behavior of your feedback form and panel.
+
+## Form Customization
+
+### Basic Form Options
+
+```typescript
+publicFeedback({
+  form: {
+    title: "Your Feedback", // Custom title
+    description: "We would love to hear from you", // Custom description
+    submitButtonText: "Submit Feedback", // Custom submit button text
+    placeholder: "Tell us what you think...", // Custom input placeholder
+  }
+});
+```
+
+### Form Fields
+
+Customize the form fields:
+
+```typescript
+publicFeedback({
+  form: {
+    fields: {
+      name: {
+        label: "Your Name",
+        placeholder: "Enter your name",
+        required: true
+      },
+      email: {
+        label: "Email Address",
+        placeholder: "Enter your email",
+        required: true
+      },
+      feedback: {
+        label: "Your Feedback",
+        placeholder: "Share your thoughts...",
+        required: true,
+        multiline: true
+      }
+    }
+  }
+});
+```
+
+## Visual Customization
+
+### Colors and Theme
+
+```typescript
+publicFeedback({
+  config: {
+    primaryColor: "#6366f1", // Primary color
+    backgroundColor: "#ffffff", // Background color
+    textColor: "#1f2937", // Text color
+    borderColor: "#e5e7eb", // Border color
+    borderRadius: "8px", // Border radius
+  }
+});
+```
+
+### Typography
+
+```typescript
+publicFeedback({
+  config: {
+    typography: {
+      fontFamily: "Inter, sans-serif",
+      headingSize: "1.5rem",
+      bodySize: "1rem",
+      buttonSize: "0.875rem"
+    }
+  }
+});
+```
+
+### Layout
+
+```typescript
+publicFeedback({
+  config: {
+    layout: {
+      width: "400px", // Panel width
+      maxHeight: "600px", // Maximum height
+      padding: "24px", // Inner padding
+      spacing: "16px" // Element spacing
+    }
+  }
+});
+```
+
+## Section Headers
+
+Customize section headers:
+
+```typescript
+publicFeedback({
+  config: {
+    heading: {
+      ideas: "💡 Ideas",
+      announcement: "🔥 Recent Updates",
+      roadMap: "🛣️ Roadmap",
+      feedback: "📝 Feedback",
+      bug: "🐛 Bug Report"
+    }
+  }
+});
+```
+
+## Advanced Customization
+
+### Custom CSS
+
+Add custom CSS classes:
+
+```typescript
+publicFeedback({
+  config: {
+    customClasses: {
+      container: "my-custom-container",
+      form: "my-custom-form",
+      input: "my-custom-input",
+      button: "my-custom-button"
+    }
+  }
+});
+```
+
+### Custom Components
+
+Replace default components:
+
+```typescript
+publicFeedback({
+  config: {
+    components: {
+      submitButton: CustomSubmitButton,
+      inputField: CustomInputField,
+      header: CustomHeader
+    }
+  }
+});
+```
+
+## Best Practices
+
+1. **Consistent Branding**: Match your application's design system
+2. **Accessibility**: Ensure sufficient color contrast and readable text
+3. **Mobile Responsiveness**: Test on different screen sizes
+4. **Performance**: Keep customizations lightweight
+
+## Common Issues
+
+### Styling Conflicts
+
+- Check for CSS specificity issues
+- Verify class name conflicts
+- Test in different browsers
+
+### Layout Problems
+
+- Verify responsive behavior
+- Check container dimensions
+- Test with different content lengths
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Analytics"
+    icon="chart-line"
+    href="/feedback/analytics"
+  >
+    Track and analyze feedback data
+  </Card>
+  <Card
+    title="Integration"
+    icon="code"
+    href="/feedback/overview"
+  >
+    Learn about basic integration
+  </Card>
+</CardGroup> 

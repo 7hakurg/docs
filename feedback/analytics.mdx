@@ -1,0 +1,145 @@
+---
+title: Feedback Analytics
+description: "Learn how to track and analyze feedback data in Oppla"
+---
+
+# Feedback Analytics
+
+Learn how to track, analyze, and make use of the feedback data collected through Oppla's feedback system.
+
+## Tracking Feedback
+
+### Basic Event Tracking
+
+Feedback events are automatically tracked when users interact with the feedback system:
+
+```typescript
+// Events are automatically tracked
+- feedback_panel_opened
+- feedback_submitted
+- feedback_cancelled
+- feedback_error
+```
+
+### Custom Event Properties
+
+Add custom properties to feedback events:
+
+```typescript
+publicFeedback({
+  form: {
+    title: "Your Feedback",
+    description: "We would love to hear from you"
+  },
+  analytics: {
+    properties: {
+      page: "homepage",
+      section: "features",
+      userType: "premium"
+    }
+  }
+});
+```
+
+## Analytics Dashboard
+
+### Key Metrics
+
+Track important feedback metrics:
+
+- Total feedback submissions
+- Feedback categories distribution
+- User engagement rates
+- Response times
+- User satisfaction scores
+
+### Filtering and Segmentation
+
+Filter feedback data by:
+
+- Date range
+- User segments
+- Feedback categories
+- Response status
+- Priority levels
+
+## Data Export
+
+### Export Options
+
+Export feedback data in various formats:
+
+```typescript
+// Export all feedback
+const feedback = await oppla.feedback.export({
+  format: 'csv',
+  dateRange: {
+    start: '2024-01-01',
+    end: '2024-03-20'
+  }
+});
+
+// Export specific categories
+const bugReports = await oppla.feedback.export({
+  format: 'json',
+  categories: ['bug', 'issue'],
+  status: 'open'
+});
+```
+
+### Integration with Analytics Tools
+
+Connect feedback data with other analytics tools:
+
+```typescript
+// Send feedback events to analytics
+oppla.feedback.on('submitted', (feedback) => {
+  window.oppla.track('Feedback Submitted', {
+    category: feedback.category,
+    priority: feedback.priority,
+    userType: feedback.userType
+  });
+});
+```
+
+## Best Practices
+
+1. **Regular Analysis**: Review feedback data regularly
+2. **Actionable Insights**: Focus on actionable feedback
+3. **User Segmentation**: Analyze feedback by user segments
+4. **Trend Analysis**: Track feedback trends over time
+
+## Common Issues
+
+### Data Not Appearing
+
+- Verify tracking implementation
+- Check event properties
+- Ensure proper initialization
+- Check for network issues
+
+### Export Problems
+
+- Verify date ranges
+- Check export permissions
+- Ensure proper data format
+- Check for large dataset limits
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Customization"
+    icon="palette"
+    href="/feedback/customization"
+  >
+    Learn how to customize the feedback form
+  </Card>
+  <Card
+    title="Integration"
+    icon="code"
+    href="/feedback/overview"
+  >
+    Learn about basic integration
+  </Card>
+</CardGroup> 
