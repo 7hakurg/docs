@@ -1,0 +1,127 @@
+---
+title: Track Outbound Clicks
+description: "Learn how to track clicks on external links in Oppla"
+---
+
+# Track Outbound Clicks
+
+Learn how to track clicks on external links and outbound navigation in your application.
+
+## Basic Usage
+
+### Configure Outbound Click Tracking
+
+Enable outbound click tracking in your configuration:
+
+```javascript
+window.oppla.config({
+  trackOutboundClicks: true,
+  outboundDomains: ['example.com', 'external-site.com']
+});
+```
+
+### Track Outbound Clicks Manually
+
+Track outbound clicks programmatically:
+
+```javascript
+window.oppla.track('Outbound Click', {
+  linkId: 'external-link',
+  linkText: 'Visit External Site',
+  destination: 'https://example.com',
+  domain: 'example.com'
+});
+```
+
+## Using Data Attributes
+
+Track outbound clicks using data attributes:
+
+```html
+<a 
+  id="external-link" 
+  data-oppla-event="Outbound Click"
+  data-oppla-event-linkId="external-link"
+  data-oppla-event-linkText="Visit External Site"
+  data-oppla-event-destination="https://example.com"
+  data-oppla-event-domain="example.com"
+  href="https://example.com">
+  Visit External Site
+</a>
+```
+
+## Advanced Features
+
+### Track with Custom Properties
+
+Add custom properties to outbound click events:
+
+```javascript
+window.oppla.track('Outbound Click', {
+  linkId: 'external-link',
+  linkText: 'Visit External Site',
+  destination: 'https://example.com',
+  domain: 'example.com',
+  category: 'partner',
+  priority: 'high',
+  campaign: 'summer_sale'
+});
+```
+
+### Track with User Context
+
+Include user context in outbound click events:
+
+```javascript
+window.oppla.track('Outbound Click', {
+  linkId: 'external-link',
+  linkText: 'Visit External Site',
+  destination: 'https://example.com',
+  domain: 'example.com',
+  userId: 'user_123',
+  userType: 'premium',
+  userPlan: 'business'
+});
+```
+
+## Best Practices
+
+1. **Be Specific**: Include relevant context in event properties
+2. **Be Organized**: Use consistent event names and properties
+3. **Be Careful**: Don't track sensitive information
+4. **Be Efficient**: Only track necessary outbound clicks
+
+## Common Issues
+
+### Clicks Not Tracking
+
+- Verify configuration
+- Check event names
+- Ensure proper timing
+- Check for JavaScript errors
+
+### Data Quality
+
+- Validate event data
+- Check for duplicates
+- Monitor event volume
+- Review property values
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Track Events"
+    icon="chart-line"
+    href="/analytics/track-events"
+  >
+    Learn about general event tracking
+  </Card>
+  <Card
+    title="Data Tags"
+    icon="tag"
+    href="/analytics/data-tags"
+  >
+    Organize your tracking data
+  </Card>
+</CardGroup> 

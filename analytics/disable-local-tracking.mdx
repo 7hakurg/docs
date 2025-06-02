@@ -1,21 +1,21 @@
 ---
-title: Disable Local Testing
-description: "Learn how to disable local testing in Oppla"
+title: Disable Local Tracking
+description: "Learn how to disable local tracking in Oppla"
 ---
 
-# Disable Local Testing
+# Disable Local Tracking
 
-Learn how to disable local testing and ensure your tracking works in production.
+Learn how to disable local tracking and ensure your tracking works in production.
 
 ## Configuration
 
-### Disable Local Testing
+### Disable Local Tracking
 
-Disable local testing in your configuration:
+Disable local tracking in your configuration:
 
 ```javascript
 window.oppla.config({
-  disableLocalTesting: true
+  disableLocalTracking: true
 });
 ```
 
@@ -28,27 +28,27 @@ Configure different settings for development and production:
 if (process.env.NODE_ENV === 'development') {
   window.oppla.config({
     debug: true,
-    disableLocalTesting: false
+    disableLocalTracking: false
   });
 } else {
   // Production environment
   window.oppla.config({
     debug: false,
-    disableLocalTesting: true
+    disableLocalTracking: true
   });
 }
 ```
 
 ## Best Practices
 
-1. **Enable in Development**: Keep local testing enabled during development
-2. **Disable in Production**: Always disable local testing in production
+1. **Enable in Development**: Keep local tracking enabled during development
+2. **Disable in Production**: Always disable local tracking in production
 3. **Use Environment Variables**: Configure based on environment
 4. **Test Thoroughly**: Verify tracking works in production
 
 ## Common Issues
 
-### Local Testing Still Active
+### Local Tracking Still Active
 
 - Check configuration
 - Verify environment settings
@@ -79,4 +79,4 @@ if (process.env.NODE_ENV === 'development') {
   >
     Configure your tracking script
   </Card>
-</CardGroup> 
+</CardGroup>
