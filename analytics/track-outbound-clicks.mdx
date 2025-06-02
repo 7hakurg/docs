@@ -1,127 +1,47 @@
 ---
-title: Track Outbound Clicks
-description: "Learn how to track clicks on external links in Oppla"
+title: Track Outbound Links
+description: "Learn how to track outbound link clicks in Oppla"
 ---
 
-# Track Outbound Clicks
+# Track Outbound Links in Oppla
 
-Learn how to track clicks on external links and outbound navigation in your application.
+When a user clicks on a link to an external site, this event is normally not captured because the user is leaving the site where Oppla runs. However, you can use events to track this behavior.
 
-## Basic Usage
+### Using Data Attributes
 
-### Configure Outbound Click Tracking
-
-Enable outbound click tracking in your configuration:
-
-```javascript
-window.oppla.config({
-  trackOutboundClicks: true,
-  outboundDomains: ['example.com', 'external-site.com']
-});
-```
-
-### Track Outbound Clicks Manually
-
-Track outbound clicks programmatically:
-
-```javascript
-window.oppla.track('Outbound Click', {
-  linkId: 'external-link',
-  linkText: 'Visit External Site',
-  destination: 'https://example.com',
-  domain: 'example.com'
-});
-```
-
-## Using Data Attributes
-
-Track outbound clicks using data attributes:
+To track outbound links, add data attributes to the anchor tag containing the external link. When the tag is clicked, the event will be triggered. For example:
 
 ```html
-<a 
-  id="external-link" 
-  data-oppla-event="Outbound Click"
-  data-oppla-event-linkId="external-link"
-  data-oppla-event-linkText="Visit External Site"
-  data-oppla-event-destination="https://example.com"
-  data-oppla-event-domain="example.com"
-  href="https://example.com">
-  Visit External Site
+<a href="https://www.external-website.com"
+  data-oppla-event="outbound-link-click"
+  data-oppla-event-url="https://www.external-website.com"
+>
+  External link
 </a>
 ```
 
-## Advanced Features
+This sends an event named **outbound-link-click** with the value of `url` set to the external URL.
 
-### Track with Custom Properties
+### Automating Event Attributes
 
-Add custom properties to outbound click events:
+If you don't want to manually update all your anchor tags, use the following script to automatically add the event attributes to all outbound tags. Place this script at the bottom of your HTML body:
 
-```javascript
-window.oppla.track('Outbound Click', {
-  linkId: 'external-link',
-  linkText: 'Visit External Site',
-  destination: 'https://example.com',
-  domain: 'example.com',
-  category: 'partner',
-  priority: 'high',
-  campaign: 'summer_sale'
-});
+```html
+<script type="text/javascript">
+  (() => {
+    const name = 'outbound-link-click';
+    document.querySelectorAll('a').forEach(a => {
+      if (a.host !== window.location.host && !a.getAttribute('data-oppla-event')) {
+        a.setAttribute('data-oppla-event', name);
+        a.setAttribute('data-oppla-event-url', a.href);
+      }
+    });
+  })();
+</script>
 ```
 
-### Track with User Context
+### Verifying Outbound Link Tracking
 
-Include user context in outbound click events:
+After implementing the above, verify the tracking by clicking on an outbound link and checking the **Events** section in your Oppla dashboard.
 
-```javascript
-window.oppla.track('Outbound Click', {
-  linkId: 'external-link',
-  linkText: 'Visit External Site',
-  destination: 'https://example.com',
-  domain: 'example.com',
-  userId: 'user_123',
-  userType: 'premium',
-  userPlan: 'business'
-});
-```
-
-## Best Practices
-
-1. **Be Specific**: Include relevant context in event properties
-2. **Be Organized**: Use consistent event names and properties
-3. **Be Careful**: Don't track sensitive information
-4. **Be Efficient**: Only track necessary outbound clicks
-
-## Common Issues
-
-### Clicks Not Tracking
-
-- Verify configuration
-- Check event names
-- Ensure proper timing
-- Check for JavaScript errors
-
-### Data Quality
-
-- Validate event data
-- Check for duplicates
-- Monitor event volume
-- Review property values
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card
-    title="Track Events"
-    icon="chart-line"
-    href="/analytics/track-events"
-  >
-    Learn about general event tracking
-  </Card>
-  <Card
-    title="Data Tags"
-    icon="tag"
-    href="/analytics/data-tags"
-  >
-    Organize your tracking data
-  </Card>
-</CardGroup> 
+💡 For further guidance, visit our Help Center or reach out to support. 
