@@ -1,171 +1,158 @@
 ---
-title: Tooltip Steps
-description: "Learn how to create and customize tooltip steps in Oppla journeys"
+title: Tooltips
+description: "Learn how to create and customize tooltips in Oppla tours"
 ---
 
-# Tooltip Steps
+# Tooltips
 
-Learn how to create and customize tooltip steps to highlight specific UI elements in your journeys.
+Learn how to create and customize tooltips to highlight specific elements in your application.
 
 ## Basic Usage
 
-Create a simple tooltip:
+### Create a Tooltip
 
 ```javascript
-oppla.journey('onboarding', {
+import { createTour } from '@oppla-ai/tours';
+
+const tour = createTour({
+  id: 'feature-tour',
   steps: [
     {
       type: 'tooltip',
-      target: '#signup-button',
-      content: 'Click here to get started!'
+      target: '#feature-button',
+      content: 'Click here to access this feature'
     }
   ]
 });
+
+tour.start();
+```
+
+### Tooltip with Options
+
+```javascript
+{
+  type: 'tooltip',
+  target: '#feature-button',
+  content: 'Click here to access this feature',
+  placement: 'right',
+  arrow: true,
+  offset: 10,
+  delay: 0
+}
 ```
 
 ## Customization
 
-### Basic Properties
+### Styling
+
+Customize tooltip appearance:
 
 ```javascript
-oppla.journey('feature-tour', {
-  steps: [
-    {
-      type: 'tooltip',
-      target: '#search-box',
-      content: 'Search for anything',
-      title: 'Search Feature',
-      placement: 'bottom',
-      arrow: true
-    }
-  ]
-});
+{
+  type: 'tooltip',
+  target: '#feature-button',
+  content: 'Click here to access this feature',
+  style: {
+    backgroundColor: '#ffffff',
+    color: '#000000',
+    borderRadius: '4px',
+    padding: '12px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  }
+}
 ```
 
-### Advanced Styling
+### Positioning
+
+Control tooltip placement:
 
 ```javascript
-oppla.journey('custom-tour', {
-  steps: [
-    {
-      type: 'tooltip',
-      target: '#premium-feature',
-      content: 'Try our premium features',
-      style: {
-        backgroundColor: '#2563EB',
-        color: '#FFFFFF',
-        borderRadius: '8px',
-        padding: '12px',
-        fontSize: '14px',
-        maxWidth: '300px'
-      }
-    }
-  ]
-});
+{
+  type: 'tooltip',
+  target: '#feature-button',
+  content: 'Click here to access this feature',
+  placement: 'right', // 'top', 'right', 'bottom', 'left'
+  arrow: true,
+  offset: 10,
+  container: '#tooltip-container' // Optional container element
+}
 ```
 
-## Positioning
+## Advanced Features
 
-### Placement Options
+### Interactive Tooltips
 
-- `top`: Above the target
-- `bottom`: Below the target
-- `left`: To the left of the target
-- `right`: To the right of the target
-- `auto`: Automatically choose the best position
+Add interactive elements to tooltips:
 
 ```javascript
-oppla.journey('positioning-demo', {
-  steps: [
-    {
-      type: 'tooltip',
-      target: '#element1',
-      content: 'Top tooltip',
-      placement: 'top'
-    },
-    {
-      type: 'tooltip',
-      target: '#element2',
-      content: 'Bottom tooltip',
-      placement: 'bottom'
-    }
-  ]
-});
+{
+  type: 'tooltip',
+  target: '#feature-button',
+  content: `
+    <div>
+      <h3>New Feature</h3>
+      <p>Click here to access this feature</p>
+      <button onclick="handleClick()">Learn More</button>
+    </div>
+  `,
+  allowHTML: true
+}
 ```
 
-### Offset and Padding
+### Conditional Tooltips
+
+Show tooltips based on conditions:
 
 ```javascript
-oppla.journey('spacing-demo', {
-  steps: [
-    {
-      type: 'tooltip',
-      target: '#element',
-      content: 'Custom spacing',
-      offset: 10, // pixels from target
-      padding: 20 // internal padding
-    }
-  ]
-});
-```
-
-## Interaction
-
-### Click Handling
-
-```javascript
-oppla.journey('interactive-tour', {
-  steps: [
-    {
-      type: 'tooltip',
-      target: '#button',
-      content: 'Click this button',
-      onClick: function() {
-        // Handle click
-        console.log('Tooltip clicked');
-      }
-    }
-  ]
-});
-```
-
-### Show/Hide Conditions
-
-```javascript
-oppla.journey('conditional-tour', {
-  steps: [
-    {
-      type: 'tooltip',
-      target: '#feature',
-      content: 'Premium feature',
-      showIf: function() {
-        return user.isPremium;
-      }
-    }
-  ]
-});
+{
+  type: 'tooltip',
+  target: '#feature-button',
+  content: 'Click here to access this feature',
+  showIf: {
+    type: 'user-property',
+    property: 'plan',
+    value: 'premium'
+  }
+}
 ```
 
 ## Best Practices
 
 1. **Be Concise**: Keep tooltip content short and clear
-2. **Be Visible**: Ensure tooltips don't overlap with other UI elements
-3. **Be Responsive**: Test tooltips on different screen sizes
-4. **Be Accessible**: Use proper contrast and readable text
+2. **Be Specific**: Target elements precisely
+3. **Be Consistent**: Use consistent styling and placement
+4. **Be Accessible**: Ensure tooltips are keyboard accessible
+
+## Common Issues
+
+### Tooltip Not Showing
+
+- Check target element exists
+- Verify target selector is correct
+- Check for z-index conflicts
+- Ensure proper initialization
+
+### Positioning Issues
+
+- Check container boundaries
+- Verify placement options
+- Check for overflow issues
+- Ensure proper offset values
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Modal Steps"
+    title="Modals"
     icon="window-maximize"
     href="/journey/modal"
   >
     Learn about modal steps
   </Card>
   <Card
-    title="Banner Steps"
-    icon="rectangle-ad"
+    title="Banners"
+    icon="flag"
     href="/journey/banner"
   >
     Learn about banner steps

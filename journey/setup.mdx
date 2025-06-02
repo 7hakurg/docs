@@ -1,244 +1,145 @@
 ---
-title: Project Setup
-description: "Learn how to set up and configure your Oppla project for journeys"
+title: Tour Setup
+description: "Learn how to set up and configure tours in Oppla"
 ---
 
-# Project Setup
+# Tour Setup
 
-Learn how to set up and configure your Oppla project for creating and managing journeys.
+Learn how to set up and configure tours in your application using the Oppla tours package.
 
-## Initial Setup
+## Installation
 
-### Basic Configuration
+### Install Package
+
+```bash
+npm install @oppla-ai/tours
+```
+
+### Import Package
 
 ```javascript
-oppla.init({
-  projectId: 'your-project-id',
-  journeys: {
-    enabled: true,
-    defaultSettings: {
-      frequency: 'once',
-      analytics: {
-        enabled: true
-      }
-    }
+import { createTour, TourManager } from '@oppla-ai/tours';
+```
+
+## Basic Setup
+
+### Initialize Tour Manager
+
+```javascript
+// Create tour manager
+const manager = new TourManager();
+
+// Configure global settings
+manager.configure({
+  debug: false,
+  defaultOptions: {
+    showProgress: true,
+    showControls: true
   }
 });
 ```
 
-### Advanced Configuration
+### Create a Tour
 
 ```javascript
-oppla.init({
-  projectId: 'your-project-id',
-  journeys: {
-    enabled: true,
-    defaultSettings: {
-      frequency: 'once',
-      analytics: {
-        enabled: true,
-        trackViews: true,
-        trackInteractions: true
-      },
-      styling: {
-        theme: 'light',
-        colors: {
-          primary: '#2563EB',
-          secondary: '#10B981'
-        }
-      }
-    }
-  }
-});
-```
-
-## Project Structure
-
-### Basic Structure
-
-```javascript
-oppla.journey('onboarding', {
+// Create a tour
+const tour = createTour({
+  id: 'feature-tour',
   steps: [
     {
-      type: 'banner',
-      content: 'Welcome to Oppla!'
-    },
-    {
       type: 'tooltip',
-      content: 'This is a tooltip',
-      target: '#feature-button'
+      target: '#feature-button',
+      content: 'Try our new feature!'
     }
   ]
 });
+
+// Register tour
+manager.register(tour);
 ```
 
-### Modular Structure
+## Advanced Setup
+
+### Custom Styling
 
 ```javascript
-// Define reusable steps
-const welcomeStep = {
-  type: 'banner',
-  content: 'Welcome to Oppla!'
-};
-
-const featureStep = {
-  type: 'tooltip',
-  content: 'This is a feature',
-  target: '#feature-button'
-};
-
-// Use in journey
-oppla.journey('modular', {
-  steps: [welcomeStep, featureStep]
-});
-```
-
-## Configuration Options
-
-### Global Settings
-
-```javascript
-oppla.configure({
-  journeys: {
-    defaultSettings: {
-      frequency: 'once',
-      analytics: {
-        enabled: true
-      },
-      styling: {
-        theme: 'light'
-      }
+// Configure global styles
+manager.configure({
+  styles: {
+    tooltip: {
+      backgroundColor: '#ffffff',
+      color: '#000000',
+      borderRadius: '4px',
+      padding: '12px'
     },
-    storage: {
-      type: 'localStorage',
-      prefix: 'oppla_'
-    },
-    debug: {
-      enabled: true,
-      level: 'info'
+    modal: {
+      backgroundColor: '#ffffff',
+      color: '#000000',
+      borderRadius: '8px',
+      padding: '24px'
     }
   }
 });
 ```
 
-### Journey-Specific Settings
+### Custom Controls
 
 ```javascript
-oppla.journey('custom-settings', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Custom settings'
-    }
-  ],
-  settings: {
-    frequency: 'periodic',
-    period: '7d',
-    analytics: {
-      enabled: true,
-      customEvents: [
-        {
-          name: 'custom_event',
-          properties: {
-            journey_name: 'custom-settings'
-          }
-        }
-      ]
-    }
-  }
-});
-```
-
-## Environment Configuration
-
-### Development
-
-```javascript
-oppla.init({
-  projectId: 'dev-project-id',
-  environment: 'development',
-  journeys: {
-    enabled: true,
-    debug: {
-      enabled: true,
-      level: 'debug'
-    }
-  }
-});
-```
-
-### Production
-
-```javascript
-oppla.init({
-  projectId: 'prod-project-id',
-  environment: 'production',
-  journeys: {
-    enabled: true,
-    debug: {
-      enabled: false
-    }
-  }
-});
-```
-
-## Security
-
-### API Keys
-
-```javascript
-oppla.init({
-  projectId: 'your-project-id',
-  apiKey: 'your-api-key',
-  journeys: {
-    enabled: true,
-    security: {
-      requireApiKey: true,
-      allowedDomains: ['your-domain.com']
-    }
-  }
-});
-```
-
-### Data Protection
-
-```javascript
-oppla.init({
-  projectId: 'your-project-id',
-  journeys: {
-    enabled: true,
-    security: {
-      dataProtection: {
-        encryptUserData: true,
-        maskSensitiveFields: ['email', 'phone']
+// Configure custom controls
+manager.configure({
+  controls: {
+    showPrevious: true,
+    showNext: true,
+    showClose: true,
+    showProgress: true,
+    customButtons: [
+      {
+        text: 'Skip',
+        onClick: (tour) => tour.stop()
       }
-    }
+    ]
   }
 });
 ```
 
 ## Best Practices
 
-1. **Use Environment Variables**: Store sensitive data in environment variables
-2. **Enable Debug Mode**: Use debug mode during development
-3. **Configure Security**: Set up proper security measures
-4. **Test Thoroughly**: Test journeys in different environments
+1. **Be Organized**: Keep tour IDs consistent and meaningful
+2. **Be Efficient**: Only register tours when needed
+3. **Be Responsive**: Handle tour events appropriately
+4. **Be Clean**: Clean up tours when they're no longer needed
+
+## Common Issues
+
+### Setup Not Working
+
+- Check package installation
+- Verify imports
+- Check initialization
+- Ensure proper configuration
+
+### Styling Issues
+
+- Check CSS conflicts
+- Verify style properties
+- Check for missing styles
+- Ensure proper specificity
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Compare Metrics"
-    icon="chart-line"
-    href="/journey/compare"
+    title="Tooltips"
+    icon="comment"
+    href="/journey/tooltip"
   >
-    Learn about comparing metrics
+    Learn about tooltip steps
   </Card>
   <Card
-    title="Disable Local Tracking"
-    icon="ban"
-    href="/journey/disable-tracking"
+    title="Modals"
+    icon="window-maximize"
+    href="/journey/modal"
   >
-    Learn about disabling local tracking
+    Learn about modal steps
   </Card>
 </CardGroup> 

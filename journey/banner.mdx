@@ -1,194 +1,160 @@
 ---
-title: Banner Steps
-description: "Learn how to create and customize banner steps in Oppla journeys"
+title: Banners
+description: "Learn how to create and customize banners in Oppla tours"
 ---
 
-# Banner Steps
+# Banners
 
-Learn how to create and customize banner steps to display notifications and announcements in your journeys.
+Learn how to create and customize banners to display important announcements or notifications in your tours.
 
 ## Basic Usage
 
-Create a simple banner:
+### Create a Banner
 
 ```javascript
-oppla.journey('announcement', {
+import { createTour } from '@oppla-ai/tours';
+
+const tour = createTour({
+  id: 'announcement-tour',
   steps: [
     {
       type: 'banner',
-      content: 'Welcome to Oppla! Get started with our platform.',
-      position: 'top'
+      content: 'New feature available!'
     }
   ]
 });
+
+tour.start();
+```
+
+### Banner with Options
+
+```javascript
+{
+  type: 'banner',
+  content: 'New feature available!',
+  position: 'top',
+  duration: 5000,
+  closable: true,
+  type: 'info' // 'info', 'success', 'warning', 'error'
+}
 ```
 
 ## Customization
 
-### Basic Properties
+### Styling
+
+Customize banner appearance:
 
 ```javascript
-oppla.journey('feature-banner', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'New feature available!',
-      position: 'bottom',
-      duration: 5000,
-      showCloseButton: true,
-      backgroundColor: '#2563EB',
-      textColor: '#FFFFFF'
-    }
-  ]
-});
+{
+  type: 'banner',
+  content: 'New feature available!',
+  style: {
+    backgroundColor: '#ffffff',
+    color: '#000000',
+    padding: '12px 24px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    borderRadius: '4px'
+  }
+}
 ```
 
-### Advanced Styling
+### Content
+
+Add rich content to banners:
 
 ```javascript
-oppla.journey('custom-banner', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Special offer: 50% off!',
-      style: {
-        backgroundColor: '#10B981',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        padding: '16px 24px',
-        margin: '16px',
-        fontSize: '16px',
-        fontWeight: '500'
-      }
-    }
-  ]
-});
+{
+  type: 'banner',
+  content: `
+    <div>
+      <h3>New Feature Available</h3>
+      <p>Check out our latest update!</p>
+      <button onclick="learnMore()">Learn More</button>
+    </div>
+  `,
+  allowHTML: true
+}
 ```
 
-## Content Types
+## Advanced Features
 
-### Rich Content
+### Interactive Banners
+
+Add interactive elements to banners:
 
 ```javascript
-oppla.journey('rich-banner', {
-  steps: [
-    {
-      type: 'banner',
-      content: `
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <span>🎉</span>
-          <div>
-            <strong>New Update Available!</strong>
-            <p style="margin: 4px 0 0;">Check out our latest features</p>
-          </div>
-        </div>
-      `,
-      contentType: 'html'
-    }
-  ]
-});
+{
+  type: 'banner',
+  content: `
+    <div>
+      <p>Would you like to enable notifications?</p>
+      <button onclick="enableNotifications()">Enable</button>
+      <button onclick="dismiss()">Dismiss</button>
+    </div>
+  `,
+  allowHTML: true,
+  onClose: () => {
+    // Handle banner close
+  }
+}
 ```
 
-### Interactive Content
+### Conditional Banners
+
+Show banners based on conditions:
 
 ```javascript
-oppla.journey('action-banner', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Want to learn more?',
-      buttons: [
-        {
-          text: 'Learn More',
-          onClick: function() {
-            // Handle click
-            console.log('Learn More clicked');
-          },
-          style: {
-            backgroundColor: '#FFFFFF',
-            color: '#2563EB',
-            border: 'none',
-            padding: '8px 16px',
-            borderRadius: '4px',
-            marginLeft: '12px'
-          }
-        }
-      ]
-    }
-  ]
-});
-```
-
-## Positioning
-
-### Fixed Positions
-
-```javascript
-oppla.journey('positioned-banner', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'System maintenance in 5 minutes',
-      position: 'top-right',
-      offset: {
-        top: '20px',
-        right: '20px'
-      }
-    }
-  ]
-});
-```
-
-### Responsive Behavior
-
-```javascript
-oppla.journey('responsive-banner', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Mobile-friendly notification',
-      position: 'bottom',
-      responsive: {
-        mobile: {
-          position: 'bottom',
-          fullWidth: true
-        },
-        tablet: {
-          position: 'bottom-right',
-          width: '300px'
-        },
-        desktop: {
-          position: 'top-right',
-          width: '400px'
-        }
-      }
-    }
-  ]
-});
+{
+  type: 'banner',
+  content: 'Welcome to our premium features!',
+  showIf: {
+    type: 'user-property',
+    property: 'plan',
+    value: 'premium'
+  }
+}
 ```
 
 ## Best Practices
 
-1. **Be Concise**: Keep banner content short and clear
-2. **Be Timely**: Show banners at appropriate moments
-3. **Be Unobtrusive**: Don't interfere with user tasks
-4. **Be Consistent**: Use consistent styling and positioning
+1. **Be Brief**: Keep banner content short and clear
+2. **Be Visible**: Ensure banners are noticeable but not intrusive
+3. **Be Timely**: Show banners at appropriate moments
+4. **Be Dismissible**: Allow users to close banners
+
+## Common Issues
+
+### Banner Not Showing
+
+- Check initialization
+- Verify content is valid
+- Check for z-index conflicts
+- Ensure proper positioning
+
+### Styling Issues
+
+- Check CSS conflicts
+- Verify responsive design
+- Check for overflow issues
+- Ensure proper positioning
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Wait Steps"
-    icon="clock"
-    href="/journey/wait"
+    title="Tooltips"
+    icon="comment"
+    href="/journey/tooltip"
   >
-    Learn about wait steps
+    Learn about tooltip steps
   </Card>
   <Card
-    title="Fork Steps"
-    icon="code-branch"
-    href="/journey/fork"
+    title="Modals"
+    icon="window-maximize"
+    href="/journey/modal"
   >
-    Learn about fork steps
+    Learn about modal steps
   </Card>
 </CardGroup> 

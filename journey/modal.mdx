@@ -1,201 +1,161 @@
 ---
-title: Modal Steps
-description: "Learn how to create and customize modal steps in Oppla journeys"
+title: Modals
+description: "Learn how to create and customize modals in Oppla tours"
 ---
 
-# Modal Steps
+# Modals
 
-Learn how to create and customize modal steps to display important information in your journeys.
+Learn how to create and customize modals to display important information or collect user input in your tours.
 
 ## Basic Usage
 
-Create a simple modal:
+### Create a Modal
 
 ```javascript
-oppla.journey('welcome', {
+import { createTour } from '@oppla-ai/tours';
+
+const tour = createTour({
+  id: 'welcome-tour',
   steps: [
     {
       type: 'modal',
-      title: 'Welcome to Oppla!',
-      content: 'Get started with our platform in minutes.'
+      content: 'Welcome to our application!'
     }
   ]
 });
+
+tour.start();
+```
+
+### Modal with Options
+
+```javascript
+{
+  type: 'modal',
+  content: 'Welcome to our application!',
+  title: 'Welcome',
+  width: '500px',
+  height: 'auto',
+  closeButton: true,
+  overlay: true
+}
 ```
 
 ## Customization
 
-### Basic Properties
+### Styling
+
+Customize modal appearance:
 
 ```javascript
-oppla.journey('feature-intro', {
-  steps: [
-    {
-      type: 'modal',
-      title: 'New Feature Available',
-      content: 'Try our new analytics dashboard',
-      size: 'medium',
-      showCloseButton: true,
-      showBackdrop: true
-    }
-  ]
-});
+{
+  type: 'modal',
+  content: 'Welcome to our application!',
+  style: {
+    backgroundColor: '#ffffff',
+    color: '#000000',
+    borderRadius: '8px',
+    padding: '24px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+  }
+}
 ```
 
-### Advanced Styling
+### Content
+
+Add rich content to modals:
 
 ```javascript
-oppla.journey('custom-modal', {
-  steps: [
-    {
-      type: 'modal',
-      title: 'Premium Features',
-      content: 'Upgrade to access premium features',
-      style: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: '12px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        maxWidth: '500px',
-        padding: '24px'
-      },
-      titleStyle: {
-        fontSize: '24px',
-        color: '#2563EB',
-        marginBottom: '16px'
-      },
-      contentStyle: {
-        fontSize: '16px',
-        lineHeight: '1.5',
-        color: '#4B5563'
-      }
-    }
-  ]
-});
+{
+  type: 'modal',
+  content: `
+    <div>
+      <h2>Welcome to Our App</h2>
+      <p>Get started by exploring our features.</p>
+      <img src="/welcome-image.png" alt="Welcome" />
+      <button onclick="startTour()">Start Tour</button>
+    </div>
+  `,
+  allowHTML: true
+}
 ```
 
-## Content Types
+## Advanced Features
 
-### Rich Content
+### Interactive Modals
+
+Add interactive elements to modals:
 
 ```javascript
-oppla.journey('rich-content', {
-  steps: [
-    {
-      type: 'modal',
-      title: 'Getting Started',
-      content: `
-        <h3>Welcome to Oppla!</h3>
-        <p>Here's what you can do:</p>
-        <ul>
-          <li>Track user behavior</li>
-          <li>Create user journeys</li>
-          <li>Analyze data</li>
-        </ul>
-      `,
-      contentType: 'html'
-    }
-  ]
-});
+{
+  type: 'modal',
+  content: `
+    <form id="signup-form">
+      <input type="email" placeholder="Enter your email" />
+      <button type="submit">Sign Up</button>
+    </form>
+  `,
+  allowHTML: true,
+  onClose: () => {
+    // Handle modal close
+  }
+}
 ```
 
-### Media Content
+### Conditional Modals
+
+Show modals based on conditions:
 
 ```javascript
-oppla.journey('media-modal', {
-  steps: [
-    {
-      type: 'modal',
-      title: 'Watch Tutorial',
-      content: {
-        type: 'video',
-        url: 'https://example.com/tutorial.mp4',
-        autoplay: false
-      }
-    }
-  ]
-});
-```
-
-## Interaction
-
-### Buttons
-
-```javascript
-oppla.journey('action-modal', {
-  steps: [
-    {
-      type: 'modal',
-      title: 'Ready to Start?',
-      content: 'Begin your journey with Oppla',
-      buttons: [
-        {
-          text: 'Get Started',
-          onClick: function() {
-            // Handle click
-            console.log('Get Started clicked');
-          },
-          primary: true
-        },
-        {
-          text: 'Learn More',
-          onClick: function() {
-            // Handle click
-            console.log('Learn More clicked');
-          }
-        }
-      ]
-    }
-  ]
-});
-```
-
-### Form Integration
-
-```javascript
-oppla.journey('form-modal', {
-  steps: [
-    {
-      type: 'modal',
-      title: 'Contact Us',
-      content: `
-        <form id="contact-form">
-          <input type="email" placeholder="Your email" />
-          <textarea placeholder="Your message"></textarea>
-          <button type="submit">Send</button>
-        </form>
-      `,
-      contentType: 'html',
-      onSubmit: function(formData) {
-        // Handle form submission
-        console.log('Form submitted:', formData);
-      }
-    }
-  ]
-});
+{
+  type: 'modal',
+  content: 'Welcome to our premium features!',
+  showIf: {
+    type: 'user-property',
+    property: 'plan',
+    value: 'premium'
+  }
+}
 ```
 
 ## Best Practices
 
-1. **Be Focused**: Keep modal content focused on a single topic
-2. **Be Clear**: Use clear headings and concise content
-3. **Be Responsive**: Ensure modals work well on all devices
-4. **Be Accessible**: Include proper ARIA labels and keyboard navigation
+1. **Be Clear**: Keep modal content focused and concise
+2. **Be Responsive**: Ensure modals work well on all screen sizes
+3. **Be Accessible**: Include proper keyboard navigation
+4. **Be Consistent**: Use consistent styling and behavior
+
+## Common Issues
+
+### Modal Not Showing
+
+- Check initialization
+- Verify content is valid
+- Check for z-index conflicts
+- Ensure proper event handling
+
+### Styling Issues
+
+- Check CSS conflicts
+- Verify responsive design
+- Check for overflow issues
+- Ensure proper positioning
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Banner Steps"
-    icon="rectangle-ad"
+    title="Tooltips"
+    icon="comment"
+    href="/journey/tooltip"
+  >
+    Learn about tooltip steps
+  </Card>
+  <Card
+    title="Banners"
+    icon="flag"
     href="/journey/banner"
   >
     Learn about banner steps
-  </Card>
-  <Card
-    title="Wait Steps"
-    icon="clock"
-    href="/journey/wait"
-  >
-    Learn about wait steps
   </Card>
 </CardGroup> 

@@ -1,226 +1,134 @@
 ---
-title: Disable Local Tracking
-description: "Learn how to disable local tracking in Oppla journeys"
+title: Disable Tracking
+description: "Learn how to disable tracking in Oppla tours"
 ---
 
-# Disable Local Tracking
+# Disable Tracking
 
-Learn how to disable local tracking in your Oppla journeys for privacy and compliance purposes.
+Learn how to disable tracking in your tours for development or testing purposes.
 
 ## Basic Usage
-
-### Disable Tracking for a Journey
-
-```javascript
-oppla.journey('privacy-focused', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Privacy-focused message'
-    }
-  ],
-  settings: {
-    tracking: {
-      enabled: false
-    }
-  }
-});
-```
 
 ### Disable Tracking Globally
 
 ```javascript
-oppla.init({
-  projectId: 'your-project-id',
-  journeys: {
-    enabled: true,
-    defaultSettings: {
-      tracking: {
-        enabled: false
-      }
-    }
+import { createTour, TourManager } from '@oppla-ai/tours';
+
+// Create tour manager
+const manager = new TourManager();
+
+// Configure to disable tracking
+manager.configure({
+  tracking: {
+    enabled: false
   }
 });
 ```
 
-## Selective Tracking
-
-### Disable Specific Events
+### Disable Tracking for Specific Tour
 
 ```javascript
-oppla.journey('selective-tracking', {
+// Create a tour with tracking disabled
+const tour = createTour({
+  id: 'feature-tour',
   steps: [
     {
-      type: 'banner',
-      content: 'Selective tracking message'
+      type: 'tooltip',
+      target: '#feature-button',
+      content: 'Try our new feature!'
     }
   ],
-  settings: {
-    tracking: {
-      enabled: true,
-      events: {
-        view: false,
-        interaction: true,
-        completion: false
-      }
-    }
+  tracking: {
+    enabled: false
   }
 });
 ```
 
-### Disable User Properties
-
-```javascript
-oppla.journey('privacy-user', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Privacy-focused user message'
-    }
-  ],
-  settings: {
-    tracking: {
-      enabled: true,
-      userProperties: {
-        enabled: false,
-        allowed: ['journey_status']
-      }
-    }
-  }
-});
-```
-
-## Privacy Compliance
-
-### GDPR Compliance
-
-```javascript
-oppla.journey('gdpr-compliant', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'GDPR-compliant message'
-    }
-  ],
-  settings: {
-    tracking: {
-      enabled: true,
-      privacy: {
-        gdpr: {
-          enabled: true,
-          requireConsent: true,
-          consentTypes: ['analytics', 'marketing']
-        }
-      }
-    }
-  }
-});
-```
-
-### CCPA Compliance
-
-```javascript
-oppla.journey('ccpa-compliant', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'CCPA-compliant message'
-    }
-  ],
-  settings: {
-    tracking: {
-      enabled: true,
-      privacy: {
-        ccpa: {
-          enabled: true,
-          requireOptOut: true
-        }
-      }
-    }
-  }
-});
-```
-
-## Advanced Configuration
+## Advanced Features
 
 ### Conditional Tracking
 
 ```javascript
-oppla.journey('conditional-tracking', {
+// Create a tour with conditional tracking
+const tour = createTour({
+  id: 'feature-tour',
   steps: [
     {
-      type: 'banner',
-      content: 'Conditional tracking message'
+      type: 'tooltip',
+      target: '#feature-button',
+      content: 'Try our new feature!'
     }
   ],
-  settings: {
-    tracking: {
-      enabled: true,
-      conditions: {
-        type: 'function',
-        check: function() {
-          return user.hasGivenConsent;
-        }
-      }
-    }
+  tracking: {
+    enabled: process.env.NODE_ENV === 'production'
   }
 });
 ```
 
-### Custom Privacy Rules
+### Selective Tracking
 
 ```javascript
-oppla.journey('custom-privacy', {
+// Create a tour with selective tracking
+const tour = createTour({
+  id: 'feature-tour',
   steps: [
     {
-      type: 'banner',
-      content: 'Custom privacy message'
-    }
-  ],
-  settings: {
-    tracking: {
-      enabled: true,
-      privacy: {
-        rules: [
-          {
-            type: 'user-property',
-            property: 'location',
-            action: 'mask'
-          },
-          {
-            type: 'event',
-            name: 'sensitive_action',
-            action: 'disable'
-          }
-        ]
+      type: 'tooltip',
+      target: '#feature-button',
+      content: 'Try our new feature!',
+      tracking: {
+        enabled: false
+      }
+    },
+    {
+      type: 'modal',
+      content: 'Welcome to our app!',
+      tracking: {
+        enabled: true
       }
     }
-  }
+  ]
 });
 ```
 
 ## Best Practices
 
-1. **Be Transparent**: Clearly communicate tracking policies
-2. **Respect Privacy**: Follow privacy regulations and user preferences
-3. **Minimize Data**: Only collect necessary information
-4. **Secure Data**: Protect collected data appropriately
+1. **Be Consistent**: Use consistent tracking settings
+2. **Be Clear**: Document tracking configuration
+3. **Be Secure**: Protect sensitive data
+4. **Be Efficient**: Only track necessary events
+
+## Common Issues
+
+### Tracking Not Disabled
+
+- Check configuration
+- Verify environment
+- Check for overrides
+- Ensure proper initialization
+
+### Data Privacy
+
+- Review tracked data
+- Check for sensitive information
+- Verify compliance
+- Monitor data usage
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Journey Management"
-    icon="cog"
-    href="/journey/management"
+    title="Tooltips"
+    icon="comment"
+    href="/journey/tooltip"
   >
-    Learn about journey management
+    Learn about tooltip steps
   </Card>
   <Card
-    title="Analytics Integration"
-    icon="chart-bar"
-    href="/journey/analytics"
+    title="Modals"
+    icon="window-maximize"
+    href="/journey/modal"
   >
-    Learn about analytics integration
+    Learn about modal steps
   </Card>
 </CardGroup> 

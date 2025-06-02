@@ -1,137 +1,179 @@
 ---
-title: Journey Overview
-description: "Learn about Oppla's journey features for creating guided user experiences"
+title: Tours Overview
+description: "Learn about Oppla's tour functionality for creating interactive user guides"
 ---
 
-# Journey Overview
+# Tours Overview
 
-Oppla's journey features help you create engaging, guided experiences for your users.
+Learn how to create interactive user guides and onboarding experiences using Oppla's tour functionality.
 
-## What are Journeys?
+## What are Tours?
 
-Journeys are multi-step user experiences that guide users through your product:
+Tours are interactive guides that help users learn about your application's features. They can include:
 
-- Onboarding flows
-- Feature discovery tours
-- Product walkthroughs
-- Interactive tutorials
+- Tooltips highlighting specific elements
+- Modal dialogs explaining features
+- Banners for announcements
+- Wait steps for user actions
+- Fork steps for conditional paths
 
-## Key Features
+## Installation
 
-### Step Types
+Install the Oppla Tours package:
 
-Create engaging experiences with different step types:
+```bash
+npm install @oppla-ai/tours
+# or
+yarn add @oppla-ai/tours
+```
 
-- **Tooltips**: Highlight specific UI elements
-- **Modals**: Display important information
-- **Banners**: Show announcements or notifications
-- **Wait Steps**: Control flow timing
-- **Fork Steps**: Create conditional paths
+## Basic Usage
 
-### Customization
-
-Customize your journeys to match your brand:
-
-- Colors and typography
-- Animations and transitions
-- Custom CSS
-- Responsive design
-
-## Creating Journeys
-
-<CardGroup cols={2}>
-  <Card
-    title="Steps Editor"
-    icon="pen-to-square"
-    href="/journey/steps-editor"
-  >
-    Learn how to create and edit journey steps
-  </Card>
-  <Card
-    title="Start a Flow"
-    icon="play"
-    href="/journey/start-flow"
-  >
-    Configure when and how journeys start
-  </Card>
-</CardGroup>
-
-## Journey Management
-
-### Frequency Control
-
-Control how often users see your journeys:
+### Initialize Tours
 
 ```javascript
-oppla.journey('onboarding', {
-  frequency: 'once',
+import { initTours } from '@oppla-ai/tours';
+
+// Initialize tours
+initTours({
+  projectId: 'YOUR_PROJECT_ID',
+  apiKey: 'YOUR_API_KEY'
+});
+```
+
+### Create a Simple Tour
+
+```javascript
+import { createTour } from '@oppla-ai/tours';
+
+// Create a tour
+const tour = createTour({
+  id: 'welcome-tour',
+  name: 'Welcome Tour',
   steps: [
     {
       type: 'tooltip',
       target: '#signup-button',
-      content: 'Click here to get started!'
+      content: 'Click here to create your account'
+    },
+    {
+      type: 'modal',
+      content: 'Welcome to our platform! Let us show you around.'
     }
   ]
 });
+
+// Start the tour
+tour.start();
 ```
 
-### Segmentation
+## Tour Components
 
-Target specific user segments:
+### Tooltips
+
+Highlight specific elements with tooltips:
 
 ```javascript
-oppla.journey('feature-tour', {
-  segment: {
-    plan: 'premium',
-    lastLogin: '>7d'
-  },
-  steps: [
-    // Journey steps
-  ]
-});
+{
+  type: 'tooltip',
+  target: '#feature-button',
+  content: 'This feature helps you...',
+  placement: 'right'
+}
 ```
 
-## Project Setup
+### Modals
+
+Show modal dialogs for important information:
+
+```javascript
+{
+  type: 'modal',
+  content: 'Welcome to our new feature!',
+  title: 'New Feature',
+  buttons: [
+    {
+      text: 'Got it',
+      action: 'next'
+    }
+  ]
+}
+```
+
+### Banners
+
+Display announcements and notifications:
+
+```javascript
+{
+  type: 'banner',
+  content: 'New features available!',
+  style: 'info',
+  duration: 5000
+}
+```
+
+## Advanced Features
+
+### Wait Steps
+
+Wait for user actions before proceeding:
+
+```javascript
+{
+  type: 'wait',
+  target: '#complete-profile',
+  event: 'click',
+  timeout: 30000
+}
+```
+
+### Fork Steps
+
+Create conditional paths based on user actions:
+
+```javascript
+{
+  type: 'fork',
+  conditions: [
+    {
+      type: 'user-property',
+      property: 'plan',
+      value: 'premium',
+      next: 'premium-features'
+    },
+    {
+      type: 'user-property',
+      property: 'plan',
+      value: 'free',
+      next: 'upgrade-prompt'
+    }
+  ]
+}
+```
+
+## Best Practices
+
+1. **Keep it Short**: Focus on essential features
+2. **Be Clear**: Use simple, concise language
+3. **Test Thoroughly**: Verify all steps work correctly
+4. **Monitor Progress**: Track completion rates
+
+## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Projects"
-    icon="folder"
-    href="/journey/projects"
+    title="Tooltips"
+    icon="comment"
+    href="/journey/tooltip"
   >
-    Organize your journeys into projects
+    Learn about tooltip steps
   </Card>
   <Card
-    title="Project Domains"
-    icon="globe"
-    href="/journey/project-domains"
+    title="Modals"
+    icon="window-maximize"
+    href="/journey/modal"
   >
-    Configure domains for your projects
-  </Card>
-</CardGroup>
-
-## Analytics Integration
-
-Track journey performance:
-
-- Completion rates
-- Drop-off points
-- User engagement
-- Conversion impact
-
-<CardGroup cols={2}>
-  <Card
-    title="Journey Analytics"
-    icon="chart-line"
-    href="/journey/analytics"
-  >
-    Monitor journey performance
-  </Card>
-  <Card
-    title="Integrations"
-    icon="plug"
-    href="/journey/integrations"
-  >
-    Connect with other tools
+    Learn about modal steps
   </Card>
 </CardGroup> 

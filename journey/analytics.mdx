@@ -1,270 +1,133 @@
 ---
-title: Analytics Integration
-description: "Learn how to integrate analytics with Oppla journeys"
+title: Tour Analytics
+description: "Learn how to track and analyze tour performance in Oppla"
 ---
 
-# Analytics Integration
+# Tour Analytics
 
-Learn how to integrate analytics with your Oppla journeys to track user engagement and measure success.
+Learn how to track and analyze tour performance using Oppla's analytics features.
 
-## Basic Tracking
+## Basic Usage
 
-Enable basic analytics for a journey:
+### Track Tour Events
 
 ```javascript
-oppla.journey('welcome', {
+import { createTour } from '@oppla-ai/tours';
+
+const tour = createTour({
+  id: 'feature-tour',
   steps: [
     {
-      type: 'banner',
-      content: 'Welcome to Oppla!'
+      type: 'tooltip',
+      target: '#feature-button',
+      content: 'Try our new feature!'
     }
   ],
   analytics: {
-    enabled: true,
     trackViews: true,
     trackInteractions: true
   }
 });
+
+tour.start();
 ```
 
-## Event Tracking
-
-### Track Journey Events
+### Track Custom Events
 
 ```javascript
-oppla.journey('onboarding', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Welcome to onboarding!'
-    }
-  ],
+{
+  type: 'tooltip',
+  target: '#feature-button',
+  content: 'Try our new feature!',
   analytics: {
-    events: [
-      {
-        name: 'journey_started',
-        properties: {
-          journey_name: 'onboarding',
-          step_count: 1
-        }
-      },
-      {
-        name: 'journey_completed',
-        properties: {
-          journey_name: 'onboarding',
-          completion_time: 'duration'
-        }
-      }
-    ]
-  }
-});
-```
-
-### Track Step Events
-
-```javascript
-oppla.journey('feature-tour', {
-  steps: [
-    {
-      type: 'tooltip',
-      content: 'Welcome to the feature tour!',
-      analytics: {
-        events: [
-          {
-            name: 'step_viewed',
-            properties: {
-              step_type: 'tooltip',
-              step_index: 0
-            }
-          },
-          {
-            name: 'step_interaction',
-            properties: {
-              step_type: 'tooltip',
-              step_index: 0,
-              interaction_type: 'click'
-            }
-          }
-        ]
-      }
-    }
-  ]
-});
-```
-
-## User Properties
-
-### Track User Segments
-
-```javascript
-oppla.journey('segmented', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Segmented message'
-    }
-  ],
-  analytics: {
-    userProperties: {
-      segment: 'premium',
-      journey_status: 'active',
-      last_interaction: 'timestamp'
+    trackEvent: 'feature_tooltip_shown',
+    properties: {
+      feature_name: 'new-feature',
+      step_index: 0
     }
   }
-});
+}
 ```
 
-### Track User Progress
+## Advanced Features
+
+### Track User Interactions
 
 ```javascript
-oppla.journey('progress-tracked', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Track your progress'
-    }
-  ],
-  analytics: {
-    progress: {
-      track: true,
-      properties: {
-        current_step: 'index',
-        total_steps: 'count',
-        completion_percentage: 'calculated'
-      }
-    }
+{
+  type: 'tooltip',
+  target: '#feature-button',
+  content: 'Try our new feature!',
+  onShow: () => {
+    window.oppla.track('tooltip_shown', {
+      tour_id: 'feature-tour',
+      step_index: 0
+    });
+  },
+  onClick: () => {
+    window.oppla.track('tooltip_clicked', {
+      tour_id: 'feature-tour',
+      step_index: 0
+    });
   }
-});
+}
 ```
 
-## Advanced Analytics
-
-### A/B Testing
+### Track Tour Progress
 
 ```javascript
-oppla.journey('ab-test', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'A/B test message'
-    }
-  ],
-  analytics: {
-    abTest: {
-      enabled: true,
-      variant: 'A',
-      metrics: [
-        'view_count',
-        'interaction_rate',
-        'completion_rate'
-      ]
-    }
+{
+  type: 'tooltip',
+  target: '#feature-button',
+  content: 'Try our new feature!',
+  onComplete: () => {
+    window.oppla.track('tour_step_completed', {
+      tour_id: 'feature-tour',
+      step_index: 0,
+      time_spent: 5000 // milliseconds
+    });
   }
-});
-```
-
-### Custom Metrics
-
-```javascript
-oppla.journey('custom-metrics', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Track custom metrics'
-    }
-  ],
-  analytics: {
-    customMetrics: [
-      {
-        name: 'time_to_interact',
-        type: 'duration',
-        start: 'step_viewed',
-        end: 'step_interaction'
-      },
-      {
-        name: 'interaction_count',
-        type: 'counter',
-        event: 'step_interaction'
-      }
-    ]
-  }
-});
-```
-
-## Integration with External Analytics
-
-### Google Analytics
-
-```javascript
-oppla.journey('ga-integration', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Google Analytics integration'
-    }
-  ],
-  analytics: {
-    integrations: {
-      googleAnalytics: {
-        enabled: true,
-        events: [
-          {
-            name: 'journey_start',
-            gaEvent: 'begin_checkout',
-            properties: {
-              journey_name: 'ga-integration'
-            }
-          }
-        ]
-      }
-    }
-  }
-});
-```
-
-### Custom Analytics
-
-```javascript
-oppla.journey('custom-analytics', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Custom analytics integration'
-    }
-  ],
-  analytics: {
-    custom: {
-      onEvent: function(event, properties) {
-        // Send to custom analytics
-        customAnalytics.track(event, properties);
-      }
-    }
-  }
-});
+}
 ```
 
 ## Best Practices
 
-1. **Track Key Events**: Monitor important journey milestones
-2. **Use Meaningful Properties**: Include relevant context in events
-3. **Test Analytics**: Verify tracking is working correctly
-4. **Analyze Results**: Use data to improve journey effectiveness
+1. **Be Consistent**: Use consistent event names and properties
+2. **Be Specific**: Track meaningful user interactions
+3. **Be Organized**: Group related events logically
+4. **Be Clean**: Remove unused tracking code
+
+## Common Issues
+
+### Events Not Tracking
+
+- Check event names
+- Verify properties
+- Check initialization
+- Ensure proper timing
+
+### Data Quality
+
+- Validate event data
+- Check for duplicates
+- Monitor event volume
+- Review property values
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Project Setup"
-    icon="cog"
-    href="/journey/setup"
+    title="Tooltips"
+    icon="comment"
+    href="/journey/tooltip"
   >
-    Learn about project setup
+    Learn about tooltip steps
   </Card>
   <Card
-    title="Compare Metrics"
-    icon="chart-line"
-    href="/journey/compare"
+    title="Modals"
+    icon="window-maximize"
+    href="/journey/modal"
   >
-    Learn about comparing metrics
+    Learn about modal steps
   </Card>
 </CardGroup> 

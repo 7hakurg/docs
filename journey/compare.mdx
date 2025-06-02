@@ -1,217 +1,115 @@
 ---
-title: Compare Metrics
-description: "Learn how to compare and analyze journey metrics in Oppla"
+title: Compare Tours
+description: "Learn how to compare tour performance in Oppla"
 ---
 
-# Compare Metrics
+# Compare Tours
 
-Learn how to compare and analyze journey metrics to measure performance and make data-driven decisions.
+Learn how to compare tour performance and analyze metrics in Oppla.
 
-## Basic Comparison
+## Basic Usage
 
-### Compare Journey Performance
+### Compare Tour Metrics
 
 ```javascript
-oppla.analytics.compare({
-  journeys: ['welcome', 'onboarding'],
-  metrics: ['view_count', 'completion_rate'],
+import { createTour, TourManager } from '@oppla-ai/tours';
+
+// Create tour manager
+const manager = new TourManager();
+
+// Compare tour metrics
+const comparison = manager.compare({
+  tours: ['feature-tour', 'onboarding-tour'],
+  metrics: ['completion_rate', 'average_time'],
   timeRange: 'last_30_days'
 });
 ```
 
-### Compare Step Performance
+### Compare Tour Steps
 
 ```javascript
-oppla.analytics.compare({
-  journeys: ['feature-tour'],
-  steps: [0, 1, 2],
-  metrics: ['view_count', 'interaction_rate'],
-  timeRange: 'last_7_days'
+// Compare specific steps
+const stepComparison = manager.compare({
+  tours: ['feature-tour', 'onboarding-tour'],
+  steps: [0, 1],
+  metrics: ['view_count', 'interaction_rate']
 });
 ```
 
-## Time-Based Comparison
+## Advanced Features
 
-### Compare Time Periods
+### Compare with Filters
 
 ```javascript
-oppla.analytics.compare({
-  journeys: ['welcome'],
-  metrics: ['view_count', 'completion_rate'],
-  timeRange: {
-    current: 'last_30_days',
-    previous: 'previous_30_days'
+// Compare with filters
+const filteredComparison = manager.compare({
+  tours: ['feature-tour', 'onboarding-tour'],
+  metrics: ['completion_rate'],
+  filters: {
+    userSegment: 'premium',
+    deviceType: 'desktop',
+    timeRange: 'last_7_days'
   }
 });
 ```
 
-### Compare Custom Dates
+### Compare with Custom Metrics
 
 ```javascript
-oppla.analytics.compare({
-  journeys: ['onboarding'],
-  metrics: ['view_count', 'completion_rate'],
-  timeRange: {
-    current: {
-      start: '2024-01-01',
-      end: '2024-01-31'
-    },
-    previous: {
-      start: '2023-12-01',
-      end: '2023-12-31'
-    }
-  }
-});
-```
-
-## Segment Comparison
-
-### Compare User Segments
-
-```javascript
-oppla.analytics.compare({
-  journeys: ['welcome'],
-  metrics: ['view_count', 'completion_rate'],
-  segments: [
-    {
-      name: 'premium',
-      condition: 'user.plan === "premium"'
-    },
-    {
-      name: 'free',
-      condition: 'user.plan === "free"'
-    }
-  ]
-});
-```
-
-### Compare Custom Segments
-
-```javascript
-oppla.analytics.compare({
-  journeys: ['onboarding'],
-  metrics: ['view_count', 'completion_rate'],
-  segments: [
-    {
-      name: 'new_users',
-      condition: 'user.isNew === true'
-    },
-    {
-      name: 'returning_users',
-      condition: 'user.isNew === false'
-    }
-  ]
-});
-```
-
-## Advanced Comparison
-
-### Compare Multiple Metrics
-
-```javascript
-oppla.analytics.compare({
-  journeys: ['welcome', 'onboarding'],
+// Compare with custom metrics
+const customComparison = manager.compare({
+  tours: ['feature-tour', 'onboarding-tour'],
   metrics: [
-    'view_count',
     'completion_rate',
     'average_time',
-    'interaction_rate'
-  ],
-  timeRange: 'last_30_days',
-  groupBy: 'day'
-});
-```
-
-### Compare with Custom Calculations
-
-```javascript
-oppla.analytics.compare({
-  journeys: ['feature-tour'],
-  metrics: [
-    'view_count',
-    'completion_rate',
     {
-      name: 'engagement_score',
-      calculation: '(view_count * 0.4) + (completion_rate * 0.6)'
+      name: 'custom_metric',
+      calculation: (data) => {
+        return data.interactions / data.views;
+      }
     }
-  ],
-  timeRange: 'last_30_days'
-});
-```
-
-## Visualization
-
-### Basic Chart
-
-```javascript
-oppla.analytics.visualize({
-  type: 'line',
-  data: {
-    journeys: ['welcome', 'onboarding'],
-    metrics: ['view_count'],
-    timeRange: 'last_30_days'
-  },
-  options: {
-    title: 'Journey Views Over Time',
-    xAxis: {
-      type: 'time',
-      title: 'Date'
-    },
-    yAxis: {
-      title: 'Views'
-    }
-  }
-});
-```
-
-### Advanced Chart
-
-```javascript
-oppla.analytics.visualize({
-  type: 'bar',
-  data: {
-    journeys: ['welcome', 'onboarding'],
-    metrics: ['view_count', 'completion_rate'],
-    timeRange: 'last_30_days',
-    groupBy: 'journey'
-  },
-  options: {
-    title: 'Journey Performance Comparison',
-    xAxis: {
-      title: 'Journey'
-    },
-    yAxis: {
-      title: 'Value'
-    },
-    legend: {
-      position: 'top'
-    }
-  }
+  ]
 });
 ```
 
 ## Best Practices
 
-1. **Choose Relevant Metrics**: Select metrics that align with your goals
-2. **Use Appropriate Time Ranges**: Compare similar time periods
-3. **Segment Meaningfully**: Create relevant user segments
-4. **Visualize Effectively**: Use appropriate chart types
+1. **Be Specific**: Compare relevant metrics
+2. **Be Consistent**: Use consistent time ranges
+3. **Be Clear**: Document comparison logic
+4. **Be Accurate**: Validate comparison data
+
+## Common Issues
+
+### Comparison Not Working
+
+- Check tour IDs
+- Verify metrics
+- Check time ranges
+- Ensure proper data
+
+### Data Quality
+
+- Validate metrics
+- Check for outliers
+- Verify calculations
+- Review time periods
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Disable Local Tracking"
-    icon="ban"
-    href="/journey/disable-tracking"
+    title="Tooltips"
+    icon="comment"
+    href="/journey/tooltip"
   >
-    Learn about disabling local tracking
+    Learn about tooltip steps
   </Card>
   <Card
-    title="Journey Management"
-    icon="cog"
-    href="/journey/management"
+    title="Modals"
+    icon="window-maximize"
+    href="/journey/modal"
   >
-    Learn about journey management
+    Learn about modal steps
   </Card>
 </CardGroup> 

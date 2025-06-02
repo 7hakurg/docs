@@ -1,249 +1,147 @@
 ---
-title: Journey Management
-description: "Learn how to manage and configure journeys in Oppla"
+title: Tour Management
+description: "Learn how to manage and control tours in Oppla"
 ---
 
-# Journey Management
+# Tour Management
 
-Learn how to manage and configure journeys in Oppla, including frequency control, segmentation, and analytics integration.
+Learn how to manage and control tours in your application using the Oppla tours package.
 
-## Basic Configuration
+## Basic Usage
 
-Configure a basic journey:
+### Initialize Tours
 
 ```javascript
-oppla.journey('welcome', {
+import { createTour, TourManager } from '@oppla-ai/tours';
+
+// Create a tour
+const tour = createTour({
+  id: 'feature-tour',
   steps: [
     {
-      type: 'banner',
-      content: 'Welcome to Oppla!'
+      type: 'tooltip',
+      target: '#feature-button',
+      content: 'Try our new feature!'
     }
-  ],
-  settings: {
-    frequency: 'once',
-    segment: 'all-users'
-  }
+  ]
+});
+
+// Initialize tour manager
+const manager = new TourManager();
+
+// Register tour
+manager.register(tour);
+```
+
+### Start and Stop Tours
+
+```javascript
+// Start a tour
+manager.start('feature-tour');
+
+// Stop a tour
+manager.stop('feature-tour');
+
+// Pause a tour
+manager.pause('feature-tour');
+
+// Resume a tour
+manager.resume('feature-tour');
+```
+
+## Advanced Features
+
+### Tour Events
+
+Listen to tour events:
+
+```javascript
+manager.on('start', (tourId) => {
+  console.log(`Tour ${tourId} started`);
+});
+
+manager.on('stop', (tourId) => {
+  console.log(`Tour ${tourId} stopped`);
+});
+
+manager.on('step', (tourId, stepIndex) => {
+  console.log(`Tour ${tourId} moved to step ${stepIndex}`);
 });
 ```
 
-## Frequency Control
+### Tour State
 
-### Show Once
+Get tour state:
 
 ```javascript
-oppla.journey('one-time', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'One-time message'
-    }
-  ],
-  settings: {
-    frequency: 'once'
-  }
-});
+// Check if tour is running
+const isRunning = manager.isRunning('feature-tour');
+
+// Get current step
+const currentStep = manager.getCurrentStep('feature-tour');
+
+// Get tour progress
+const progress = manager.getProgress('feature-tour');
 ```
 
-### Show Periodically
+### Multiple Tours
+
+Manage multiple tours:
 
 ```javascript
-oppla.journey('periodic', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Periodic reminder'
-    }
-  ],
-  settings: {
-    frequency: 'periodic',
-    period: '7d' // Show every 7 days
-  }
-});
-```
+// Register multiple tours
+manager.register(tour1);
+manager.register(tour2);
+manager.register(tour3);
 
-### Show on Specific Dates
+// Start all tours
+manager.startAll();
 
-```javascript
-oppla.journey('scheduled', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Scheduled message'
-    }
-  ],
-  settings: {
-    frequency: 'scheduled',
-    startDate: '2024-01-01',
-    endDate: '2024-12-31'
-  }
-});
-```
+// Stop all tours
+manager.stopAll();
 
-## User Segmentation
-
-### Basic Segmentation
-
-```javascript
-oppla.journey('segmented', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Segmented message'
-    }
-  ],
-  settings: {
-    segment: {
-      type: 'user-property',
-      property: 'plan',
-      value: 'premium'
-    }
-  }
-});
-```
-
-### Complex Segmentation
-
-```javascript
-oppla.journey('complex-segment', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Complex segmented message'
-    }
-  ],
-  settings: {
-    segment: {
-      type: 'and',
-      conditions: [
-        {
-          type: 'user-property',
-          property: 'plan',
-          value: 'premium'
-        },
-        {
-          type: 'user-property',
-          property: 'isNew',
-          value: true
-        }
-      ]
-    }
-  }
-});
-```
-
-## Analytics Integration
-
-### Track Journey Events
-
-```javascript
-oppla.journey('tracked', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Tracked message'
-    }
-  ],
-  settings: {
-    analytics: {
-      trackViews: true,
-      trackInteractions: true,
-      customEvents: [
-        {
-          name: 'journey_started',
-          properties: {
-            journey_name: 'tracked'
-          }
-        }
-      ]
-    }
-  }
-});
-```
-
-### A/B Testing
-
-```javascript
-oppla.journey('ab-test', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'A/B test message'
-    }
-  ],
-  settings: {
-    abTest: {
-      enabled: true,
-      variant: 'A',
-      weight: 0.5
-    }
-  }
-});
-```
-
-## Advanced Configuration
-
-### Conditional Activation
-
-```javascript
-oppla.journey('conditional', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Conditional message'
-    }
-  ],
-  settings: {
-    activation: {
-      type: 'condition',
-      condition: function() {
-        return user.isLoggedIn && user.hasCompletedOnboarding;
-      }
-    }
-  }
-});
-```
-
-### Journey Dependencies
-
-```javascript
-oppla.journey('dependent', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Dependent message'
-    }
-  ],
-  settings: {
-    dependencies: {
-      required: ['welcome', 'onboarding'],
-      optional: ['tutorial']
-    }
-  }
-});
+// Get all registered tours
+const tours = manager.getTours();
 ```
 
 ## Best Practices
 
-1. **Plan Frequency**: Choose appropriate frequency settings
-2. **Segment Carefully**: Create meaningful user segments
-3. **Track Progress**: Enable analytics for journey insights
-4. **Test Thoroughly**: Test journeys with different user segments
+1. **Be Organized**: Keep tour IDs consistent and meaningful
+2. **Be Efficient**: Only register tours when needed
+3. **Be Responsive**: Handle tour events appropriately
+4. **Be Clean**: Clean up tours when they're no longer needed
+
+## Common Issues
+
+### Tour Not Starting
+
+- Check tour registration
+- Verify tour ID
+- Check for conflicts
+- Ensure proper initialization
+
+### Tour State Issues
+
+- Check event handlers
+- Verify state management
+- Check for race conditions
+- Ensure proper cleanup
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Analytics Integration"
-    icon="chart-bar"
-    href="/journey/analytics"
+    title="Tooltips"
+    icon="comment"
+    href="/journey/tooltip"
   >
-    Learn about analytics integration
+    Learn about tooltip steps
   </Card>
   <Card
-    title="Project Setup"
-    icon="cog"
-    href="/journey/setup"
+    title="Modals"
+    icon="window-maximize"
+    href="/journey/modal"
   >
-    Learn about project setup
+    Learn about modal steps
   </Card>
 </CardGroup> 

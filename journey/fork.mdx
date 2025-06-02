@@ -1,41 +1,42 @@
 ---
 title: Fork Steps
-description: "Learn how to create and use fork steps to create branching paths in Oppla journeys"
+description: "Learn how to create and customize fork steps in Oppla tours"
 ---
 
 # Fork Steps
 
-Learn how to create and use fork steps to create branching paths in your journeys based on conditions and user actions.
+Learn how to create and customize fork steps to create branching paths in your tours based on user actions or conditions.
 
 ## Basic Usage
 
-Create a simple fork:
+### Create a Fork Step
 
 ```javascript
-oppla.journey('user-onboarding', {
+import { createTour } from '@oppla-ai/tours';
+
+const tour = createTour({
+  id: 'feature-tour',
   steps: [
     {
       type: 'fork',
       conditions: [
         {
-          condition: function() {
-            return user.isNew;
-          },
+          condition: () => document.querySelector('#premium-feature') !== null,
           steps: [
             {
-              type: 'banner',
-              content: 'Welcome new user!'
+              type: 'tooltip',
+              target: '#premium-feature',
+              content: 'Try our premium feature!'
             }
           ]
         },
         {
-          condition: function() {
-            return !user.isNew;
-          },
+          condition: () => true,
           steps: [
             {
-              type: 'banner',
-              content: 'Welcome back!'
+              type: 'tooltip',
+              target: '#basic-feature',
+              content: 'Try our basic feature!'
             }
           ]
         }
@@ -43,243 +44,153 @@ oppla.journey('user-onboarding', {
     }
   ]
 });
+
+tour.start();
 ```
 
-## Condition Types
-
-### User Properties
+### Fork with Options
 
 ```javascript
-oppla.journey('user-segment', {
-  steps: [
+{
+  type: 'fork',
+  conditions: [
     {
-      type: 'fork',
-      conditions: [
+      condition: () => user.isPremium,
+      steps: [
         {
-          condition: function() {
-            return user.plan === 'premium';
-          },
-          steps: [
-            {
-              type: 'banner',
-              content: 'Premium features available!'
-            }
-          ]
-        },
+          type: 'tooltip',
+          target: '#premium-feature',
+          content: 'Premium feature available!'
+        }
+      ]
+    },
+    {
+      condition: () => true,
+      steps: [
         {
-          condition: function() {
-            return user.plan === 'free';
-          },
-          steps: [
-            {
-              type: 'banner',
-              content: 'Upgrade to premium!'
-            }
-          ]
+          type: 'tooltip',
+          target: '#basic-feature',
+          content: 'Basic feature available!'
         }
       ]
     }
+  ],
+  defaultSteps: [
+    {
+      type: 'tooltip',
+      target: '#default-feature',
+      content: 'Default feature available!'
+    }
   ]
-});
+}
 ```
 
-### User Actions
+## Advanced Features
+
+### User Action Forks
+
+Create forks based on user actions:
 
 ```javascript
-oppla.journey('action-based', {
-  steps: [
+{
+  type: 'fork',
+  conditions: [
     {
-      type: 'fork',
-      conditions: [
+      condition: () => userAction === 'click',
+      target: '#upgrade-button',
+      steps: [
         {
-          condition: function() {
-            return user.hasCompletedTutorial;
-          },
-          steps: [
-            {
-              type: 'banner',
-              content: 'Ready for advanced features!'
-            }
-          ]
-        },
+          type: 'modal',
+          content: 'Would you like to upgrade?'
+        }
+      ]
+    },
+    {
+      condition: () => userAction === 'click',
+      target: '#learn-more-button',
+      steps: [
         {
-          condition: function() {
-            return !user.hasCompletedTutorial;
-          },
-          steps: [
-            {
-              type: 'banner',
-              content: 'Complete the tutorial first!'
-            }
-          ]
+          type: 'modal',
+          content: 'Learn more about our features'
         }
       ]
     }
   ]
-});
+}
 ```
 
-### Multiple Conditions
+### Complex Conditions
+
+Create forks with complex conditions:
 
 ```javascript
-oppla.journey('complex-fork', {
-  steps: [
+{
+  type: 'fork',
+  conditions: [
     {
-      type: 'fork',
-      conditions: [
+      condition: () => {
+        return user.isPremium && user.hasCompletedOnboarding;
+      },
+      steps: [
         {
-          condition: function() {
-            return user.isNew && user.plan === 'premium';
-          },
-          steps: [
-            {
-              type: 'banner',
-              content: 'Welcome to premium!'
-            }
-          ]
-        },
+          type: 'tooltip',
+          target: '#advanced-feature',
+          content: 'Try our advanced feature!'
+        }
+      ]
+    },
+    {
+      condition: () => user.isPremium,
+      steps: [
         {
-          condition: function() {
-            return user.isNew && user.plan === 'free';
-          },
-          steps: [
-            {
-              type: 'banner',
-              content: 'Start with free features!'
-            }
-          ]
-        },
-        {
-          condition: function() {
-            return !user.isNew;
-          },
-          steps: [
-            {
-              type: 'banner',
-              content: 'Welcome back!'
-            }
-          ]
+          type: 'tooltip',
+          target: '#premium-feature',
+          content: 'Complete onboarding to unlock advanced features!'
         }
       ]
     }
   ]
-});
-```
-
-## Advanced Usage
-
-### Nested Forks
-
-```javascript
-oppla.journey('nested-fork', {
-  steps: [
-    {
-      type: 'fork',
-      conditions: [
-        {
-          condition: function() {
-            return user.isNew;
-          },
-          steps: [
-            {
-              type: 'fork',
-              conditions: [
-                {
-                  condition: function() {
-                    return user.plan === 'premium';
-                  },
-                  steps: [
-                    {
-                      type: 'banner',
-                      content: 'Premium onboarding!'
-                    }
-                  ]
-                },
-                {
-                  condition: function() {
-                    return user.plan === 'free';
-                  },
-                  steps: [
-                    {
-                      type: 'banner',
-                      content: 'Free onboarding!'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-});
-```
-
-### Dynamic Conditions
-
-```javascript
-oppla.journey('dynamic-fork', {
-  steps: [
-    {
-      type: 'fork',
-      conditions: [
-        {
-          condition: function() {
-            return user.features.includes('analytics');
-          },
-          steps: [
-            {
-              type: 'banner',
-              content: 'Analytics features available!'
-            }
-          ]
-        },
-        {
-          condition: function() {
-            return user.features.includes('journeys');
-          },
-          steps: [
-            {
-              type: 'banner',
-              content: 'Journey features available!'
-            }
-          ]
-        }
-      ],
-      defaultSteps: [
-        {
-          type: 'banner',
-          content: 'Basic features available!'
-        }
-      ]
-    }
-  ]
-});
+}
 ```
 
 ## Best Practices
 
-1. **Keep it Simple**: Avoid overly complex branching logic
-2. **Handle All Cases**: Always include a default condition
-3. **Be Specific**: Use precise conditions for accurate branching
-4. **Test Thoroughly**: Test all possible paths in your journey
+1. **Be Clear**: Make conditions easy to understand
+2. **Be Logical**: Use clear branching logic
+3. **Be Fallback**: Always provide a default path
+4. **Be Maintainable**: Keep conditions simple and well-documented
+
+## Common Issues
+
+### Fork Not Working
+
+- Check condition logic
+- Verify target elements exist
+- Check for timing issues
+- Ensure proper event handling
+
+### User Experience
+
+- Avoid complex branching
+- Provide clear feedback
+- Handle edge cases
+- Consider fallback options
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Journey Management"
-    icon="cog"
-    href="/journey/management"
+    title="Tooltips"
+    icon="comment"
+    href="/journey/tooltip"
   >
-    Learn about journey management
+    Learn about tooltip steps
   </Card>
   <Card
-    title="Analytics Integration"
-    icon="chart-bar"
-    href="/journey/analytics"
+    title="Modals"
+    icon="window-maximize"
+    href="/journey/modal"
   >
-    Learn about analytics integration
+    Learn about modal steps
   </Card>
 </CardGroup> 

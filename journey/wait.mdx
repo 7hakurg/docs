@@ -1,190 +1,124 @@
 ---
 title: Wait Steps
-description: "Learn how to create and use wait steps in Oppla journeys"
+description: "Learn how to create and customize wait steps in Oppla tours"
 ---
 
 # Wait Steps
 
-Learn how to create and use wait steps to control the timing and flow of your journeys.
+Learn how to create and customize wait steps to pause your tour until certain conditions are met.
 
 ## Basic Usage
 
-Create a simple wait step:
+### Create a Wait Step
 
 ```javascript
-oppla.journey('delayed-notification', {
+import { createTour } from '@oppla-ai/tours';
+
+const tour = createTour({
+  id: 'feature-tour',
   steps: [
     {
       type: 'wait',
-      duration: 5000 // Wait for 5 seconds
-    },
-    {
-      type: 'banner',
-      content: 'Welcome to Oppla!'
+      duration: 2000 // Wait for 2 seconds
     }
   ]
 });
+
+tour.start();
 ```
 
-## Wait Types
-
-### Time-Based Wait
+### Wait with Options
 
 ```javascript
-oppla.journey('timed-sequence', {
-  steps: [
-    {
-      type: 'banner',
-      content: 'Starting in 5 seconds...'
-    },
-    {
-      type: 'wait',
-      duration: 5000
-    },
-    {
-      type: 'banner',
-      content: 'Here we go!'
-    }
-  ]
-});
+{
+  type: 'wait',
+  duration: 2000,
+  message: 'Loading...',
+  showSpinner: true
+}
 ```
 
-### Event-Based Wait
+## Advanced Features
+
+### Wait for Element
+
+Wait for an element to appear:
 
 ```javascript
-oppla.journey('event-wait', {
-  steps: [
-    {
-      type: 'wait',
-      event: 'userAction',
-      timeout: 30000 // Optional timeout in milliseconds
-    },
-    {
-      type: 'banner',
-      content: 'Action completed!'
-    }
-  ]
-});
+{
+  type: 'wait',
+  target: '#feature-button',
+  timeout: 5000,
+  message: 'Waiting for feature to load...'
+}
 ```
 
-### Condition-Based Wait
+### Wait for Condition
+
+Wait for a custom condition:
 
 ```javascript
-oppla.journey('conditional-wait', {
-  steps: [
-    {
-      type: 'wait',
-      condition: function() {
-        return document.querySelector('.feature-loaded') !== null;
-      },
-      checkInterval: 1000, // Check every second
-      timeout: 30000 // Timeout after 30 seconds
-    },
-    {
-      type: 'banner',
-      content: 'Feature is ready!'
-    }
-  ]
-});
+{
+  type: 'wait',
+  condition: () => {
+    return document.querySelector('#feature-button') !== null;
+  },
+  timeout: 5000,
+  message: 'Waiting for feature to be ready...'
+}
 ```
 
-## Advanced Usage
+### Wait for User Action
 
-### Multiple Conditions
-
-```javascript
-oppla.journey('complex-wait', {
-  steps: [
-    {
-      type: 'wait',
-      conditions: [
-        {
-          type: 'event',
-          name: 'userAction'
-        },
-        {
-          type: 'time',
-          duration: 5000
-        }
-      ],
-      logic: 'OR' // Wait for either condition
-    },
-    {
-      type: 'banner',
-      content: 'Proceeding...'
-    }
-  ]
-});
-```
-
-### Progress Tracking
+Wait for user interaction:
 
 ```javascript
-oppla.journey('progress-wait', {
-  steps: [
-    {
-      type: 'wait',
-      duration: 10000,
-      showProgress: true,
-      progressMessage: 'Loading...',
-      onProgress: function(progress) {
-        console.log(`Progress: ${progress}%`);
-      }
-    },
-    {
-      type: 'banner',
-      content: 'Complete!'
-    }
-  ]
-});
-```
-
-### Error Handling
-
-```javascript
-oppla.journey('error-handling', {
-  steps: [
-    {
-      type: 'wait',
-      condition: function() {
-        return document.querySelector('.feature-loaded') !== null;
-      },
-      timeout: 30000,
-      onTimeout: function() {
-        console.error('Feature failed to load');
-        // Handle timeout
-      },
-      onError: function(error) {
-        console.error('Wait step error:', error);
-        // Handle error
-      }
-    }
-  ]
-});
+{
+  type: 'wait',
+  userAction: 'click',
+  target: '#feature-button',
+  message: 'Please click the button to continue'
+}
 ```
 
 ## Best Practices
 
-1. **Set Reasonable Timeouts**: Always set appropriate timeout values
-2. **Handle Errors**: Implement error handling for wait conditions
-3. **Show Progress**: Use progress indicators for long waits
-4. **Be Specific**: Use precise conditions for event-based waits
+1. **Be Clear**: Provide clear messages about what you're waiting for
+2. **Be Patient**: Set reasonable timeouts
+3. **Be Helpful**: Show loading indicators when appropriate
+4. **Be Fallback**: Provide fallback behavior if conditions aren't met
+
+## Common Issues
+
+### Wait Not Completing
+
+- Check condition logic
+- Verify target element exists
+- Check timeout values
+- Ensure proper event handling
+
+### User Experience
+
+- Avoid long wait times
+- Provide clear feedback
+- Handle timeouts gracefully
+- Consider fallback options
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Fork Steps"
-    icon="code-branch"
-    href="/journey/fork"
+    title="Tooltips"
+    icon="comment"
+    href="/journey/tooltip"
   >
-    Learn about fork steps
+    Learn about tooltip steps
   </Card>
   <Card
-    title="Journey Management"
-    icon="cog"
-    href="/journey/management"
+    title="Modals"
+    icon="window-maximize"
+    href="/journey/modal"
   >
-    Learn about journey management
+    Learn about modal steps
   </Card>
 </CardGroup> 
