@@ -1,0 +1,244 @@
+---
+title: Compare Metrics
+description: "Learn how to compare and analyze metrics in Oppla"
+---
+
+# Compare Metrics
+
+Learn how to compare and analyze metrics across different time periods, segments, and dimensions in Oppla.
+
+## Basic Comparison
+
+### Compare Time Periods
+
+Compare metrics across different time periods:
+
+```javascript
+// Browser implementation
+window.oppla.analytics.compare({
+  metric: 'page_views',
+  timeRange: {
+    current: {
+      start: '2024-03-01',
+      end: '2024-03-31'
+    },
+    previous: {
+      start: '2024-02-01',
+      end: '2024-02-29'
+    }
+  }
+});
+
+// Node.js implementation
+oppla.analytics.compare({
+  metric: 'page_views',
+  timeRange: {
+    current: {
+      start: '2024-03-01',
+      end: '2024-03-31'
+    },
+    previous: {
+      start: '2024-02-01',
+      end: '2024-02-29'
+    }
+  }
+});
+```
+
+### Compare Segments
+
+Compare metrics between different user segments:
+
+```javascript
+// Browser implementation
+window.oppla.analytics.compare({
+  metric: 'conversion_rate',
+  segments: {
+    current: ['premium-users'],
+    previous: ['free-users']
+  }
+});
+
+// Node.js implementation
+oppla.analytics.compare({
+  metric: 'conversion_rate',
+  segments: {
+    current: ['premium-users'],
+    previous: ['free-users']
+  }
+});
+```
+
+## Advanced Comparison
+
+### Multiple Metrics
+
+Compare multiple metrics simultaneously:
+
+```javascript
+// Browser implementation
+window.oppla.analytics.compare({
+  metrics: ['page_views', 'bounce_rate', 'avg_session_duration'],
+  timeRange: {
+    current: {
+      start: '2024-03-01',
+      end: '2024-03-31'
+    },
+    previous: {
+      start: '2024-02-01',
+      end: '2024-02-29'
+    }
+  }
+});
+
+// Node.js implementation
+oppla.analytics.compare({
+  metrics: ['page_views', 'bounce_rate', 'avg_session_duration'],
+  timeRange: {
+    current: {
+      start: '2024-03-01',
+      end: '2024-03-31'
+    },
+    previous: {
+      start: '2024-02-01',
+      end: '2024-02-29'
+    }
+  }
+});
+```
+
+### Custom Dimensions
+
+Compare metrics across custom dimensions:
+
+```javascript
+// Browser implementation
+window.oppla.analytics.compare({
+  metric: 'revenue',
+  dimensions: {
+    current: {
+      device: 'mobile',
+      country: 'US'
+    },
+    previous: {
+      device: 'desktop',
+      country: 'US'
+    }
+  }
+});
+
+// Node.js implementation
+oppla.analytics.compare({
+  metric: 'revenue',
+  dimensions: {
+    current: {
+      device: 'mobile',
+      country: 'US'
+    },
+    previous: {
+      device: 'desktop',
+      country: 'US'
+    }
+  }
+});
+```
+
+## Visualization
+
+### Basic Charts
+
+Create basic comparison charts:
+
+```javascript
+// Browser implementation
+window.oppla.analytics.visualize({
+  type: 'line',
+  metric: 'page_views',
+  timeRange: {
+    current: {
+      start: '2024-03-01',
+      end: '2024-03-31'
+    },
+    previous: {
+      start: '2024-02-01',
+      end: '2024-02-29'
+    }
+  }
+});
+
+// Node.js implementation
+oppla.analytics.visualize({
+  type: 'line',
+  metric: 'page_views',
+  timeRange: {
+    current: {
+      start: '2024-03-01',
+      end: '2024-03-31'
+    },
+    previous: {
+      start: '2024-02-01',
+      end: '2024-02-29'
+    }
+  }
+});
+```
+
+### Advanced Visualizations
+
+Create advanced comparison visualizations:
+
+```javascript
+// Browser implementation
+window.oppla.analytics.visualize({
+  type: 'bar',
+  metrics: ['page_views', 'bounce_rate'],
+  segments: {
+    current: ['premium-users'],
+    previous: ['free-users']
+  },
+  options: {
+    stacked: true,
+    showPercentage: true
+  }
+});
+
+// Node.js implementation
+oppla.analytics.visualize({
+  type: 'bar',
+  metrics: ['page_views', 'bounce_rate'],
+  segments: {
+    current: ['premium-users'],
+    previous: ['free-users']
+  },
+  options: {
+    stacked: true,
+    showPercentage: true
+  }
+});
+```
+
+## Best Practices
+
+1. **Choose Relevant Metrics**: Select metrics that align with your goals
+2. **Use Appropriate Time Ranges**: Ensure fair comparison periods
+3. **Consider Context**: Account for external factors
+4. **Validate Data**: Check for data quality issues
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Track Events"
+    icon="chart-line"
+    href="/analytics/track-events"
+  >
+    Learn about event tracking
+  </Card>
+  <Card
+    title="Data Tags"
+    icon="tag"
+    href="/analytics/data-tags"
+  >
+    Organize your data for comparison
+  </Card>
+</CardGroup> 

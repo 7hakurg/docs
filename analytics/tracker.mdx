@@ -1,0 +1,250 @@
+---
+title: Tracker
+description: "Learn how to use Oppla's tracking functionality"
+---
+
+# Tracker
+
+Learn how to use Oppla's tracking functionality to monitor user behavior and collect analytics data.
+
+## Basic Tracking
+
+### Initialize Tracker
+
+Initialize the tracker with your project ID:
+
+```javascript
+window.oppla.init('YOUR_PROJECT_ID');
+```
+
+### Track Page Views
+
+Track page views automatically or manually:
+
+```javascript
+// Automatic tracking (configured in init)
+window.oppla.init({
+  projectId: 'YOUR_PROJECT_ID',
+  trackPageViews: true
+});
+
+// Manual tracking
+window.oppla.track('Page Viewed', {
+  path: window.location.pathname,
+  title: document.title,
+  referrer: document.referrer
+});
+```
+
+### Track User Actions
+
+Track user interactions:
+
+```javascript
+// Track button clicks
+window.oppla.track('Button Clicked', {
+  buttonId: 'signup-button',
+  buttonText: 'Sign Up',
+  page: 'homepage'
+});
+
+// Track form submissions
+window.oppla.track('Form Submitted', {
+  formId: 'contact-form',
+  formType: 'contact',
+  success: true
+});
+
+// Track link clicks
+window.oppla.track('Link Clicked', {
+  linkId: 'pricing-link',
+  linkText: 'View Pricing',
+  destination: '/pricing'
+});
+```
+
+### Track Outbound Clicks
+
+Track clicks on external links:
+
+```javascript
+// Configure outbound click tracking
+window.oppla.config({
+  trackOutboundClicks: true,
+  outboundDomains: ['example.com', 'external-site.com']
+});
+
+// Track outbound clicks manually
+window.oppla.track('Outbound Click', {
+  linkId: 'external-link',
+  linkText: 'Visit External Site',
+  destination: 'https://example.com',
+  domain: 'example.com'
+});
+```
+
+## Advanced Tracking
+
+### Track Custom Events
+
+Track custom events with detailed properties:
+
+```javascript
+// Track feature usage
+window.oppla.track('Feature Used', {
+  feature: 'search',
+  query: 'example search',
+  results: 42,
+  filters: ['price', 'category']
+});
+
+// Track e-commerce events
+window.oppla.track('Purchase Completed', {
+  orderId: '12345',
+  amount: 99.99,
+  currency: 'USD',
+  items: [
+    {
+      id: 'prod_123',
+      name: 'Product 1',
+      price: 49.99,
+      quantity: 1
+    },
+    {
+      id: 'prod_456',
+      name: 'Product 2',
+      price: 50.00,
+      quantity: 1
+    }
+  ]
+});
+```
+
+### Track User Properties
+
+Track user properties and traits:
+
+```javascript
+// Identify user
+window.oppla.identify({
+  userId: 'user_123',
+  traits: {
+    name: 'John Doe',
+    email: 'john@example.com',
+    plan: 'premium',
+    signupDate: '2024-01-01'
+  }
+});
+
+// Update user properties
+window.oppla.identify({
+  userId: 'user_123',
+  traits: {
+    lastLogin: new Date(),
+    loginCount: 5,
+    preferences: {
+      theme: 'dark',
+      notifications: true
+    }
+  }
+});
+```
+
+## Data Attributes
+
+### Track with Data Attributes
+
+Use data attributes for automatic tracking:
+
+```html
+<!-- Track button clicks -->
+<button 
+  id="signup-button" 
+  data-oppla-event="Button Clicked"
+  data-oppla-event-buttonId="signup-button"
+  data-oppla-event-buttonText="Sign Up"
+  data-oppla-event-page="homepage">
+  Sign Up
+</button>
+
+<!-- Track form submissions -->
+<form 
+  id="contact-form" 
+  data-oppla-event="Form Submitted"
+  data-oppla-event-formId="contact-form"
+  data-oppla-event-formType="contact">
+  <!-- form content -->
+</form>
+
+<!-- Track link clicks -->
+<a 
+  id="pricing-link" 
+  data-oppla-event="Link Clicked"
+  data-oppla-event-linkId="pricing-link"
+  data-oppla-event-linkText="View Pricing"
+  data-oppla-event-destination="/pricing"
+  href="/pricing">
+  View Pricing
+</a>
+
+<!-- Track outbound clicks -->
+<a 
+  id="external-link" 
+  data-oppla-event="Outbound Click"
+  data-oppla-event-linkId="external-link"
+  data-oppla-event-linkText="Visit External Site"
+  data-oppla-event-destination="https://example.com"
+  data-oppla-event-domain="example.com"
+  href="https://example.com">
+  Visit External Site
+</a>
+```
+
+## Best Practices
+
+1. **Be Consistent**: Use consistent event names and properties
+2. **Be Specific**: Include relevant context in event properties
+3. **Be Organized**: Group related events with similar naming patterns
+4. **Be Careful**: Don't include sensitive user data in events
+
+## Common Issues
+
+### Events Not Tracking
+
+- Verify initialization
+- Check event names and properties
+- Ensure proper timing of tracking calls
+- Check for console errors
+
+### Data Not Appearing
+
+- Check network requests
+- Verify project ID
+- Check for data validation errors
+- Ensure proper event structure
+
+### Outbound Clicks Not Tracking
+
+- Verify outbound click configuration
+- Check domain list
+- Ensure proper link attributes
+- Check for JavaScript errors
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Sessions"
+    icon="clock"
+    href="/analytics/sessions"
+  >
+    Learn about session tracking
+  </Card>
+  <Card
+    title="Data Tags"
+    icon="tag"
+    href="/analytics/data-tags"
+  >
+    Organize your tracking data
+  </Card>
+</CardGroup> 

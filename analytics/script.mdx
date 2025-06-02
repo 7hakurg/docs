@@ -1,0 +1,188 @@
+---
+title: Script
+description: "Learn how to add and configure the Oppla tracking script"
+---
+
+# Script
+
+Learn how to add and configure the Oppla tracking script in your application.
+
+## Installation
+
+### Basic Installation
+
+Add the Oppla tracking script to your website's `<head>` section:
+
+```html
+<script>
+  (function(p,r,o,d,i,o){p[i]=p[i]||function(){(p[i].q=p[i].q||[]).push(arguments)};
+  o=r.createElement('script');o.async=1;o.src=d;r.head.appendChild(o);
+  })(window,document,'script','https://cdn.oppla.app/tracker.js','oppla');
+
+  window.oppla.init('YOUR_PROJECT_ID');
+</script>
+```
+
+### Async Loading
+
+For better performance, load the script asynchronously:
+
+```html
+<script async src="https://cdn.oppla.app/tracker.js"></script>
+<script>
+  window.oppla = window.oppla || function(){(window.oppla.q=window.oppla.q||[]).push(arguments)};
+  window.oppla.init('YOUR_PROJECT_ID');
+</script>
+```
+
+## Configuration
+
+### Basic Configuration
+
+Configure basic tracking settings:
+
+```javascript
+window.oppla.config({
+  trackPageViews: true,
+  trackClicks: true,
+  trackForms: true,
+  debug: false
+});
+```
+
+### Advanced Configuration
+
+Add advanced tracking options:
+
+```javascript
+window.oppla.config({
+  // Enable automatic tracking
+  autoTrack: {
+    pageViews: true,
+    clicks: true,
+    forms: true,
+    scroll: true
+  },
+  
+  // Configure session settings
+  session: {
+    timeout: 30, // minutes
+    extendOnActivity: true
+  },
+  
+  // Set up custom domains
+  domains: ['yourdomain.com', 'app.yourdomain.com'],
+  
+  // Configure data collection
+  dataCollection: {
+    ipAddress: false,
+    userAgent: true,
+    referrer: true
+  }
+});
+```
+
+## Event Tracking
+
+### Track Events
+
+Track events using the script:
+
+```javascript
+// Track a simple event
+window.oppla.track('Button Clicked', {
+  buttonId: 'signup-button',
+  page: 'homepage'
+});
+
+// Track with additional context
+window.oppla.track('Purchase Completed', {
+  orderId: '12345',
+  amount: 99.99,
+  currency: 'USD',
+  items: ['product1', 'product2']
+});
+```
+
+### User Identification
+
+Identify users:
+
+```javascript
+window.oppla.identify({
+  userId: 'user_123',
+  traits: {
+    name: 'John Doe',
+    email: 'john@example.com',
+    plan: 'premium'
+  }
+});
+```
+
+## Data Attributes
+
+### Track Events with Data Attributes
+
+Add data attributes to your HTML elements:
+
+```html
+<!-- Basic event tracking -->
+<button 
+  id="signup-button" 
+  data-oppla-event="Button Clicked"
+  data-oppla-event-buttonId="signup-button"
+  data-oppla-event-page="homepage">
+  Sign up
+</button>
+
+<!-- Event tracking with tags -->
+<button 
+  id="search-button" 
+  data-oppla-event="Feature Used"
+  data-oppla-event-feature="search"
+  data-oppla-event-tags="core-feature,high-priority">
+  Search
+</button>
+```
+
+## Best Practices
+
+1. **Load Early**: Add the script as early as possible in the `<head>`
+2. **Use Async**: Load the script asynchronously for better performance
+3. **Configure Properly**: Set up tracking options based on your needs
+4. **Test Thoroughly**: Verify tracking in development environment
+
+## Common Issues
+
+### Script Not Loading
+
+- Check network connectivity
+- Verify script URL is correct
+- Check for JavaScript errors
+- Ensure proper script placement
+
+### Events Not Tracking
+
+- Verify initialization
+- Check event names and properties
+- Ensure proper timing of script loading
+- Check for console errors
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Track Events"
+    icon="chart-line"
+    href="/analytics/track-events"
+  >
+    Learn about event tracking
+  </Card>
+  <Card
+    title="Data Tags"
+    icon="tag"
+    href="/analytics/data-tags"
+  >
+    Organize your tracking data
+  </Card>
+</CardGroup> 
