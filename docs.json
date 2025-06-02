@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Prodio Documentation",
+  "name": "Oppla Documentation",
   "colors": {
-    "primary": "#2563EB",
-    "light": "#3B82F6",
-    "dark": "#1D4ED8"
+    "primary": "#F5A742",
+    "light": "#F7B96A",
+    "dark": "#E89A2E"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -54,44 +54,32 @@
         ]
       },
       {
-        "tab": "Journey",
+        "tab": "Tours",
         "groups": [
           {
             "group": "Getting Started",
             "pages": [
-              "journey/overview",
-              "journey/install-flows",
-              "journey/identify-users",
-              "journey/concepts"
-            ]
-          },
-          {
-            "group": "Journey Creation",
-            "pages": [
-              "journey/steps-editor",
-              "journey/start-flow",
-              "journey/frequency",
-              "journey/segmentation",
-              "journey/preview-flow",
-              "journey/enable-flow"
+              "tours/overview",
+              "tours/setup",
+              "tours/management",
+              "tours/analytics"
             ]
           },
           {
             "group": "Step Types",
             "pages": [
-              "journey/tooltip",
-              "journey/modal",
-              "journey/banner",
-              "journey/wait",
-              "journey/fork"
+              "tours/tooltip",
+              "tours/modal",
+              "tours/banner",
+              "tours/wait",
+              "tours/fork"
             ]
           },
           {
-            "group": "Project Setup",
+            "group": "Advanced Features",
             "pages": [
-              "journey/projects",
-              "journey/project-domains",
-              "journey/reset-user-progress"
+              "tours/compare",
+              "tours/disable-tracking"
             ]
           }
         ]
@@ -113,38 +101,38 @@
       "anchors": [
         {
           "anchor": "Documentation",
-          "href": "https://docs.prodio.app/docs",
+          "href": "https://docs.oppla.ai",
           "icon": "book-open-cover"
         },
         {
           "anchor": "Support",
-          "href": "mailto:support@prodio.app",
+          "href": "mailto:support@oppla.ai",
           "icon": "envelope"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/Oppla_Light.png",
+    "dark": "/logo/Oppla_Dark.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@prodio.app"
+        "href": "mailto:support@oppla.ai"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://app.prodio.app"
+      "href": "https://app.oppla.ai"
     }
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/prodio",
-      "linkedin": "https://linkedin.com/company/prodio"
+      "github": "https://github.com/oppla",
+      "linkedin": "https://linkedin.com/company/oppla"
     }
   }
 }
