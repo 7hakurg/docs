@@ -7,7 +7,19 @@
     "light": "#F7B96A",
     "dark": "#E89A2E"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.ico",
+  "metadata": {
+    "title": "Oppla - AI-Powered Product Analytics & User Onboarding",
+    "description": "Oppla is an all-in-one platform for businesses looking to track user behavior, optimize workflows, and make data-driven decisions. Whether you're a marketer, product manager, or part of a customer success team, Oppla provides the tools you need to succeed.",
+    "og:title": "Oppla - AI-Powered Product Analytics & User Onboarding",
+    "og:description": "Oppla is an all-in-one platform for businesses looking to track user behavior, optimize workflows, and make data-driven decisions. Whether you're a marketer, product manager, or part of a customer success team, Oppla provides the tools you need to succeed.",
+    "og:image": "/logo/Oppla_Light.png",
+    "twitter:card": "summary_large_image",
+    "twitter:title": "Oppla - AI-Powered Product Analytics & User Onboarding",
+    "twitter:description": "Oppla is an all-in-one platform for businesses looking to track user behavior, optimize workflows, and make data-driven decisions. Whether you're a marketer, product manager, or part of a customer success team, Oppla provides the tools you need to succeed.",
+    "twitter:image": "/logo/Oppla_Light.png",
+    "keywords": "AI-powered analytics, product analytics, user onboarding, user behavior tracking, product tours, customer success, data-driven decisions, workflow optimization, user engagement, product management"
+  },
   "navigation": {
     "tabs": [
       {
