@@ -1,71 +1,143 @@
 ---
 title: "Add a Website"
-description: "Learn how to add Oppla to your website and start tracking user behavior"
+description: "Learn how to add Oppla analytics to your website in minutes"
 ---
 
 # Add a Website
 
-Follow these steps to add Oppla to your website and start tracking user behavior.
+Get started with Oppla analytics in just a few simple steps. Track user behavior, feature usage, and experiments with a single lightweight script.
 
-## Installation
+## Quick Start
 
-### 1. Add the Tracking Script
+### Step 1: Get Your Website Credentials
 
-Add the following script to your website's `<head>` section:
+1. Log into your [Oppla Dashboard](https://app.oppla.ai)
+2. Navigate to **My Products** → **Add Product**
+3. Click **Add Product**
+4. Copy your `Product ID` and `Account ID`
+
+### Step 2: Add the Tracking Script
+
+Add this script to your website's `<head>` section:
 
 ```html
-<script>
-  (function(p,r,o,d,i,o){p[i]=p[i]||function(){(p[i].q=p[i].q||[]).push(arguments)};
-  o=r.createElement('script');o.async=1;o.src=d;r.head.appendChild(o);
-  })(window,document,'script','https://collector.oppla.ai/script.js','oppla');
+<script async defer
+  src="https://tracker.oppla.ai/script.js"
+  data-website-id="YOUR_PRODUCT_ID"
+  data-account-id="YOUR_ACCOUNT_ID">
 </script>
 ```
 
-### 2. Initialize Oppla
+**That's it!** Oppla will automatically start tracking:
+- Page views
+- User sessions
+- Click events (with `data-oppla-event` attributes)
+- Feature flag usage
+- Experiment participation
 
-Initialize Oppla with your project ID:
+## Advanced Features
+
+### Track Custom Events
+
+Track button clicks, form submissions, or any custom event:
+
+```html expandable
+<!-- Track button clicks -->
+<button data-oppla-event="signup-clicked"
+        data-oppla-event-plan="pro">
+  Sign Up for Pro
+</button>
+
+<!-- Track form submissions -->
+<form data-oppla-event="contact-form-submitted">
+  <!-- your form fields -->
+</form>
+```
+
+### Identify Users
+
+Track logged-in users across sessions:
 
 ```javascript expandable
-window.oppla.init('YOUR_PROJECT_ID');
+// When user logs in
+window.oppla.identify('user-123', {
+  email: 'user@example.com',
+  plan: 'premium',
+  company: 'Oppla AI'
+});
+```
+
+### Feature Flags
+
+Control feature visibility based on user segments:
+
+```javascript expandable
+// Check if a feature is enabled
+if (window.oppla.getFeatureFlagStatus('new-dashboard')) {
+  // Show new dashboard
+}
+```
+
+### A/B Testing
+
+Run experiments to optimize your user experience:
+
+```javascript expandable
+// Get experiment variant
+const variant = window.oppla.getExperimentStatus('homepage-cta');
+
+if (variant === 'variant-a') {
+  // Show variant A
+} else if (variant === 'variant-b') {
+  // Show variant B
+}
 ```
 
 ## Configuration
 
-### Basic Configuration
+### Configuration Options
 
-Configure basic tracking settings:
+Customize tracking behavior with optional attributes:
 
-```javascript
-window.oppla.config({
-  trackPageViews: true,
-  trackClicks: true,
-  trackForms: true,
-  debug: false
-});
+```javascript expandable
+<script async defer
+  src="https://tracker.oppla.ai/script.js"
+  data-website-id="YOUR_WEBSITE_ID"
+  data-account-id="YOUR_ACCOUNT_ID"
+  data-auto-track="true"              <!-- Enable automatic tracking (default: true) -->
+  data-exclude-search="true"          <!-- Exclude URL parameters (default: false) -->
+  data-exclude-hash="true"            <!-- Exclude URL hash (default: false) -->
+  data-do-not-track="true"            <!-- Respect browser DNT (default: false) -->
+  data-domains="app.example.com,example.com">  <!-- Track specific domains -->
+</script>
 ```
 
-### Advanced Configuration
+### JavaScript API
 
-Add advanced tracking options:
+Once installed, these methods are available globally:
 
-```javascript
-window.oppla.config({
-  // Enable automatic tracking
-  autoTrack: {
-    pageViews: true,
-    clicks: true,
-    forms: true,
-    scroll: true
-  },
-  
-  // Configure session settings
-  session: {
-    timeout: 30, // minutes
-    extendOnActivity: true
-  },
-  
-  // Set up custom domains
-  domains: ['yourdomain.com', 'app.yourdomain.com']
+```javascript expandable
+// Track custom events
+window.oppla.track('event-name', {
+  property1: 'value1',
+  property2: 'value2'
+});
+
+// Identify users
+window.oppla.identify('user-id', {
+  email: 'user@example.com',
+  customProperty: 'value'
+});
+
+// Feature flags
+const isEnabled = window.oppla.getFeatureFlagStatus('feature-id');
+
+// Experiments
+const variant = window.oppla.getExperimentStatus('experiment-id');
+
+// Automation triggers
+window.oppla.trigger('trigger-name', 'automation-id', {
+  customData: 'value'
 });
 ```
 
@@ -73,17 +145,27 @@ window.oppla.config({
 
 ### Testing the Installation
 
-1. Open your website in a browser
-2. Open the browser's developer tools
-3. Check the Network tab for requests to `cdn.oppla.app`
-4. Verify that the Oppla script is loaded
-5. Check the Console for any initialization messages
+1. **Check the Console**
+   - Open browser Developer Tools (F12)
+   - Type `window.oppla` in the Console
+   - You should see the Oppla object with available methods
+
+2. **Check Network Activity**
+   - Go to Network tab in Developer Tools
+   - Look for requests to `tracker.oppla.ai`
+   - Verify requests to `/api/send` are successful (200 status)
+
+3. **Check Your Dashboard**
+   - Visit your [Oppla Dashboard](https://app.oppla.ai)
+   - Navigate to **Analytics** → **Real-time**
+   - You should see your current session
 
 ### Common Issues
 
-- **Script not loading**: Check your network connection and ensure the script URL is correct
-- **No data appearing**: Verify your project ID and check for any console errors
-- **Cross-domain issues**: Ensure your domains are properly configured in the Oppla dashboard
+- **`window.oppla is undefined`**: Ensure the script is in the `<head>` section and has loaded
+- **No data in dashboard**: Verify your Website ID and Account ID are correct
+- **Blocked by ad blocker**: Ask users to whitelist `tracker.oppla.ai`
+- **Not tracking localhost**: Localhost tracking is disabled by default for development
 
 ## Next Steps
 
@@ -91,7 +173,13 @@ window.oppla.config({
   <Card title="Track Events" icon="chart-line" href="/analytics/track-events">
     Learn how to track custom events
   </Card>
-  <Card title="User Identification" icon="user" href="/tours/management">
-    Learn how to identify users in your tours
+  <Card title="Feature Flags" icon="toggle-on" href="/features/feature-flags">
+    Control feature rollouts and A/B tests
+  </Card>
+  <Card title="User Segments" icon="users" href="/analytics/segments">
+    Create user segments for targeted features
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/javascript-sdk">
+    Complete JavaScript SDK documentation
   </Card>
 </CardGroup>
