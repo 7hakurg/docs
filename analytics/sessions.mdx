@@ -1,189 +1,455 @@
 ---
-title: Sessions
-description: "Learn how Oppla automatically tracks and analyzes user sessions"
+title: Sessions & Cross-Device Tracking
+description: "Track user sessions across devices, platforms, and products with unified analytics"
 ---
 
-# Sessions
+# Sessions & Cross-Device Tracking
 
-Oppla automatically tracks user sessions to help you understand user behavior and engagement patterns. No additional configuration is needed beyond initializing Oppla.
+Oppla provides advanced session tracking with cross-device identification, session stitching, and unified user journey analytics. Track users seamlessly as they move between devices, browsers, and products.
+
+## Advanced Session Capabilities
+
+<CardGroup cols={2}>
+  <Card title="Cross-Device Tracking" icon="devices">
+    Track users across mobile, desktop, and tablet seamlessly
+  </Card>
+  <Card title="Session Stitching" icon="link">
+    Automatically connect anonymous and identified sessions
+  </Card>
+  <Card title="Multi-Product Sessions" icon="grid">
+    Track sessions across multiple products and platforms
+  </Card>
+  <Card title="IP Geolocation" icon="globe">
+    Automatic location tracking via ipapi.co integration
+  </Card>
+</CardGroup>
 
 ## What are Sessions?
 
-A session in Oppla represents a continuous period of user activity on your website or application. Sessions help you understand:
+Sessions in Oppla represent continuous periods of user activity with advanced features:
 
-- How users interact with your content
-- When and how users engage with features
-- User journey patterns and flow
-- Conversion and drop-off points
+- **Cross-Device Journey**: Track users across all their devices
+- **Unified Identity**: Connect anonymous and authenticated sessions
+- **Real-Time Tracking**: Monitor active sessions as they happen
+- **Smart Attribution**: Understand true conversion paths across devices
+- **Session Replay**: Reconstruct user journeys across touchpoints
 
-## Automatic Session Tracking
+## Cross-Device User Identification
 
-Sessions are tracked automatically once Oppla is initialized:
+### Identifying Users Across Devices
+
+Connect user sessions across all devices:
 
 ```javascript
-// Browser implementation
-window.oppla.init({
-  projectId: 'your-project-id'
+// When user logs in on any device
+window.oppla.identify('user_123', {
+  email: 'user@example.com',
+  name: 'John Doe',
+  plan: 'premium',
+  // Device-specific attributes
+  device: {
+    type: getDeviceType(), // 'mobile', 'desktop', 'tablet'
+    id: getDeviceId(),
+    platform: navigator.platform
+  }
 });
 
-// Node.js implementation
-oppla.init({
-  projectId: 'your-project-id'
+// This automatically:
+// 1. Links current session to user_123
+// 2. Connects all past anonymous sessions
+// 3. Enables cross-device tracking
+// 4. Enriches with IP geolocation
+```
+
+### Session Stitching
+
+Oppla automatically stitches sessions when users authenticate:
+
+```javascript
+// Anonymous session (before login)
+window.oppla.track('product_viewed', {
+  productId: 'prod_123',
+  sessionId: 'anon_session_456' // Automatic
+});
+
+// User logs in
+window.oppla.identify('user_123', {
+  email: 'user@example.com'
+});
+// Previous anonymous events are now linked to user_123
+
+// Continued tracking (after login)
+window.oppla.track('product_purchased', {
+  productId: 'prod_123',
+  sessionId: 'auth_session_789' // Automatic
 });
 ```
 
-## Session Events
+## Enhanced Session Events
 
-Oppla automatically tracks these session events:
+Oppla tracks comprehensive session data with cross-device context:
 
 ```javascript
-// Session Started
+// Session Started (with enrichment)
 {
   event: 'session_started',
   properties: {
     timestamp: '2024-03-20T10:00:00Z',
-    sessionId: 'abc123',
+    sessionId: 'sess_abc123',
+    userId: 'user_123', // If identified
+    deviceId: 'device_456',
     referrer: 'https://google.com',
-    userAgent: 'Mozilla/5.0...'
+    userAgent: 'Mozilla/5.0...',
+    // IP Geolocation (automatic)
+    location: {
+      ip: '192.168.1.1',
+      country: 'United States',
+      region: 'California',
+      city: 'San Francisco',
+      lat: 37.7749,
+      lon: -122.4194
+    },
+    // Device context
+    device: {
+      type: 'mobile',
+      os: 'iOS',
+      browser: 'Safari',
+      screenResolution: '390x844'
+    },
+    // Cross-device context
+    crossDevice: {
+      isReturning: true,
+      lastDevice: 'desktop',
+      totalDevices: 3
+    }
   }
 }
 
-// Session Ended
+// Cross-Device Session Link
 {
-  event: 'session_ended',
+  event: 'session_linked',
   properties: {
-    timestamp: '2024-03-20T10:30:00Z',
-    sessionId: 'abc123',
-    duration: 1800, // seconds
-    pageViews: 5
+    currentSession: 'sess_mobile_123',
+    linkedSessions: ['sess_desktop_456', 'sess_tablet_789'],
+    userId: 'user_123',
+    linkMethod: 'authentication' // or 'fingerprint', 'email_link'
   }
 }
 
-// Session Extended
+// Session Handoff (device switch)
 {
-  event: 'session_extended',
+  event: 'session_handoff',
   properties: {
-    timestamp: '2024-03-20T10:15:00Z',
-    sessionId: 'abc123',
-    extensionCount: 1
+    fromDevice: 'mobile',
+    toDevice: 'desktop',
+    handoffMethod: 'qr_code', // or 'email_link', 'deep_link'
+    continuityScore: 0.95 // Confidence in session continuity
   }
 }
 ```
 
-## Tracking Events
+## Cross-Device Tracking Implementation
 
-### Using Data Attributes
+### Mobile App Tracking
 
-To track events, simply add a special data property to the element you want to track:
-
-```html
-<!-- Basic event tracking -->
-<button id="signup-button" data-oppla-event="Signup button">
-  Sign up
-</button>
-
-<!-- Event tracking with additional data -->
-<button 
-  id="signup-button" 
-  data-oppla-event="Signup button"
-  data-oppla-event-email="bob@aol.com"
-  data-oppla-event-id="123">
-  Sign up
-</button>
-```
-
-The additional properties will be recorded with the event:
-```javascript
-{
-  event: 'Signup button',
-  properties: {
-    email: 'bob@aol.com',
-    id: '123'
-  }
-}
-```
-
-### Using JavaScript
-
-You can also track events manually using the Oppla object:
+Track mobile sessions with device context:
 
 ```javascript
-// Browser implementation
-const button = document.getElementById('signup-button');
-button.onclick = () => window.oppla.track('Signup button');
+// React Native
+import OPPLATracker from '@oppla/react-native';
 
-// With additional properties
-button.onclick = () => window.oppla.track('Signup button', {
-  email: 'bob@aol.com',
-  id: '123'
+OPPLATracker.initialize({
+  productId: 'prod_mobile_app',
+  enableCrossDevice: true
 });
 
-// Node.js implementation
-oppla.track('Signup button', {
-  email: 'bob@aol.com',
-  id: '123'
+// Track with device context
+OPPLATracker.track('app_opened', {
+  deviceId: getDeviceId(),
+  platform: Platform.OS,
+  appVersion: getVersion()
+});
+
+// Link to web session
+OPPLATracker.linkWebSession({
+  webSessionId: 'sess_web_123',
+  method: 'deep_link'
 });
 ```
 
-### Important Notes
+### Desktop Tracking
 
-1. **Data Attributes**:
-   - Event data cannot be sent without an event name
-   - All event data will be saved as strings
-   - Other event listeners inside the element will not be triggered
+Desktop session with cross-device awareness:
 
-2. **JavaScript Method**:
-   - Use for dynamic data
-   - Supports all data types (numbers, dates, booleans, etc.)
-   - Allows for more complex tracking logic
+```javascript
+// Desktop web app
+window.oppla.track('session_started', {
+  device: 'desktop',
+  screenResolution: `${screen.width}x${screen.height}`,
+  // Check for mobile sessions
+  checkCrossDevice: true
+});
 
-## Viewing Events
+// Generate QR code for mobile continuation
+const qrData = window.oppla.generateSessionHandoff({
+  targetDevice: 'mobile',
+  expiresIn: 300 // 5 minutes
+});
+```
 
-Tracked events are available in your Oppla dashboard:
+### Session Continuity
 
-1. Navigate to the Events page
-2. View event properties under the Properties tab
-3. See a breakdown of all custom data values
+Maintain session continuity across devices:
+
+```javascript
+// Save session for cross-device access
+window.oppla.saveSessionForDevice({
+  userId: 'user_123',
+  sessionData: {
+    cart: getCartItems(),
+    preferences: getUserPreferences(),
+    progress: getCurrentProgress()
+  }
+});
+
+// Restore on another device
+window.oppla.restoreSession({
+  userId: 'user_123',
+  merge: true // Merge with current session
+});
+```
+
+## Advanced Session Analytics
+
+### Cross-Device Funnels
+
+Track conversion funnels across devices:
+
+```javascript
+// Track funnel step with device context
+window.oppla.track('funnel_step', {
+  funnel: 'purchase_flow',
+  step: 2,
+  stepName: 'add_to_cart',
+  device: getCurrentDevice(),
+  // Previous steps on other devices
+  crossDeviceJourney: [
+    { step: 1, device: 'mobile', timestamp: '2024-01-01T10:00:00Z' }
+  ]
+});
+
+// Analyze cross-device conversion
+const funnelAnalysis = await oppla.analyzeFunnel({
+  funnel: 'purchase_flow',
+  includeCrossDevice: true,
+  attribution: 'last_touch' // or 'linear', 'time_decay'
+});
+```
+
+### Device Switching Patterns
+
+Analyze how users switch between devices:
+
+```javascript
+// Track device switch
+window.oppla.track('device_switched', {
+  from: getPreviousDevice(),
+  to: getCurrentDevice(),
+  reason: 'user_initiated', // or 'session_timeout', 'app_switch'
+  sessionContinuity: true,
+  timeBetweenDevices: 120 // seconds
+});
+
+// Common patterns
+window.oppla.track('device_pattern', {
+  pattern: 'research_mobile_purchase_desktop',
+  devices: ['mobile', 'desktop'],
+  totalTime: 3600, // 1 hour
+  conversions: 1
+});
+```
+
+### Multi-Product Sessions
+
+Track sessions across multiple products:
+
+```javascript
+// Product A (Web App)
+window.oppla.track('cross_product_session', {
+  currentProduct: 'web_app',
+  userId: 'user_123',
+  sessionFlow: ['landing_page', 'signup', 'dashboard']
+});
+
+// Product B (Mobile App)
+OPPLATracker.track('cross_product_session', {
+  currentProduct: 'mobile_app',
+  userId: 'user_123',
+  previousProduct: 'web_app',
+  continuationMethod: 'push_notification'
+});
+
+// Product C (API)
+oppla.track('cross_product_session', {
+  currentProduct: 'api',
+  userId: 'user_123',
+  apiClient: 'mobile_app',
+  sessionChain: ['web_app', 'mobile_app', 'api']
+});
+```
+
+## Session Intelligence Dashboard
+
+### Cross-Device Analytics
+
+View comprehensive cross-device metrics:
+
+1. **Device Distribution**: See how users split across devices
+2. **Journey Maps**: Visualize cross-device user paths
+3. **Attribution Models**: Understand conversion attribution
+4. **Session Timeline**: View unified session history
+5. **Device Cohorts**: Analyze behavior by device combinations
+
+### Real-Time Session Monitoring
+
+Monitor active sessions across all devices:
+
+```javascript
+// Real-time session feed
+const activeSessions = await oppla.getActiveSessions({
+  includeCrossDevice: true,
+  groupByUser: true
+});
+
+// Returns
+{
+  "user_123": {
+    "devices": ["mobile", "desktop"],
+    "sessions": [
+      {
+        "device": "mobile",
+        "started": "2024-01-01T10:00:00Z",
+        "location": "San Francisco, CA",
+        "active": true
+      },
+      {
+        "device": "desktop",
+        "started": "2024-01-01T10:05:00Z",
+        "location": "San Francisco, CA",
+        "active": true
+      }
+    ],
+    "isMultiDevice": true
+  }
+}
+```
 
 ## Best Practices
 
-1. **Initialize Early**: 
-   - Initialize Oppla as early as possible in your application
-   - This ensures accurate session tracking from the start
+### 1. User Identification Strategy
 
-2. **Track Key Milestones**:
-   - First interaction
-   - Feature discovery
-   - Conversion attempts
-   - Goal completion
+```javascript
+// Identify users consistently across devices
+const identifyUser = (userId, userData) => {
+  // Always include email for cross-device matching
+  window.oppla.identify(userId, {
+    email: userData.email, // Key for cross-device
+    ...userData,
+    identifiedAt: new Date().toISOString(),
+    identificationMethod: getIdentificationMethod()
+  });
+};
+```
 
-3. **Monitor Session Quality**:
-   - Bounce rates
-   - Time on site
-   - Page views per session
-   - Conversion rates
+### 2. Handle Device Transitions
 
-4. **Analyze User Paths**:
-   - Common entry points
-   - Popular navigation patterns
-   - Drop-off points
-   - Conversion paths
+```javascript
+// Smooth device handoff
+const initiateDeviceHandoff = async () => {
+  const handoffToken = await window.oppla.createHandoffToken({
+    currentSession: getSessionId(),
+    expiresIn: 300,
+    targetDevices: ['mobile', 'tablet']
+  });
+  
+  // Display QR code or send email
+  displayHandoffQR(handoffToken);
+};
+```
+
+### 3. Privacy Considerations
+
+```javascript
+// Respect user privacy preferences
+window.oppla.configure({
+  crossDeviceTracking: getUserConsent('cross_device'),
+  ipGeolocation: getUserConsent('location'),
+  sessionRecording: getUserConsent('recording')
+});
+```
+
+### 4. Session Quality Metrics
+
+Monitor cross-device session quality:
+
+- **Multi-Device Users**: Percentage using multiple devices
+- **Device Switching Rate**: How often users switch
+- **Cross-Device Conversion**: Conversion rates for multi-device users
+- **Session Continuity**: Success rate of session handoffs
+- **Device Attribution**: Which devices drive conversions
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| **Sessions not linking** | Ensure users are identified with same ID across devices |
+| **Missing device context** | Check that device detection is enabled |
+| **Incorrect attribution** | Verify attribution model settings |
+| **Session timeout** | Adjust session timeout settings for your use case |
+
+### Debug Mode
+
+```javascript
+// Enable cross-device debug mode
+localStorage.setItem('oppla.crossdevice.debug', 'true');
+
+// Log all session events
+window.oppla.onSessionEvent = (event) => {
+  console.log('[Oppla Session]', event);
+};
+```
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
-    title="Compare Metrics"
-    icon="chart-line"
-    href="/analytics/compare"
+    title="Real-Time Analytics"
+    icon="bolt"
+    href="/analytics/real-time-analytics"
   >
-    Compare session metrics over time
+    Monitor sessions in real-time
   </Card>
   <Card
-    title="Data Tags"
-    icon="tag"
-    href="/analytics/data-tags"
+    title="Multi-Product Setup"
+    icon="grid"
+    href="/analytics/multi-product-setup"
   >
-    Organize your session data with tags
+    Track across multiple products
+  </Card>
+  <Card
+    title="User Journey"
+    icon="route"
+    href="/analytics/user-journey"
+  >
+    Analyze cross-device journeys
+  </Card>
+  <Card
+    title="Privacy Settings"
+    icon="shield"
+    href="/analytics/privacy"
+  >
+    Configure privacy and consent
   </Card>
 </CardGroup> 

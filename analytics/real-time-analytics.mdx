@@ -1,0 +1,606 @@
+---
+title: "Real-Time Analytics"
+description: "Monitor user activity, track metrics, and respond to events as they happen with Oppla's real-time analytics"
+---
+
+# Real-Time Analytics
+
+Oppla's real-time analytics provides instant visibility into user behavior, enabling you to monitor activity as it happens, detect issues immediately, and respond to opportunities in real-time.
+
+## Real-Time Capabilities
+
+<CardGroup cols={2}>
+  <Card title="Live User Activity" icon="users">
+    See who's using your product right now and what they're doing
+  </Card>
+  <Card title="Instant Metrics" icon="gauge">
+    Track KPIs with sub-second latency and live updates
+  </Card>
+  <Card title="Real-Time Alerts" icon="bell">
+    Get notified immediately when important events occur
+  </Card>
+  <Card title="Live Debugging" icon="bug">
+    Debug issues as users experience them
+  </Card>
+</CardGroup>
+
+## Live Dashboard
+
+### Active Users
+
+Monitor users currently on your product:
+
+```javascript
+// Real-time user presence tracking
+window.oppla.track('user.active', {
+  page: window.location.pathname,
+  activity: 'browsing',
+  lastAction: Date.now()
+});
+
+// Heartbeat for accurate presence
+setInterval(() => {
+  window.oppla.track('heartbeat', {
+    page: window.location.pathname,
+    sessionDuration: getSessionDuration()
+  });
+}, 30000); // Every 30 seconds
+```
+
+### Live Metrics
+
+Track metrics with instant updates:
+
+```javascript
+// Real-time conversion tracking
+window.oppla.track('conversion.live', {
+  step: 'checkout',
+  value: 99.99,
+  timestamp: Date.now()
+});
+
+// Instant performance metrics
+window.oppla.track('performance.live', {
+  metric: 'page_load',
+  value: performance.now(),
+  url: window.location.href
+});
+```
+
+## Real-Time User Monitoring
+
+### Session Tracking
+
+Monitor active sessions in real-time:
+
+```javascript
+// Session start
+window.oppla.track('session.started', {
+  entryPage: window.location.pathname,
+  referrer: document.referrer,
+  campaign: getUTMParams(),
+  device: getDeviceInfo()
+});
+
+// Session activity
+window.oppla.track('session.active', {
+  currentPage: window.location.pathname,
+  duration: getSessionDuration(),
+  pageViews: pageViewCount,
+  events: eventCount
+});
+
+// Session end
+window.addEventListener('beforeunload', () => {
+  window.oppla.track('session.ended', {
+    exitPage: window.location.pathname,
+    duration: getSessionDuration(),
+    bounced: pageViewCount === 1
+  });
+});
+```
+
+### User Journey Tracking
+
+Follow users through your product in real-time:
+
+```javascript
+// Track navigation in real-time
+const trackNavigation = (to, from) => {
+  window.oppla.track('navigation.live', {
+    from: from,
+    to: to,
+    method: 'spa', // or 'page_load'
+    timestamp: Date.now(),
+    sessionFlow: getSessionFlow()
+  });
+};
+
+// Track interactions
+document.addEventListener('click', (e) => {
+  if (e.target.matches('[data-track]')) {
+    window.oppla.track('interaction.live', {
+      element: e.target.dataset.track,
+      type: 'click',
+      page: window.location.pathname,
+      coordinates: { x: e.clientX, y: e.clientY }
+    });
+  }
+});
+```
+
+## Real-Time Alerts
+
+### Threshold Alerts
+
+Set up instant notifications for metric thresholds:
+
+```javascript
+// Monitor conversion rate
+const checkConversionRate = async () => {
+  const rate = await oppla.getMetric('conversion_rate', { 
+    window: '5_minutes' 
+  });
+  
+  if (rate < 0.02) { // Below 2%
+    window.oppla.trigger('alert.conversion_drop', 'auto_alert', {
+      currentRate: rate,
+      threshold: 0.02,
+      severity: 'high',
+      timestamp: Date.now()
+    });
+  }
+};
+
+// Monitor error rate
+window.addEventListener('error', (e) => {
+  window.oppla.track('error.live', {
+    message: e.message,
+    source: e.filename,
+    severity: 'error'
+  });
+  
+  // Trigger alert if error spike
+  checkErrorRate();
+});
+```
+
+### Anomaly Detection
+
+Detect unusual patterns in real-time:
+
+```javascript
+// Traffic anomaly detection
+const detectTrafficAnomaly = async () => {
+  const current = await oppla.getMetric('active_users', {
+    window: 'now'
+  });
+  
+  const baseline = await oppla.getMetric('active_users', {
+    window: 'same_time_last_week'
+  });
+  
+  const deviation = Math.abs(current - baseline) / baseline;
+  
+  if (deviation > 0.5) { // 50% deviation
+    window.oppla.trigger('anomaly.traffic', 'auto_anomaly', {
+      current: current,
+      expected: baseline,
+      deviation: deviation * 100,
+      type: current > baseline ? 'spike' : 'drop'
+    });
+  }
+};
+```
+
+## Live Feature Monitoring
+
+### Feature Flag Performance
+
+Monitor feature rollouts in real-time:
+
+```javascript
+// Track feature flag evaluation in real-time
+const monitorFeatureFlag = (flagName) => {
+  const isEnabled = window.oppla.getFeatureFlagStatus(flagName);
+  
+  window.oppla.track('feature.evaluated.live', {
+    flag: flagName,
+    value: isEnabled,
+    timestamp: Date.now(),
+    user: getUserSegment()
+  });
+  
+  // Track feature performance
+  if (isEnabled) {
+    measureFeaturePerformance(flagName);
+  }
+};
+
+// Real-time feature adoption
+const trackFeatureAdoption = (feature) => {
+  window.oppla.track('feature.adopted.live', {
+    feature: feature,
+    timeToAdopt: getTimeToAdopt(),
+    userSegment: getUserSegment(),
+    success: true
+  });
+};
+```
+
+### Experiment Monitoring
+
+Track experiments as they run:
+
+```javascript
+// Real-time experiment tracking
+const variant = window.oppla.getExperimentStatus('checkout-test');
+
+// Track variant exposure
+window.oppla.track('experiment.exposed.live', {
+  experiment: 'checkout-test',
+  variant: variant,
+  timestamp: Date.now()
+});
+
+// Track conversion in real-time
+window.oppla.track('experiment.converted.live', {
+  experiment: 'checkout-test',
+  variant: variant,
+  conversionValue: 99.99,
+  timeToConvert: getTimeToConvert()
+});
+
+// Monitor experiment health
+const checkExperimentHealth = async () => {
+  const stats = await oppla.getExperimentStats('checkout-test', {
+    window: 'last_hour'
+  });
+  
+  if (stats.sampleRateImbalance > 0.1) {
+    window.oppla.trigger('experiment.imbalanced', 'auto_experiment', {
+      experiment: 'checkout-test',
+      stats: stats
+    });
+  }
+};
+```
+
+## Performance Monitoring
+
+### Real-Time Performance Metrics
+
+Track application performance continuously:
+
+```javascript
+// Core Web Vitals monitoring
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    window.oppla.track('performance.webvital.live', {
+      metric: entry.name,
+      value: entry.value,
+      rating: getRating(entry.name, entry.value),
+      page: window.location.pathname
+    });
+  }
+});
+
+observer.observe({ 
+  entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift'] 
+});
+
+// API performance tracking
+const trackAPICall = async (endpoint, method) => {
+  const startTime = performance.now();
+  
+  try {
+    const response = await fetch(endpoint, { method });
+    const duration = performance.now() - startTime;
+    
+    window.oppla.track('api.performance.live', {
+      endpoint: endpoint,
+      method: method,
+      duration: duration,
+      status: response.status,
+      success: response.ok
+    });
+    
+    // Alert if slow
+    if (duration > 3000) {
+      window.oppla.trigger('api.slow', 'auto_perf', {
+        endpoint: endpoint,
+        duration: duration
+      });
+    }
+    
+    return response;
+  } catch (error) {
+    window.oppla.track('api.error.live', {
+      endpoint: endpoint,
+      error: error.message
+    });
+    throw error;
+  }
+};
+```
+
+## Real-Time Dashboards
+
+### WebSocket Connection
+
+Connect to real-time data stream:
+
+```javascript
+// Connect to Oppla real-time stream
+const connectRealTime = () => {
+  const ws = new WebSocket('wss://realtime.oppla.ai/stream');
+  
+  ws.onopen = () => {
+    // Subscribe to metrics
+    ws.send(JSON.stringify({
+      action: 'subscribe',
+      metrics: ['active_users', 'events_per_second', 'conversion_rate'],
+      productId: 'YOUR_PRODUCT_ID'
+    }));
+  };
+  
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    updateDashboard(data);
+  };
+  
+  ws.onerror = (error) => {
+    console.error('Real-time connection error:', error);
+    // Reconnect logic
+    setTimeout(connectRealTime, 5000);
+  };
+};
+```
+
+### Live Updates
+
+Update UI with real-time data:
+
+```javascript
+// React component for real-time metrics
+function RealTimeMetrics() {
+  const [metrics, setMetrics] = useState({
+    activeUsers: 0,
+    eventsPerSecond: 0,
+    conversionRate: 0
+  });
+  
+  useEffect(() => {
+    const ws = new WebSocket('wss://realtime.oppla.ai/stream');
+    
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setMetrics(prev => ({
+        ...prev,
+        ...data
+      }));
+    };
+    
+    return () => ws.close();
+  }, []);
+  
+  return (
+    <div className="real-time-dashboard">
+      <MetricCard 
+        title="Active Users" 
+        value={metrics.activeUsers} 
+        live={true}
+      />
+      <MetricCard 
+        title="Events/Second" 
+        value={metrics.eventsPerSecond} 
+        live={true}
+      />
+      <MetricCard 
+        title="Conversion Rate" 
+        value={`${(metrics.conversionRate * 100).toFixed(2)}%`} 
+        live={true}
+      />
+    </div>
+  );
+}
+```
+
+## Debugging & Troubleshooting
+
+### Real-Time Debug Mode
+
+Enable live debugging:
+
+```javascript
+// Enable real-time debug mode
+localStorage.setItem('oppla.realtime.debug', 'true');
+
+// Log all real-time events
+window.oppla.onRealtimeEvent = (event) => {
+  console.log('[Oppla Real-Time]', event);
+  
+  // Display in debug panel
+  if (window.debugPanel) {
+    window.debugPanel.log(event);
+  }
+};
+
+// Monitor specific user
+window.oppla.debugUser('user_123', {
+  logEvents: true,
+  logSessions: true,
+  logErrors: true
+});
+```
+
+### Performance Profiling
+
+Profile real-time performance:
+
+```javascript
+// Measure real-time latency
+const measureLatency = () => {
+  const timestamp = Date.now();
+  
+  window.oppla.track('latency.test', {
+    clientTime: timestamp
+  }, {
+    callback: (serverTime) => {
+      const latency = serverTime - timestamp;
+      console.log(`Real-time latency: ${latency}ms`);
+      
+      if (latency > 1000) {
+        console.warn('High latency detected');
+      }
+    }
+  });
+};
+
+// Run latency test every minute
+setInterval(measureLatency, 60000);
+```
+
+## Best Practices
+
+### 1. Optimize Event Frequency
+
+Balance real-time updates with performance:
+
+```javascript
+// Throttle high-frequency events
+const throttle = (func, delay) => {
+  let timeoutId;
+  let lastExecTime = 0;
+  
+  return (...args) => {
+    const currentTime = Date.now();
+    
+    if (currentTime - lastExecTime > delay) {
+      func.apply(this, args);
+      lastExecTime = currentTime;
+    } else {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func.apply(this, args);
+        lastExecTime = Date.now();
+      }, delay - (currentTime - lastExecTime));
+    }
+  };
+};
+
+// Throttled scroll tracking
+const trackScroll = throttle(() => {
+  window.oppla.track('scroll.live', {
+    position: window.scrollY,
+    percentage: (window.scrollY / document.body.scrollHeight) * 100
+  });
+}, 1000); // Max once per second
+```
+
+### 2. Handle Connection Issues
+
+Implement robust error handling:
+
+```javascript
+// Reconnection logic
+class RealTimeConnection {
+  constructor() {
+    this.reconnectAttempts = 0;
+    this.maxReconnectAttempts = 5;
+    this.connect();
+  }
+  
+  connect() {
+    this.ws = new WebSocket('wss://realtime.oppla.ai/stream');
+    
+    this.ws.onclose = () => {
+      if (this.reconnectAttempts < this.maxReconnectAttempts) {
+        const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
+        setTimeout(() => this.connect(), delay);
+        this.reconnectAttempts++;
+      }
+    };
+    
+    this.ws.onopen = () => {
+      this.reconnectAttempts = 0;
+    };
+  }
+}
+```
+
+### 3. Efficient Data Management
+
+Manage real-time data efficiently:
+
+```javascript
+// Use circular buffer for real-time data
+class RealTimeBuffer {
+  constructor(maxSize = 1000) {
+    this.buffer = [];
+    this.maxSize = maxSize;
+  }
+  
+  add(data) {
+    this.buffer.push({
+      ...data,
+      timestamp: Date.now()
+    });
+    
+    if (this.buffer.length > this.maxSize) {
+      this.buffer.shift(); // Remove oldest
+    }
+  }
+  
+  getRecent(count = 100) {
+    return this.buffer.slice(-count);
+  }
+  
+  clear() {
+    this.buffer = [];
+  }
+}
+```
+
+## Use Cases
+
+### E-commerce
+
+Monitor shopping behavior in real-time:
+- Cart abandonment alerts
+- Flash sale performance
+- Checkout funnel monitoring
+- Inventory threshold alerts
+
+### SaaS
+
+Track application usage live:
+- Feature adoption rates
+- API usage spikes
+- Error rate monitoring
+- User onboarding progress
+
+### Media
+
+Analyze content engagement:
+- Live viewership counts
+- Content popularity trends
+- Engagement drop-off points
+- Social sharing velocity
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Automation Triggers" icon="bolt" href="/analytics/automation-triggers">
+    Set up automated responses to real-time events
+  </Card>
+  <Card title="Custom Dashboards" icon="chart-mixed" href="/analytics/dashboards">
+    Build custom real-time dashboards
+  </Card>
+  <Card title="Alert Configuration" icon="bell" href="/analytics/alerts">
+    Configure intelligent alerting rules
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/realtime">
+    Real-time API documentation
+  </Card>
+</CardGroup>

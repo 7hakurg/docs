@@ -1,0 +1,591 @@
+---
+title: "Automation Triggers"
+description: "Automate actions based on user behavior, analytics events, and data thresholds"
+---
+
+# Automation Triggers
+
+Oppla's Automation Triggers enable you to create powerful workflows that respond to user behavior in real-time. Connect analytics events to automated actions like emails, notifications, feature changes, and integrations with third-party services.
+
+## Overview
+
+<CardGroup cols={2}>
+  <Card title="Real-Time Actions" icon="bolt">
+    Trigger instant responses to user behavior and system events
+  </Card>
+  <Card title="Complex Workflows" icon="diagram-project">
+    Build multi-step automations with conditions and branches
+  </Card>
+  <Card title="Integrations" icon="plug">
+    Connect to email, Slack, webhooks, and 100+ services
+  </Card>
+  <Card title="Smart Targeting" icon="bullseye">
+    Target specific user segments with personalized actions
+  </Card>
+</CardGroup>
+
+## Quick Start
+
+### 1. Create an Automation
+
+In your Oppla Dashboard:
+1. Navigate to **Automations** → **Create Automation**
+2. Choose a trigger type:
+   - **Event-based**: User performs specific action
+   - **Threshold-based**: Metric reaches certain value
+   - **Time-based**: Scheduled or recurring
+   - **Segment-based**: User enters/exits segment
+
+### 2. Define Trigger Conditions
+
+Set when the automation fires:
+
+```javascript
+{
+  "trigger": {
+    "type": "event",
+    "event": "trial_ending",
+    "conditions": {
+      "days_until_expiry": 3,
+      "usage_percentage": ">= 50",
+      "plan": "trial"
+    }
+  }
+}
+```
+
+### 3. Configure Actions
+
+Define what happens when triggered:
+
+```javascript
+{
+  "actions": [
+    {
+      "type": "email",
+      "template": "trial_ending_engaged",
+      "delay": 0
+    },
+    {
+      "type": "feature_flag",
+      "flag": "show_upgrade_banner",
+      "value": true
+    },
+    {
+      "type": "webhook",
+      "url": "https://api.example.com/notify",
+      "delay": "1_hour"
+    }
+  ]
+}
+```
+
+## Implementation
+
+### Basic HTML Trigger
+
+Add triggers to any element:
+
+```html expandable
+<!-- Button with automation trigger -->
+<button 
+  data-oppla-trigger="upgrade-clicked"
+  data-oppla-automation-id="auto_123"
+  data-oppla-trigger-plan="premium"
+  data-oppla-trigger-price="99">
+  Upgrade to Premium
+</button>
+
+<!-- Form with trigger -->
+<form 
+  data-oppla-trigger="lead-captured"
+  data-oppla-automation-id="auto_456">
+  <input type="email" name="email" />
+  <button type="submit">Get Started</button>
+</form>
+```
+
+### JavaScript Triggers
+
+Programmatically fire triggers:
+
+```javascript expandable
+// Simple trigger
+window.oppla.trigger('cart-abandoned', 'auto_789', {
+  cart_value: 299.99,
+  items: 3,
+  user_segment: 'high_value'
+});
+
+// Conditional trigger
+if (userIdleTime > 300000) { // 5 minutes
+  window.oppla.trigger('user-idle', 'auto_321', {
+    page: window.location.pathname,
+    idle_duration: userIdleTime
+  });
+}
+
+// Trigger with callback
+window.oppla.trigger('feature-used', 'auto_654', {
+  feature: 'advanced_search',
+  first_time: true
+}).then(() => {
+  console.log('Automation triggered successfully');
+});
+```
+
+## Trigger Types
+
+### Event-Based Triggers
+
+Respond to user actions:
+
+```javascript expandable
+// Purchase completed
+window.oppla.trigger('purchase-completed', 'auto_purchase', {
+  order_id: 'ord_123',
+  amount: 199.99,
+  items: ['product_a', 'product_b'],
+  customer_type: 'returning'
+});
+
+// Feature engagement
+window.oppla.trigger('feature-activated', 'auto_onboard', {
+  feature: 'ai_assistant',
+  activation_step: 3,
+  time_to_activate: 120 // seconds
+});
+
+// Error occurred
+window.oppla.trigger('error-encountered', 'auto_support', {
+  error_code: 'PAYMENT_FAILED',
+  user_action: 'checkout',
+  retry_count: 2
+});
+```
+
+### Threshold-Based Triggers
+
+Monitor metrics and limits:
+
+```javascript expandable
+// Usage threshold
+if (apiCallsToday >= 900) {
+  window.oppla.trigger('usage-limit-approaching', 'auto_usage', {
+    current_usage: apiCallsToday,
+    limit: 1000,
+    percentage: 90
+  });
+}
+
+// Performance threshold
+if (pageLoadTime > 3000) {
+  window.oppla.trigger('slow-performance', 'auto_perf', {
+    page: window.location.pathname,
+    load_time: pageLoadTime,
+    threshold: 3000
+  });
+}
+```
+
+### Behavioral Triggers
+
+Track user patterns:
+
+```javascript expandable
+// Engagement patterns
+window.oppla.trigger('high-engagement', 'auto_engage', {
+  session_duration: 1800, // 30 minutes
+  pages_viewed: 15,
+  features_used: ['search', 'filter', 'export'],
+  engagement_score: 85
+});
+
+// Churn risk
+window.oppla.trigger('churn-risk-detected', 'auto_retention', {
+  last_login_days_ago: 14,
+  feature_usage_decline: 60, // 60% decrease
+  support_tickets: 3
+});
+```
+
+## Automation Workflows
+
+### Simple Workflow
+
+Linear automation flow:
+
+```javascript
+{
+  "workflow": {
+    "name": "Welcome Series",
+    "trigger": "user_registered",
+    "steps": [
+      {
+        "action": "email",
+        "template": "welcome_email",
+        "delay": 0
+      },
+      {
+        "action": "email",
+        "template": "getting_started",
+        "delay": "1_day"
+      },
+      {
+        "action": "email",
+        "template": "pro_tips",
+        "delay": "3_days"
+      }
+    ]
+  }
+}
+```
+
+### Conditional Workflow
+
+Branching based on conditions:
+
+```javascript expandable
+{
+  "workflow": {
+    "name": "Trial Nurture",
+    "trigger": "trial_started",
+    "steps": [
+      {
+        "condition": "user.engagement > 50",
+        "true_path": [
+          {
+            "action": "email",
+            "template": "power_user_tips"
+          },
+          {
+            "action": "feature_flag",
+            "flag": "advanced_features",
+            "value": true
+          }
+        ],
+        "false_path": [
+          {
+            "action": "email",
+            "template": "basic_onboarding"
+          },
+          {
+            "action": "in_app_message",
+            "message": "need_help_getting_started"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Multi-Channel Workflow
+
+Coordinate across channels:
+
+```javascript expandable
+{
+  "workflow": {
+    "name": "Cart Recovery",
+    "trigger": "cart_abandoned",
+    "steps": [
+      {
+        "action": "email",
+        "template": "cart_reminder",
+        "delay": "1_hour"
+      },
+      {
+        "condition": "email.not_opened",
+        "action": "push_notification",
+        "message": "items_in_cart",
+        "delay": "24_hours"
+      },
+      {
+        "condition": "cart.still_abandoned",
+        "action": "sms",
+        "template": "discount_offer",
+        "delay": "48_hours"
+      }
+    ]
+  }
+}
+```
+
+## Actions
+
+### Email Actions
+
+Send targeted emails:
+
+```javascript expandable
+{
+  "action": "email",
+  "config": {
+    "to": "{{user.email}}",
+    "template": "upgrade_reminder",
+    "personalization": {
+      "name": "{{user.name}}",
+      "plan": "{{user.current_plan}}",
+      "usage": "{{user.usage_percentage}}",
+      "savings": "{{calculate_savings}}"
+    },
+    "attachments": ["invoice.pdf"],
+    "track_opens": true,
+    "track_clicks": true
+  }
+}
+```
+
+### Slack Notifications
+
+Alert teams instantly:
+
+```javascript expandable
+{
+  "action": "slack",
+  "config": {
+    "channel": "#customer-success",
+    "message": "🎉 New enterprise signup!",
+    "blocks": [
+      {
+        "type": "section",
+        "text": "Company: {{user.company}}\nPlan: {{user.plan}}\nValue: ${{user.contract_value}}"
+      },
+      {
+        "type": "actions",
+        "buttons": [
+          {
+            "text": "View in CRM",
+            "url": "https://crm.example.com/{{user.id}}"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Webhook Actions
+
+Integrate with any service:
+
+```javascript expandable
+{
+  "action": "webhook",
+  "config": {
+    "url": "https://api.example.com/webhook",
+    "method": "POST",
+    "headers": {
+      "Authorization": "Bearer {{api_key}}",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "event": "{{trigger.name}}",
+      "user": "{{user}}",
+      "data": "{{trigger.data}}",
+      "timestamp": "{{timestamp}}"
+    },
+    "retry": {
+      "attempts": 3,
+      "backoff": "exponential"
+    }
+  }
+}
+```
+
+### Feature Flag Actions
+
+Dynamically control features:
+
+```javascript expandable
+{
+  "action": "feature_flag",
+  "config": {
+    "flag": "premium_features",
+    "value": true,
+    "duration": "7_days", // Temporary enablement
+    "revert_on": {
+      "event": "trial_ended",
+      "condition": "user.converted === false"
+    }
+  }
+}
+```
+
+## Advanced Features
+
+### Batch Processing
+
+Handle multiple triggers efficiently:
+
+```javascript expandable
+// Batch similar triggers
+window.oppla.batchTriggers([
+  {
+    name: 'item-viewed',
+    automationId: 'auto_123',
+    data: { item_id: 'prod_1', category: 'electronics' }
+  },
+  {
+    name: 'item-viewed',
+    automationId: 'auto_123',
+    data: { item_id: 'prod_2', category: 'electronics' }
+  }
+]);
+```
+
+### Rate Limiting
+
+Prevent automation spam:
+
+```javascript
+{
+  "automation": {
+    "rate_limit": {
+      "max_triggers_per_user": 3,
+      "window": "24_hours",
+      "action_on_limit": "queue" // or "drop", "alert"
+    }
+  }
+}
+```
+
+### A/B Testing Automations
+
+Test different automation strategies:
+
+```javascript expandable
+{
+  "automation": {
+    "name": "Onboarding Flow",
+    "ab_test": {
+      "variant_a": {
+        "weight": 50,
+        "actions": ["email_series_a", "in_app_tour"]
+      },
+      "variant_b": {
+        "weight": 50,
+        "actions": ["video_tutorial", "live_chat_offer"]
+      }
+    },
+    "success_metric": "activation_rate"
+  }
+}
+```
+
+## Monitoring & Analytics
+
+### Automation Performance
+
+Track automation effectiveness:
+
+```javascript
+// Dashboard metrics
+{
+  "automation_id": "auto_123",
+  "metrics": {
+    "triggers_today": 1523,
+    "success_rate": 0.94,
+    "avg_completion_time": "2.3s",
+    "conversions": 89,
+    "revenue_impact": 15670
+  }
+}
+```
+
+### Debug Mode
+
+Test automations safely:
+
+```javascript expandable
+// Enable debug mode
+window.oppla.debugAutomation('auto_123', true);
+
+// Trigger in debug mode (no actions executed)
+window.oppla.trigger('test-trigger', 'auto_123', {
+  test: true,
+  data: 'sample'
+});
+
+// View debug logs
+console.log(window.oppla.getAutomationLogs('auto_123'));
+```
+
+## Best Practices
+
+### 1. Start Simple
+
+Begin with basic automations:
+```
+✅ Good: Single trigger → Single action
+❌ Bad: Complex multi-branch workflow on day 1
+```
+
+### 2. Test Thoroughly
+
+Always test before enabling:
+```javascript
+// Test automation
+await oppla.testAutomation('auto_123', {
+  sample_user: 'test_user_1',
+  sample_data: { /* test data */ }
+});
+```
+
+### 3. Monitor Impact
+
+Track automation effects:
+```javascript
+// Monitor metrics before/after
+const metrics = {
+  before: { conversion: 0.03, retention: 0.65 },
+  after: { conversion: 0.045, retention: 0.72 },
+  improvement: { conversion: '+50%', retention: '+10.7%' }
+};
+```
+
+### 4. Document Automations
+
+Keep clear records:
+```javascript
+{
+  "automation": "auto_123",
+  "documentation": {
+    "purpose": "Recover abandoned carts",
+    "owner": "marketing@example.com",
+    "created": "2024-01-15",
+    "last_modified": "2024-02-01",
+    "dependencies": ["email_service", "discount_system"],
+    "expected_impact": "5-10% cart recovery"
+  }
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| **Automation not firing** | Check trigger conditions and user segments |
+| **Actions failing** | Verify API keys and webhook URLs |
+| **Duplicate triggers** | Implement deduplication logic |
+| **Performance impact** | Use async processing and rate limiting |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Automation Templates" icon="copy" href="/templates/automations">
+    Pre-built automation workflows
+  </Card>
+  <Card title="Integrations" icon="plug" href="/integrations">
+    Connect third-party services
+  </Card>
+  <Card title="Workflow Builder" icon="diagram-project" href="/tools/workflow-builder">
+    Visual automation designer
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/automations">
+    Automation API documentation
+  </Card>
+</CardGroup>

@@ -1,126 +1,257 @@
 ---
 title: Analytics Overview
-description: "Learn about Oppla's analytics features and capabilities"
+description: "Enterprise-grade product analytics with feature flags, experiments, and automation"
 ---
 
 # Analytics Overview
 
-Oppla's analytics platform helps you understand user behavior and make data-driven decisions.
+Oppla is a comprehensive product analytics platform that combines traditional analytics with advanced features like feature flags, A/B testing, automation triggers, and multi-product support. Built for modern product teams who need to move fast and make data-driven decisions.
 
-## Key Features
-
-### User Behavior Tracking
-
-Track how users interact with your product:
-
-- Page views and navigation patterns
-- Feature usage and engagement
-- User flows and conversion funnels
-- Custom event tracking
-
-### Session Analysis
-
-Analyze user sessions to understand behavior:
-
-- Session duration and frequency
-- User paths and navigation
-- Drop-off points and conversion rates
-- Real-time user activity
-
-### Data Comparison
-
-Compare metrics across different time periods:
-
-- Day-over-day analysis
-- Week-over-week trends
-- Month-over-month growth
-- Custom date range comparisons
-
-## Getting Started
+## Platform Capabilities
 
 <CardGroup cols={2}>
-  <Card
-    title="Add Your Website"
-    icon="globe"
-    href="/analytics/add-website"
-  >
-    Learn how to add Oppla to your website
+  <Card title="Feature Flags" icon="toggle-on">
+    Control feature rollouts, run targeted releases, and deliver personalized experiences
   </Card>
-  <Card
-    title="Track Events"
-    icon="chart-line"
-    href="/analytics/track-events"
-  >
-    Set up event tracking for your application
+  <Card title="Experiments & A/B Testing" icon="flask">
+    Run controlled experiments with statistical confidence and multivariate testing
+  </Card>
+  <Card title="Automation Triggers" icon="bolt">
+    Automate workflows based on user behavior with email, Slack, and webhook integrations
+  </Card>
+  <Card title="Multi-Product Analytics" icon="grid">
+    Manage multiple products from one dashboard with cross-product user tracking
   </Card>
 </CardGroup>
 
-## Advanced Features
+## Core Analytics Features
 
-### Data Tags
+### Real-Time User Tracking
 
-Use data tags to segment and analyze your data:
+Comprehensive tracking with advanced capabilities:
+
+- **Behavioral Analytics**: Page views, custom events, and user journeys
+- **IP Geolocation**: Automatic location detection via ipapi.co
+- **User Identification**: Cross-device and cross-product user tracking
+- **Session Recording**: Understand exactly how users interact with your product
+- **Performance Monitoring**: Track load times and technical metrics
+
+### Advanced Segmentation
+
+Powerful user segmentation and cohort analysis:
+
+- **Dynamic Segments**: Create segments based on any user attribute or behavior
+- **Cohort Analysis**: Track user retention and behavior over time
+- **Funnel Analysis**: Identify drop-off points in critical user flows
+- **Path Analysis**: Discover common user journeys and navigation patterns
+
+### Enterprise Features
+
+Built for scale and security:
+
+- **Multi-Tenant Support**: Perfect for SaaS platforms with customer isolation
+- **Team Permissions**: Granular access control per product and feature
+- **Data Privacy**: GDPR compliant with data anonymization options
+- **High Performance**: Handles millions of events with batching and optimization
+- **API Access**: Full REST API for custom integrations
+
+## Quick Start
+
+<CardGroup cols={3}>
+  <Card
+    title="Add Your Product"
+    icon="rocket"
+    href="/analytics/add-website"
+  >
+    Install the tracker in 2 minutes
+  </Card>
+  <Card
+    title="Feature Flags"
+    icon="toggle-on"
+    href="/analytics/feature-flags"
+  >
+    Control feature rollouts instantly
+  </Card>
+  <Card
+    title="Run Experiments"
+    icon="flask"
+    href="/analytics/experiments"
+  >
+    Start your first A/B test
+  </Card>
+</CardGroup>
+
+## Implementation Examples
+
+### Feature Flags in Action
+
+Control features without deploying:
 
 ```javascript
-// Browser implementation
-window.oppla.track('Button Clicked', {
-  buttonId: 'signup-button',
-  page: 'homepage',
-  category: 'conversion'
-});
+// Check feature status
+if (window.oppla.getFeatureFlagStatus('new-checkout')) {
+  renderNewCheckout();
+} else {
+  renderLegacyCheckout();
+}
 
-// Node.js implementation
-oppla.track('Button Clicked', {
-  buttonId: 'signup-button',
-  page: 'homepage',
-  category: 'conversion'
+// Target specific users
+window.oppla.identify('user_123', {
+  plan: 'premium',
+  company: 'Acme Corp'
+});
+// Premium users automatically get premium features
+```
+
+### Running Experiments
+
+Test variations with confidence:
+
+```javascript
+// Get experiment variant
+const variant = window.oppla.getExperimentStatus('pricing-test');
+
+if (variant === 'variant-a') {
+  showNewPricing();
+} else {
+  showOriginalPricing();
+}
+
+// Track conversion
+window.oppla.track('purchase-completed', {
+  experiment: 'pricing-test',
+  variant: variant,
+  revenue: 99.99
 });
 ```
 
-### Custom Properties
+### Automation Triggers
 
-Add custom properties to your events:
+Automate based on user behavior:
 
 ```javascript
-// Browser implementation
-window.oppla.track('Purchase Completed', {
-  orderId: '12345',
-  amount: 99.99,
-  currency: 'USD',
-  items: ['product1', 'product2']
-});
-
-// Node.js implementation
-oppla.track('Purchase Completed', {
-  orderId: '12345',
-  amount: 99.99,
-  currency: 'USD',
-  items: ['product1', 'product2']
-});
+// Trigger automation when user is at risk
+if (lastLoginDaysAgo > 14) {
+  window.oppla.trigger('churn-risk', 'auto_retention', {
+    user_id: userId,
+    days_inactive: lastLoginDaysAgo,
+    lifetime_value: userLTV
+  });
+  // Automatically sends win-back email and Slack alert
+}
 ```
 
-## Integration Options
+## Platform Architecture
 
-Oppla offers multiple integration methods:
+### Deployment Options
 
-- JavaScript SDK (Browser)
-- Node.js client (Server)
-- REST API
-- Google Tag Manager
+- **Tracker CDN**: Hosted on Cloudflare Pages (unlimited free requests)
+- **Backend API**: Scalable PostgreSQL with Neon
+- **Real-Time Processing**: Event batching and optimized delivery
+- **Global Distribution**: CDN delivery for < 50ms latency worldwide
+
+### Integration Methods
+
+<CardGroup cols={4}>
+  <Card
+    title="JavaScript"
+    icon="js"
+    href="/analytics/add-website"
+  >
+    Web tracking
+  </Card>
+  <Card
+    title="Node.js"
+    icon="node"
+    href="/analytics/node-client"
+  >
+    Server-side
+  </Card>
+  <Card
+    title="React/Vue"
+    icon="react"
+    href="/analytics/frameworks"
+  >
+    Frameworks
+  </Card>
+  <Card
+    title="REST API"
+    icon="code"
+    href="/api/events"
+  >
+    Direct API
+  </Card>
+</CardGroup>
+
+## Advanced Analytics
 
 <CardGroup cols={2}>
   <Card
-    title="Node Client"
-    icon="server"
-    href="/analytics/node-client"
+    title="Multi-Product Setup"
+    icon="grid"
+    href="/analytics/multi-product-setup"
   >
-    Server-side tracking with Node.js
+    Manage multiple products from one account
   </Card>
   <Card
-    title="Google Tag Manager"
-    icon="tag"
-    href="/analytics/google-tag-manager"
+    title="Automation Workflows"
+    icon="robot"
+    href="/analytics/automation-triggers"
   >
-    Integrate with Google Tag Manager
+    Build automated response workflows
+  </Card>
+  <Card
+    title="Real-Time Analytics"
+    icon="bolt"
+    href="/analytics/real-time"
+  >
+    Monitor user activity as it happens
+  </Card>
+  <Card
+    title="Cross-Device Tracking"
+    icon="devices"
+    href="/analytics/cross-device"
+  >
+    Track users across all their devices
+  </Card>
+</CardGroup>
+
+## Why Choose Oppla?
+
+### All-in-One Platform
+No need for separate tools for analytics, feature flags, and experiments. Everything works together seamlessly.
+
+### Built for Scale
+From startups to enterprise, Oppla handles millions of events efficiently with smart batching and optimization.
+
+### Developer-First
+Clean APIs, great documentation, and powerful debugging tools make integration a breeze.
+
+### Privacy-Focused
+GDPR compliant with data anonymization, cookie-less tracking options, and full data ownership.
+
+## Get Started Today
+
+<CardGroup cols={3}>
+  <Card
+    title="Documentation"
+    icon="book"
+    href="/analytics/add-website"
+  >
+    Complete setup guide
+  </Card>
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/api"
+  >
+    Full API documentation
+  </Card>
+  <Card
+    title="Support"
+    icon="headset"
+    href="/support"
+  >
+    Get help from our team
   </Card>
 </CardGroup> 

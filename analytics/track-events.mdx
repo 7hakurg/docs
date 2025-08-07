@@ -1,11 +1,11 @@
 ---
 title: Track Events
-description: "Learn how to track events and user interactions in Oppla"
+description: "Track user interactions, feature flags, experiments, and custom events with Oppla"
 ---
 
 # Track Events
 
-Learn how to track events and user interactions in your application using Oppla.
+Oppla provides comprehensive event tracking capabilities including standard events, feature flag interactions, experiment conversions, and automation triggers. All events are automatically enriched with user context, IP geolocation, and session data.
 
 ## Using Data Attributes
 
@@ -73,24 +73,23 @@ oppla.track('Purchase Completed', {
 });
 ```
 
-## Common Event Types
+## Standard Event Types
 
 ### Page Views
 
-Track page views automatically or manually:
+Track page views with automatic enrichment:
 
 ```javascript
-// Automatic tracking (configured in init)
-window.oppla.init({
-  projectId: 'your-project-id',
-  trackPageViews: true
-});
+// Automatic tracking (enabled by default)
+// Tracks: URL, referrer, title, session info, IP location
 
-// Manual tracking
+// Manual tracking with custom properties
 window.oppla.track('Page Viewed', {
   path: '/products',
   title: 'Products Page',
-  referrer: 'https://google.com'
+  referrer: document.referrer,
+  category: 'product_catalog',
+  searchQuery: 'premium plans'
 });
 ```
 
@@ -161,40 +160,280 @@ oppla.track('Product Viewed', {
 });
 ```
 
+## Feature Flag Events
+
+Track feature flag exposures and interactions:
+
+```javascript
+// Automatic tracking when checking flag status
+const isEnabled = window.oppla.getFeatureFlagStatus('new-feature');
+// Automatically tracks: { event: 'new-feature', flg_name: 'new-feature', flg_value: true }
+
+// Track feature interaction
+if (isEnabled) {
+  window.oppla.track('feature-interaction', {
+    feature: 'new-feature',
+    action: 'clicked',
+    variant: 'enabled',
+    interactionCount: 1
+  });
+}
+
+// Track feature adoption
+window.oppla.track('feature-adopted', {
+  feature: 'ai-assistant',
+  timeToAdopt: 120, // seconds
+  onboardingStep: 'completed'
+});
+```
+
+## Experiment Events
+
+Track experiment exposures and conversions:
+
+```javascript
+// Get experiment variant (automatically tracks exposure)
+const variant = window.oppla.getExperimentStatus('pricing-test');
+
+// Track conversion event
+window.oppla.track('experiment-conversion', {
+  experiment: 'pricing-test',
+  variant: variant,
+  action: 'purchase',
+  revenue: 99.99
+});
+
+// Track experiment interactions
+window.oppla.track('experiment-interaction', {
+  experiment: 'homepage-test',
+  variant: variant,
+  element: 'hero-cta',
+  timeOnPage: 45 // seconds
+});
+
+// Track guardrail metrics
+window.oppla.track('experiment-guardrail', {
+  experiment: 'performance-test',
+  variant: variant,
+  metric: 'page-load-time',
+  value: 1.2 // seconds
+});
+```
+
+## Automation Trigger Events
+
+Trigger automated workflows based on user behavior:
+
+```javascript
+// Trigger cart abandonment automation
+window.oppla.trigger('cart-abandoned', 'auto_recovery', {
+  cartValue: 299.99,
+  items: ['product_1', 'product_2'],
+  userSegment: 'high_value',
+  abandonedAt: new Date().toISOString()
+});
+
+// Trigger churn prevention
+window.oppla.trigger('churn-risk', 'auto_retention', {
+  userId: 'user_123',
+  lastLoginDaysAgo: 14,
+  usageDecline: 60, // percentage
+  subscriptionEndDate: '2024-03-01'
+});
+
+// Trigger onboarding assistance
+window.oppla.trigger('onboarding-stuck', 'auto_help', {
+  step: 'profile_setup',
+  timeOnStep: 300, // seconds
+  attemptsCount: 3
+});
+```
+
+## Cross-Product Tracking
+
+Track users across multiple products:
+
+```javascript
+// Track cross-product navigation
+window.oppla.track('product-switched', {
+  fromProduct: 'web_app',
+  toProduct: 'mobile_app',
+  method: 'deep_link',
+  userId: 'user_123'
+});
+
+// Track feature usage across products
+window.oppla.track('cross-product-feature', {
+  feature: 'advanced_search',
+  products: ['web', 'mobile', 'api'],
+  primaryProduct: 'web'
+});
+```
+
+## User Identification Events
+
+Track user identity and properties:
+
+```javascript
+// Identify user (enriches all subsequent events)
+window.oppla.identify('user_123', {
+  email: 'user@example.com',
+  name: 'John Doe',
+  plan: 'premium',
+  company: 'Acme Corp',
+  signupDate: '2024-01-01',
+  location: 'auto' // Uses IP geolocation
+});
+
+// Track user property changes
+window.oppla.track('user-upgraded', {
+  previousPlan: 'free',
+  newPlan: 'premium',
+  upgradeReason: 'needed_more_features'
+});
+```
+
+## Performance Tracking
+
+Monitor application performance:
+
+```javascript
+// Track page load performance
+window.addEventListener('load', () => {
+  const perfData = performance.getEntriesByType('navigation')[0];
+  window.oppla.track('page-performance', {
+    url: window.location.href,
+    loadTime: perfData.loadEventEnd - perfData.fetchStart,
+    domInteractive: perfData.domInteractive,
+    firstPaint: perfData.responseEnd - perfData.fetchStart
+  });
+});
+
+// Track API performance
+const startTime = performance.now();
+fetch('/api/data')
+  .then(response => {
+    const duration = performance.now() - startTime;
+    window.oppla.track('api-performance', {
+      endpoint: '/api/data',
+      duration: duration,
+      status: response.status,
+      success: response.ok
+    });
+  });
+```
+
+## Event Batching
+
+Oppla automatically batches events for performance:
+
+```javascript
+// Events are automatically batched and sent every 5 seconds
+// or when 10 events accumulate, whichever comes first
+
+// Force immediate send (useful for critical events)
+window.oppla.track('critical-event', {
+  type: 'payment_completed',
+  amount: 999.99
+}, { immediate: true });
+```
+
 ## Important Notes
 
-1. **Data Attributes**:
-   - Event data cannot be sent without an event name
-   - All event data will be saved as strings
-   - Other event listeners inside the element will not be triggered
+1. **Automatic Enrichment**:
+   - All events include timestamp, session ID, and user context
+   - IP geolocation is automatically added via ipapi.co
+   - Device and browser information is captured
 
-2. **JavaScript Method**:
-   - Use for dynamic data
-   - Supports all data types (numbers, dates, booleans, etc.)
-   - Allows for more complex tracking logic
+2. **Data Types**:
+   - JavaScript method supports all data types
+   - HTML attributes are converted to strings
+   - Nested objects and arrays are supported
+
+3. **Privacy**:
+   - Never include passwords or sensitive data
+   - PII should be hashed when necessary
+   - Respect user privacy preferences
 
 ## Best Practices
 
-1. **Be Consistent**: Use consistent event names and property names
-2. **Be Specific**: Include relevant context in event properties
-3. **Be Organized**: Group related events with similar naming patterns
-4. **Be Careful**: Don't include sensitive user data in events
+### Naming Conventions
+
+```javascript
+// Use consistent naming patterns
+window.oppla.track('product.viewed', { id: '123' });      // Good
+window.oppla.track('product.added_to_cart', { id: '123' }); // Good
+window.oppla.track('checkout.started', { total: 99.99 });  // Good
+```
+
+### Event Properties
+
+```javascript
+// Include comprehensive context
+window.oppla.track('button.clicked', {
+  // What
+  buttonId: 'cta-hero',
+  buttonText: 'Start Free Trial',
+  
+  // Where
+  page: '/homepage',
+  section: 'hero',
+  
+  // When
+  sessionDuration: 45,
+  isFirstVisit: false,
+  
+  // Who
+  userSegment: 'trial',
+  accountType: 'business'
+});
+```
+
+### Error Tracking
+
+```javascript
+// Track errors with context
+window.addEventListener('error', (e) => {
+  window.oppla.track('error.occurred', {
+    message: e.message,
+    source: e.filename,
+    line: e.lineno,
+    column: e.colno,
+    stack: e.error?.stack,
+    url: window.location.href
+  });
+});
+```
 
 ## Next Steps
 
 <CardGroup cols={2}>
   <Card
+    title="Feature Flags"
+    icon="toggle-on"
+    href="/analytics/feature-flags"
+  >
+    Control features and track adoption
+  </Card>
+  <Card
+    title="Experiments"
+    icon="flask"
+    href="/analytics/experiments"
+  >
+    Run A/B tests and track conversions
+  </Card>
+  <Card
+    title="Automation Triggers"
+    icon="bolt"
+    href="/analytics/automation-triggers"
+  >
+    Automate workflows based on events
+  </Card>
+  <Card
     title="Sessions"
     icon="clock"
     href="/analytics/sessions"
   >
-    Learn about session tracking
-  </Card>
-  <Card
-    title="Data Tags"
-    icon="tag"
-    href="/analytics/data-tags"
-  >
-    Organize your data with tags
+    Understand session tracking
   </Card>
 </CardGroup> 

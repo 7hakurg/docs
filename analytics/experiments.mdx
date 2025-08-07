@@ -1,0 +1,497 @@
+---
+title: "Experiments & A/B Testing"
+description: "Run controlled experiments to optimize your product with data-driven decisions"
+---
+
+# Experiments & A/B Testing
+
+Oppla Experiments enables you to run controlled A/B tests and multivariate experiments to optimize your product experience. Make data-driven decisions with statistical confidence and detailed analytics.
+
+## Why Run Experiments?
+
+<CardGroup cols={2}>
+  <Card title="Data-Driven Decisions" icon="chart-line">
+    Replace opinions with data. Test hypotheses and measure real impact
+  </Card>
+  <Card title="Risk Mitigation" icon="shield">
+    Test changes on a small audience before full rollout
+  </Card>
+  <Card title="Continuous Optimization" icon="rocket">
+    Systematically improve conversion rates and user engagement
+  </Card>
+  <Card title="Personalization" icon="users">
+    Find what works best for different user segments
+  </Card>
+</CardGroup>
+
+## Quick Start
+
+### 1. Create an Experiment
+
+In your Oppla Dashboard:
+1. Navigate to **Experiments** → **Create Experiment**
+2. Define your experiment:
+   - **Name**: Clear identifier (e.g., `homepage-cta-test`)
+   - **Hypothesis**: What you're testing and expected outcome
+   - **Success Metrics**: Primary and secondary KPIs
+   - **Duration**: Test duration or sample size
+
+### 2. Set Up Variants
+
+Define your test variations:
+
+```javascript
+{
+  "control": {
+    "name": "Original",
+    "weight": 50,  // 50% of traffic
+    "config": {
+      "buttonText": "Sign Up",
+      "buttonColor": "blue"
+    }
+  },
+  "variant-a": {
+    "name": "Variant A",
+    "weight": 50,  // 50% of traffic
+    "config": {
+      "buttonText": "Start Free Trial",
+      "buttonColor": "green"
+    }
+  }
+}
+```
+
+### 3. Implement in Code
+
+```javascript expandable
+// Get experiment variant
+const variant = window.oppla.getExperimentStatus('homepage-cta-test');
+
+// Apply variant configuration
+switch(variant) {
+  case 'control':
+    button.textContent = 'Sign Up';
+    button.className = 'btn-blue';
+    break;
+  case 'variant-a':
+    button.textContent = 'Start Free Trial';
+    button.className = 'btn-green';
+    break;
+  default:
+    // Fallback
+    button.textContent = 'Sign Up';
+    button.className = 'btn-blue';
+}
+
+// Track conversion event
+button.addEventListener('click', () => {
+  window.oppla.track('cta-clicked', {
+    experiment: 'homepage-cta-test',
+    variant: variant
+  });
+});
+```
+
+## Types of Experiments
+
+### A/B Testing
+
+Test two versions against each other:
+
+```javascript expandable
+const variant = window.oppla.getExperimentStatus('pricing-test');
+
+if (variant === 'control') {
+  // Show original pricing
+  showPricing({ 
+    monthly: 29,
+    annual: 290 
+  });
+} else if (variant === 'variant-a') {
+  // Show new pricing
+  showPricing({ 
+    monthly: 39,
+    annual: 390,
+    highlight: '2 months free!' 
+  });
+}
+```
+
+### Multivariate Testing
+
+Test multiple variables simultaneously:
+
+```javascript expandable
+const experiment = window.oppla.getExperimentStatus('landing-page-mvt');
+
+// Experiment might return: "headline-a-image-b-cta-c"
+const [headline, image, cta] = experiment.split('-');
+
+// Apply each variation
+applyHeadlineVariant(headline);  // 'a', 'b', or 'c'
+applyImageVariant(image);        // 'a', 'b', or 'c'
+applyCtaVariant(cta);            // 'a', 'b', or 'c'
+```
+
+### Feature Rollout Experiments
+
+Gradually roll out features with measurement:
+
+```javascript expandable
+const rolloutPhase = window.oppla.getExperimentStatus('feature-rollout');
+
+switch(rolloutPhase) {
+  case 'phase-1':
+    // 10% of users - early adopters
+    enableBasicFeatures();
+    break;
+  case 'phase-2':
+    // 50% of users - expanded rollout
+    enableBasicFeatures();
+    enableAdvancedFeatures();
+    break;
+  case 'phase-3':
+    // 100% of users - full rollout
+    enableAllFeatures();
+    break;
+}
+```
+
+## Advanced Implementation
+
+### React Components
+
+```jsx expandable
+import { useEffect, useState } from 'react';
+
+// Custom hook for experiments
+function useExperiment(experimentId) {
+  const [variant, setVariant] = useState('control');
+  
+  useEffect(() => {
+    if (window.oppla) {
+      const experimentVariant = window.oppla.getExperimentStatus(experimentId);
+      setVariant(experimentVariant || 'control');
+    }
+  }, [experimentId]);
+  
+  return variant;
+}
+
+// Experiment component wrapper
+function ExperimentWrapper({ experimentId, variants }) {
+  const variant = useExperiment(experimentId);
+  const Component = variants[variant] || variants.control;
+  
+  return <Component />;
+}
+
+// Usage
+function HomePage() {
+  return (
+    <ExperimentWrapper
+      experimentId="hero-section-test"
+      variants={{
+        control: OriginalHero,
+        'variant-a': NewHero,
+        'variant-b': MinimalHero
+      }}
+    />
+  );
+}
+```
+
+### Server-Side Experiments
+
+```javascript expandable
+// Node.js/Express example
+app.get('/api/products', async (req, res) => {
+  const experiments = await oppla.evaluateExperiments({
+    userId: req.user?.id,
+    sessionId: req.sessionID,
+    attributes: {
+      isNewUser: req.user?.createdAt > Date.now() - 7 * 24 * 60 * 60 * 1000,
+      country: req.headers['cf-ipcountry'],
+      device: req.device.type
+    }
+  });
+  
+  // Apply experiment logic
+  let products = await getProducts();
+  
+  if (experiments['pricing-algorithm'] === 'variant-a') {
+    products = applyDynamicPricing(products, req.user);
+  }
+  
+  if (experiments['sort-algorithm'] === 'variant-b') {
+    products = sortByRelevance(products, req.user);
+  }
+  
+  res.json(products);
+});
+```
+
+## Targeting & Segmentation
+
+### User Segments
+
+Target specific user groups:
+
+```javascript
+{
+  "targeting": {
+    "segments": [
+      {
+        "name": "new_users",
+        "conditions": "user.signupDate > '2024-01-01'",
+        "traffic": 100  // All new users in experiment
+      },
+      {
+        "name": "premium_users",
+        "conditions": "user.plan === 'premium'",
+        "traffic": 50   // 50% of premium users
+      }
+    ]
+  }
+}
+```
+
+### Geographic Targeting
+
+Run region-specific experiments:
+
+```javascript
+{
+  "targeting": {
+    "regions": {
+      "US": {
+        "enabled": true,
+        "variants": ["control", "variant-a"]
+      },
+      "EU": {
+        "enabled": true,
+        "variants": ["control", "variant-b"]  // Different variant for EU
+      },
+      "APAC": {
+        "enabled": false  // Not included in experiment
+      }
+    }
+  }
+}
+```
+
+## Measuring Success
+
+### Primary Metrics
+
+Define clear success criteria:
+
+```javascript expandable
+// Track primary conversion
+window.oppla.track('purchase-completed', {
+  experiment: 'checkout-flow-test',
+  variant: variant,
+  revenue: 99.99,
+  items: 3
+});
+
+// Track engagement metrics
+window.oppla.track('feature-engaged', {
+  experiment: 'new-feature-test',
+  variant: variant,
+  duration: timeSpent,
+  interactions: clickCount
+});
+```
+
+### Secondary Metrics
+
+Monitor for unexpected effects:
+
+```javascript expandable
+// Monitor guardrail metrics
+window.oppla.track('page-load-time', {
+  experiment: 'performance-test',
+  variant: variant,
+  loadTime: performance.now()
+});
+
+// Track user satisfaction
+window.oppla.track('feedback-submitted', {
+  experiment: 'ui-redesign',
+  variant: variant,
+  rating: userRating,
+  comment: userComment
+});
+```
+
+## Statistical Analysis
+
+### Sample Size Calculator
+
+Determine required sample size:
+
+```javascript
+// Available in Oppla Dashboard
+{
+  "baseline_conversion": 0.05,      // 5% current conversion
+  "minimum_detectable_effect": 0.01, // 1% improvement
+  "statistical_power": 0.8,          // 80% power
+  "significance_level": 0.05,        // 95% confidence
+  "required_sample_size": 15000      // Per variant
+}
+```
+
+### Confidence Intervals
+
+Understand result reliability:
+
+```javascript
+// Experiment results in dashboard
+{
+  "control": {
+    "conversion_rate": 0.052,
+    "confidence_interval": [0.048, 0.056],
+    "sample_size": 15234
+  },
+  "variant-a": {
+    "conversion_rate": 0.063,
+    "confidence_interval": [0.059, 0.067],
+    "sample_size": 15456,
+    "uplift": "+21.2%",
+    "p_value": 0.023,
+    "is_significant": true
+  }
+}
+```
+
+## Best Practices
+
+### 1. Clear Hypotheses
+
+Always start with a hypothesis:
+```
+"By changing the CTA button from 'Sign Up' to 'Start Free Trial',
+we expect to increase conversion rate by 15% because it better
+communicates the value proposition."
+```
+
+### 2. Run Time Calculation
+
+Ensure sufficient test duration:
+```javascript
+// Minimum test duration
+const minDays = Math.max(
+  7,  // At least one week (covers weekly patterns)
+  Math.ceil(requiredSampleSize / dailyTraffic)
+);
+```
+
+### 3. Avoid Peeking
+
+Don't make decisions too early:
+```javascript
+// Bad: Checking results daily
+if (daysSinceStart < 7) {
+  console.warn('Too early to draw conclusions');
+  return;
+}
+
+// Good: Wait for statistical significance
+if (sampleSize < requiredSampleSize || pValue > 0.05) {
+  console.log('Continue running experiment');
+  return;
+}
+```
+
+### 4. Document Everything
+
+Keep detailed records:
+```javascript
+{
+  "experiment": "checkout-flow-q1-2024",
+  "start_date": "2024-01-15",
+  "end_date": "2024-02-15",
+  "hypothesis": "Simplified checkout increases conversion",
+  "result": "Variant A increased conversion by 18%",
+  "decision": "Roll out Variant A to 100%",
+  "learnings": [
+    "Users prefer single-page checkout",
+    "Guest checkout option crucial for conversion",
+    "Mobile users especially benefited (+25%)"
+  ]
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| **Variant distribution uneven** | Check targeting rules and traffic allocation |
+| **No statistical significance** | Increase sample size or test duration |
+| **Conflicting experiments** | Use mutual exclusion groups |
+| **Results don't match hypothesis** | Analyze user segments separately |
+
+### Debug Mode
+
+Enable experiment debugging:
+
+```javascript expandable
+// Enable debug mode
+localStorage.setItem('oppla.experiments.debug', 'true');
+
+// View experiment assignment
+const variant = window.oppla.getExperimentStatus('my-experiment');
+console.log('Assigned to:', variant);
+
+// View all active experiments
+const experiments = JSON.parse(
+  sessionStorage.getItem('oppla-experiments')
+);
+console.log('Active experiments:', experiments);
+```
+
+## Integration with Analytics
+
+### Automatic Tracking
+
+Oppla automatically tracks:
+- Experiment exposure (when variant is assigned)
+- Variant performance metrics
+- User journey through experiment
+- Conversion funnel by variant
+
+### Custom Analysis
+
+Export data for deep analysis:
+
+```sql
+-- SQL query example for analysis
+SELECT 
+  variant,
+  COUNT(*) as users,
+  SUM(converted) / COUNT(*) as conversion_rate,
+  AVG(revenue) as avg_revenue
+FROM experiment_results
+WHERE experiment_id = 'checkout-test'
+GROUP BY variant;
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Feature Flags" icon="toggle-on" href="/analytics/feature-flags">
+    Combine experiments with feature flags
+  </Card>
+  <Card title="User Segments" icon="users" href="/analytics/segments">
+    Create targeted experiment audiences
+  </Card>
+  <Card title="Statistical Guide" icon="calculator" href="/guides/statistics">
+    Deep dive into statistical methodology
+  </Card>
+  <Card title="Case Studies" icon="book" href="/case-studies/experiments">
+    Learn from successful experiments
+  </Card>
+</CardGroup>

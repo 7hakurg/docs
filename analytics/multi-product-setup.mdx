@@ -1,0 +1,516 @@
+---
+title: "Multi-Product Analytics"
+description: "Manage analytics across multiple products, apps, and platforms from a single dashboard"
+---
+
+# Multi-Product Analytics
+
+Oppla enables you to manage analytics for multiple products from a single account. Whether you have multiple web apps, mobile apps, or different product lines, you can track, analyze, and optimize all of them from one unified dashboard.
+
+## Overview
+
+<CardGroup cols={2}>
+  <Card title="Unified Dashboard" icon="grid">
+    View all products in one place with cross-product insights
+  </Card>
+  <Card title="Shared Users" icon="users">
+    Track users across multiple products seamlessly
+  </Card>
+  <Card title="Product Isolation" icon="lock">
+    Keep product data separate while enabling cross-product analysis
+  </Card>
+  <Card title="Team Management" icon="users-gear">
+    Control access per product with granular permissions
+  </Card>
+</CardGroup>
+
+## Setting Up Multiple Products
+
+### 1. Add a New Product
+
+In your Oppla Dashboard:
+
+1. Navigate to **My Products** → **Add Product**
+2. Configure product settings:
+   ```javascript
+   {
+     "name": "Mobile App",
+     "type": "mobile_app",
+     "platform": ["iOS", "Android"],
+     "domain": "app.example.com",
+     "timezone": "America/New_York",
+     "currency": "USD"
+   }
+   ```
+3. Copy the unique `Product ID` and `Account ID`
+
+### 2. Product Types
+
+Configure based on your product type:
+
+<Tabs>
+  <Tab title="Web Application">
+    ```html
+    <!-- Main Website -->
+    <script async defer
+      src="https://tracker.oppla.ai/script.js"
+      data-website-id="prod_web_main_123"
+      data-account-id="acc_456">
+    </script>
+    ```
+  </Tab>
+  <Tab title="Mobile App">
+    ```javascript
+    // React Native
+    import OPPLATracker from '@oppla/react-native';
+    
+    OPPLATracker.initialize({
+      productId: 'prod_mobile_789',
+      accountId: 'acc_456'
+    });
+    ```
+  </Tab>
+  <Tab title="SaaS Platform">
+    ```html
+    <!-- Multi-tenant SaaS -->
+    <script async defer
+      src="https://tracker.oppla.ai/script.js"
+      data-website-id="prod_saas_platform_321"
+      data-account-id="acc_456"
+      data-tag="tenant:customer123">
+    </script>
+    ```
+  </Tab>
+  <Tab title="API/Backend">
+    ```javascript
+    // Node.js SDK
+    const oppla = require('@oppla/node');
+    
+    oppla.initialize({
+      productId: 'prod_api_654',
+      accountId: 'acc_456',
+      apiKey: process.env.OPPLA_API_KEY
+    });
+    ```
+  </Tab>
+</Tabs>
+
+## Cross-Product User Tracking
+
+### Unified User Identity
+
+Track the same user across products:
+
+```javascript expandable
+// Product A: Main Website
+window.oppla.identify('user_123', {
+  email: 'user@example.com',
+  name: 'John Doe',
+  product: 'website'
+});
+
+// Product B: Mobile App
+OPPLATracker.identify('user_123', {
+  email: 'user@example.com',
+  name: 'John Doe',
+  product: 'mobile'
+});
+
+// Product C: API
+oppla.identify({
+  userId: 'user_123',
+  traits: {
+    email: 'user@example.com',
+    name: 'John Doe',
+    product: 'api'
+  }
+});
+```
+
+### User Journey Mapping
+
+Track user journey across products:
+
+```javascript expandable
+// Track cross-product events
+window.oppla.track('product-switched', {
+  from_product: 'web_app',
+  to_product: 'mobile_app',
+  user_id: 'user_123',
+  context: 'deep_link'
+});
+
+// Track feature adoption across products
+window.oppla.track('feature-used', {
+  feature: 'advanced-search',
+  product: 'web_app',
+  also_uses: ['mobile_app', 'api']
+});
+```
+
+## Product Organization
+
+### Product Hierarchy
+
+Organize products logically:
+
+```javascript
+{
+  "organization": {
+    "name": "Acme Corp",
+    "products": {
+      "consumer": {
+        "web_app": "prod_123",
+        "mobile_ios": "prod_456",
+        "mobile_android": "prod_789"
+      },
+      "enterprise": {
+        "dashboard": "prod_321",
+        "api": "prod_654",
+        "admin_panel": "prod_987"
+      },
+      "internal": {
+        "employee_portal": "prod_111",
+        "analytics_dashboard": "prod_222"
+      }
+    }
+  }
+}
+```
+
+### Product Groups
+
+Group related products:
+
+```javascript expandable
+// Create product groups for analysis
+const productGroups = {
+  "mobile_apps": ["prod_ios_123", "prod_android_456"],
+  "web_properties": ["prod_website_789", "prod_webapp_321"],
+  "premium_products": ["prod_pro_111", "prod_enterprise_222"]
+};
+
+// Analyze across groups
+oppla.analyze({
+  metrics: ['dau', 'retention', 'revenue'],
+  groupBy: 'product_group',
+  products: productGroups.mobile_apps
+});
+```
+
+## Analytics Across Products
+
+### Unified Metrics
+
+View metrics across all products:
+
+```javascript expandable
+// Dashboard API call
+const crossProductMetrics = await oppla.getMetrics({
+  products: ['all'], // or specific product IDs
+  metrics: [
+    'total_users',
+    'active_users',
+    'revenue',
+    'conversion_rate'
+  ],
+  period: 'last_30_days',
+  groupBy: 'product'
+});
+
+// Returns
+{
+  "web_app": {
+    "total_users": 50000,
+    "active_users": 15000,
+    "revenue": 125000,
+    "conversion_rate": 0.045
+  },
+  "mobile_app": {
+    "total_users": 30000,
+    "active_users": 12000,
+    "revenue": 89000,
+    "conversion_rate": 0.038
+  }
+}
+```
+
+### Comparative Analysis
+
+Compare product performance:
+
+```javascript expandable
+// Compare conversion funnels
+const funnelComparison = await oppla.compareFunnels({
+  products: ['prod_web_123', 'prod_mobile_456'],
+  funnel: [
+    'signup_started',
+    'email_verified',
+    'profile_completed',
+    'first_purchase'
+  ],
+  period: 'last_quarter'
+});
+
+// Compare user retention
+const retentionComparison = await oppla.compareRetention({
+  products: ['prod_web_123', 'prod_mobile_456'],
+  cohort: 'new_users',
+  period: '30_days'
+});
+```
+
+## Feature Flags Across Products
+
+### Shared Feature Flags
+
+Roll out features across products:
+
+```javascript expandable
+// Define cross-product feature flag
+{
+  "flag": "new-onboarding-flow",
+  "products": ["web_app", "mobile_ios", "mobile_android"],
+  "rollout": {
+    "web_app": 100,      // 100% on web
+    "mobile_ios": 50,    // 50% on iOS
+    "mobile_android": 10 // 10% on Android
+  }
+}
+
+// Check in each product
+const isEnabled = window.oppla.getFeatureFlagStatus('new-onboarding-flow');
+```
+
+### Product-Specific Flags
+
+Configure flags per product:
+
+```javascript expandable
+// Product-specific configuration
+{
+  "flag": "premium-features",
+  "configurations": {
+    "web_app": {
+      "enabled": true,
+      "features": ["advanced_analytics", "api_access", "white_label"]
+    },
+    "mobile_app": {
+      "enabled": true,
+      "features": ["offline_mode", "push_notifications"]
+    },
+    "free_tier": {
+      "enabled": false
+    }
+  }
+}
+```
+
+## Experiments Across Products
+
+### Multi-Product Experiments
+
+Run experiments across products:
+
+```javascript expandable
+// Cross-product pricing experiment
+{
+  "experiment": "unified-pricing-test",
+  "products": ["web_app", "mobile_app"],
+  "variants": {
+    "control": {
+      "web_price": 29,
+      "mobile_price": 19
+    },
+    "variant_a": {
+      "web_price": 39,
+      "mobile_price": 29,
+      "bundle_discount": 10
+    }
+  },
+  "success_metrics": [
+    "cross_product_revenue",
+    "product_adoption_rate",
+    "customer_lifetime_value"
+  ]
+}
+```
+
+## Access Control
+
+### Team Permissions
+
+Set granular permissions per product:
+
+```javascript
+{
+  "team_member": "john@example.com",
+  "permissions": {
+    "web_app": ["view", "edit", "publish"],
+    "mobile_app": ["view", "edit"],
+    "enterprise_dashboard": ["view"],
+    "internal_tools": "no_access"
+  }
+}
+```
+
+### Product Ownership
+
+Assign product owners:
+
+```javascript
+{
+  "products": {
+    "web_app": {
+      "owner": "product_team@example.com",
+      "stakeholders": ["marketing@example.com", "engineering@example.com"]
+    },
+    "mobile_app": {
+      "owner": "mobile_team@example.com",
+      "stakeholders": ["design@example.com", "qa@example.com"]
+    }
+  }
+}
+```
+
+## Data Management
+
+### Data Isolation
+
+Keep product data separate:
+
+```javascript expandable
+// Query specific product data
+const webAppData = await oppla.query({
+  product: 'prod_web_123',
+  metrics: ['users', 'sessions', 'events'],
+  filters: {
+    date_range: 'last_30_days',
+    country: 'US'
+  }
+});
+
+// Query across products with isolation
+const crossProductData = await oppla.query({
+  products: ['prod_web_123', 'prod_mobile_456'],
+  metrics: ['users'],
+  groupBy: 'product',
+  keep_separate: true // Don't merge user data
+});
+```
+
+### Data Export
+
+Export product-specific data:
+
+```javascript expandable
+// Export single product
+await oppla.export({
+  product: 'prod_web_123',
+  format: 'csv',
+  data: ['events', 'users', 'sessions'],
+  period: 'last_quarter'
+});
+
+// Export multiple products
+await oppla.export({
+  products: ['all'],
+  format: 'json',
+  data: ['aggregated_metrics'],
+  groupBy: 'product'
+});
+```
+
+## Best Practices
+
+### 1. Consistent Naming
+
+Use clear naming conventions:
+```
+✅ Good: prod_web_main, prod_ios_app, prod_android_app
+❌ Bad: product1, test, new-app
+```
+
+### 2. Product Documentation
+
+Document each product:
+```javascript
+{
+  "product_id": "prod_web_123",
+  "documentation": {
+    "description": "Main web application",
+    "launch_date": "2023-01-01",
+    "tech_stack": ["React", "Node.js"],
+    "key_events": ["signup", "purchase", "churn"],
+    "success_metrics": ["DAU", "Revenue", "Retention"]
+  }
+}
+```
+
+### 3. Regular Audits
+
+Review product configuration:
+```javascript
+// Audit checklist
+const auditChecklist = {
+  "tracking_active": true,
+  "events_defined": true,
+  "team_access_updated": true,
+  "documentation_current": true,
+  "data_retention_policy": "90_days"
+};
+```
+
+## Migration Guide
+
+### Adding Existing Products
+
+Migrate from other analytics platforms:
+
+```javascript expandable
+// Import historical data
+await oppla.import({
+  product: 'prod_web_123',
+  source: 'google_analytics',
+  data_types: ['events', 'users', 'conversions'],
+  date_range: {
+    start: '2023-01-01',
+    end: '2023-12-31'
+  }
+});
+
+// Map legacy events to Oppla
+const eventMapping = {
+  "ga_purchase": "purchase_completed",
+  "ga_signup": "user_registered",
+  "ga_page_view": "page_viewed"
+};
+```
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| **Product not appearing in dashboard** | Verify Product ID and ensure tracking is active |
+| **Cross-product users not linking** | Ensure consistent user ID across products |
+| **Data discrepancies** | Check timezone settings and data filters |
+| **Performance issues** | Enable data sampling for high-volume products |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Product Setup" icon="plus" href="/analytics/add-product">
+    Add your first product
+  </Card>
+  <Card title="Cross-Product Reports" icon="chart-mixed" href="/analytics/reports">
+    Create unified reports
+  </Card>
+  <Card title="Team Management" icon="users" href="/settings/team">
+    Configure team access
+  </Card>
+  <Card title="API Documentation" icon="code" href="/api/products">
+    Manage products via API
+  </Card>
+</CardGroup>

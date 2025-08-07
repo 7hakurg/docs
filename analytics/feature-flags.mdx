@@ -1,0 +1,402 @@
+---
+title: "Feature Flags"
+description: "Control feature rollouts, run experiments, and deliver personalized experiences with Oppla Feature Flags"
+---
+
+# Feature Flags
+
+Feature flags allow you to control feature visibility, run A/B tests, and progressively roll out new functionality without deploying new code. Oppla's feature flags are deeply integrated with analytics, giving you real-time insights into feature adoption and impact.
+
+## Why Feature Flags?
+
+<CardGroup cols={2}>
+  <Card title="Safe Rollouts" icon="shield-check">
+    Deploy features to production but only activate them for specific users or segments
+  </Card>
+  <Card title="Instant Rollback" icon="rotate-left">
+    Disable problematic features instantly without redeploying
+  </Card>
+  <Card title="A/B Testing" icon="flask">
+    Test different variations and measure impact on key metrics
+  </Card>
+  <Card title="Personalization" icon="user-gear">
+    Show different features to different user segments
+  </Card>
+</CardGroup>
+
+## Quick Start
+
+### 1. Create a Feature Flag
+
+In your Oppla Dashboard:
+1. Navigate to **Feature Flags** → **Create Flag**
+2. Set flag properties:
+   - **Name**: Descriptive identifier (e.g., `new-checkout-flow`)
+   - **Description**: What this flag controls
+   - **Type**: Boolean, String, Number, or JSON
+   - **Default Value**: Fallback when conditions don't match
+
+### 2. Define Targeting Rules
+
+Target specific users or segments:
+
+```javascript
+// Example targeting rules
+{
+  "rules": [
+    {
+      "segment": "beta_users",
+      "value": true
+    },
+    {
+      "condition": "user.plan === 'premium'",
+      "value": true
+    },
+    {
+      "percentage": 10,  // 10% rollout
+      "value": true
+    }
+  ],
+  "default": false
+}
+```
+
+### 3. Implement in Your Code
+
+```javascript expandable
+// Check if feature is enabled
+if (window.oppla.getFeatureFlagStatus('new-checkout-flow')) {
+  // Show new checkout flow
+  renderNewCheckout();
+} else {
+  // Show existing checkout flow
+  renderLegacyCheckout();
+}
+```
+
+## Advanced Usage
+
+### Server-Side Evaluation
+
+For server-rendered applications:
+
+```javascript expandable
+// Node.js/Express example
+app.get('/dashboard', async (req, res) => {
+  const flags = await oppla.evaluateFlags({
+    userId: req.user.id,
+    attributes: {
+      plan: req.user.plan,
+      country: req.user.country,
+      signupDate: req.user.createdAt
+    }
+  });
+  
+  res.render('dashboard', {
+    showNewDashboard: flags['new-dashboard'],
+    features: flags
+  });
+});
+```
+
+### React Integration
+
+```jsx expandable
+import { useEffect, useState } from 'react';
+
+function useFeatureFlag(flagName) {
+  const [isEnabled, setIsEnabled] = useState(false);
+  
+  useEffect(() => {
+    if (window.oppla) {
+      const value = window.oppla.getFeatureFlagStatus(flagName);
+      setIsEnabled(value);
+    }
+  }, [flagName]);
+  
+  return isEnabled;
+}
+
+// Usage in component
+function PricingPage() {
+  const showNewPricing = useFeatureFlag('new-pricing-table');
+  
+  return showNewPricing ? <NewPricingTable /> : <LegacyPricingTable />;
+}
+```
+
+### Vue.js Integration
+
+```javascript expandable
+// Vue 3 Composition API
+import { ref, onMounted } from 'vue';
+
+export function useFeatureFlag(flagName) {
+  const isEnabled = ref(false);
+  
+  onMounted(() => {
+    if (window.oppla) {
+      isEnabled.value = window.oppla.getFeatureFlagStatus(flagName);
+    }
+  });
+  
+  return isEnabled;
+}
+
+// Usage in component
+<template>
+  <NewFeature v-if="showNewFeature" />
+  <LegacyFeature v-else />
+</template>
+
+<script setup>
+const showNewFeature = useFeatureFlag('new-feature');
+</script>
+```
+
+## Targeting Strategies
+
+### User Attributes
+
+Target based on user properties:
+
+```javascript expandable
+// Target premium users
+{
+  "condition": "user.plan === 'premium'",
+  "value": true
+}
+
+// Target users from specific countries
+{
+  "condition": "user.country in ['US', 'CA', 'UK']",
+  "value": true
+}
+
+// Target based on signup date
+{
+  "condition": "user.signupDate > '2024-01-01'",
+  "value": true
+}
+```
+
+### Percentage Rollouts
+
+Gradually roll out to more users:
+
+```javascript expandable
+// Week 1: 10% of users
+{
+  "percentage": 10,
+  "value": true
+}
+
+// Week 2: 50% of users
+{
+  "percentage": 50,
+  "value": true
+}
+
+// Week 3: 100% rollout
+{
+  "percentage": 100,
+  "value": true
+}
+```
+
+### Device & Environment
+
+Target based on device or environment:
+
+```javascript expandable
+// Mobile-only feature
+{
+  "condition": "device.type === 'mobile'",
+  "value": true
+}
+
+// Browser-specific feature
+{
+  "condition": "browser.name === 'Chrome' && browser.version >= 100",
+  "value": true
+}
+```
+
+## Analytics Integration
+
+### Automatic Tracking
+
+Oppla automatically tracks:
+- Feature flag evaluations
+- User exposure to features
+- Feature adoption rates
+- Impact on key metrics
+
+### Custom Events
+
+Track specific interactions:
+
+```javascript expandable
+// Track when user interacts with flagged feature
+if (window.oppla.getFeatureFlagStatus('new-feature')) {
+  // User clicks on new feature
+  window.oppla.track('new-feature-clicked', {
+    variant: 'enabled',
+    action: 'button-click'
+  });
+}
+```
+
+### Dashboard Metrics
+
+Monitor in real-time:
+- **Exposure Rate**: How many users see the feature
+- **Adoption Rate**: How many users interact with it
+- **Conversion Impact**: Effect on business metrics
+- **Error Rate**: Issues specific to the feature
+
+## Best Practices
+
+### 1. Naming Conventions
+
+Use clear, consistent naming:
+```
+✅ Good: checkout-flow-v2, premium-dashboard, ai-suggestions
+❌ Bad: test1, flag_new, temp-feature
+```
+
+### 2. Clean Up Old Flags
+
+Remove flags after full rollout:
+```javascript
+// Before cleanup
+if (window.oppla.getFeatureFlagStatus('old-feature')) {
+  // Feature code
+}
+
+// After cleanup (flag fully rolled out)
+// Feature code (no flag check needed)
+```
+
+### 3. Flag Dependencies
+
+Handle dependent features:
+```javascript expandable
+const mainFeature = window.oppla.getFeatureFlagStatus('main-feature');
+const subFeature = mainFeature && window.oppla.getFeatureFlagStatus('sub-feature');
+
+if (subFeature) {
+  // Both features enabled
+}
+```
+
+### 4. Fallback Handling
+
+Always have a fallback:
+```javascript expandable
+try {
+  if (window.oppla?.getFeatureFlagStatus('risky-feature')) {
+    // New feature code
+  } else {
+    // Fallback code
+  }
+} catch (error) {
+  // Error fallback
+  console.error('Feature flag error:', error);
+  // Use safe default
+}
+```
+
+## Performance Considerations
+
+### Caching
+
+Flags are cached in sessionStorage for performance:
+```javascript
+// Flags are fetched once per session
+// Subsequent calls use cached values
+const flag1 = window.oppla.getFeatureFlagStatus('feature1'); // API call
+const flag2 = window.oppla.getFeatureFlagStatus('feature1'); // From cache
+```
+
+### Batch Evaluation
+
+Evaluate multiple flags at once:
+```javascript expandable
+// Initialize all flags on page load
+window.oppla.initializeFeatureFlag().then(() => {
+  // All flags are now cached and ready
+  const features = {
+    newDashboard: window.oppla.getFeatureFlagStatus('new-dashboard'),
+    aiFeatures: window.oppla.getFeatureFlagStatus('ai-features'),
+    darkMode: window.oppla.getFeatureFlagStatus('dark-mode')
+  };
+  
+  initializeApp(features);
+});
+```
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| **Flag always returns false** | Check if user is identified before flag evaluation |
+| **Flag not updating** | Clear sessionStorage or refresh the page |
+| **Targeting not working** | Verify user attributes are set correctly |
+| **Performance issues** | Use batch evaluation instead of multiple calls |
+
+### Debug Mode
+
+Enable debug logging:
+```javascript expandable
+// Enable debug mode
+localStorage.setItem('oppla.debug', 'true');
+
+// Now flag evaluations will log to console
+window.oppla.getFeatureFlagStatus('my-flag');
+// Console: [Oppla] Evaluating flag: my-flag
+// Console: [Oppla] Flag result: true
+```
+
+## API Reference
+
+### Methods
+
+```javascript expandable
+// Get boolean flag value
+const isEnabled = window.oppla.getFeatureFlagStatus('flag-name');
+
+// Initialize all flags (called automatically on identify)
+await window.oppla.initializeFeatureFlag();
+
+// Get all flag values (after initialization)
+const flags = JSON.parse(sessionStorage.getItem('oppla-feature-flags'));
+```
+
+### Events
+
+Track flag exposure automatically:
+```javascript
+// Automatic tracking when flag is evaluated
+window.oppla.getFeatureFlagStatus('flag-name');
+// Sends: { event: 'flag-name', flg_name: 'flag-name', flg_value: true }
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Experiments" icon="flask" href="/analytics/experiments">
+    Run A/B tests with feature flags
+  </Card>
+  <Card title="User Segments" icon="users" href="/analytics/segments">
+    Create targeted user segments
+  </Card>
+  <Card title="Automation" icon="robot" href="/analytics/automation-triggers">
+    Trigger actions based on flag changes
+  </Card>
+  <Card title="Best Practices" icon="star" href="/guides/feature-flag-best-practices">
+    Learn advanced patterns and strategies
+  </Card>
+</CardGroup>
