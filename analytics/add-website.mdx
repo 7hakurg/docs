@@ -1,15 +1,15 @@
 ---
-title: "Add a Website"
-description: "Learn how to add Oppla analytics to your website in minutes"
+title: "Add a Product"
+description: "Learn how to add Oppla analytics to your product in minutes"
 ---
 
-# Add a Website
+# Add a Product
 
 Get started with Oppla analytics in just a few simple steps. Track user behavior, feature usage, and experiments with a single lightweight script.
 
 ## Quick Start
 
-### Step 1: Get Your Website Credentials
+### Step 1: Get Your Product Credentials
 
 1. Log into your [Oppla Dashboard](https://app.oppla.ai)
 2. Navigate to **My Products** → **Add Product**
@@ -18,7 +18,7 @@ Get started with Oppla analytics in just a few simple steps. Track user behavior
 
 ### Step 2: Add the Tracking Script
 
-Add this script to your website's `<head>` section:
+Add this script to your product's `<head>` section:
 
 ```html
 <script async defer
@@ -102,7 +102,7 @@ Customize tracking behavior with optional attributes:
 ```javascript expandable
 <script async defer
   src="https://tracker.oppla.ai/script.js"
-  data-website-id="YOUR_WEBSITE_ID"
+  data-website-id="YOUR_PRODUCT_ID"
   data-account-id="YOUR_ACCOUNT_ID"
   data-auto-track="true"              <!-- Enable automatic tracking (default: true) -->
   data-exclude-search="true"          <!-- Exclude URL parameters (default: false) -->
@@ -163,7 +163,7 @@ window.oppla.trigger('trigger-name', 'automation-id', {
 ### Common Issues
 
 - **`window.oppla is undefined`**: Ensure the script is in the `<head>` section and has loaded
-- **No data in dashboard**: Verify your Website ID and Account ID are correct
+- **No data in dashboard**: Verify your Product ID and Account ID are correct
 - **Blocked by ad blocker**: Ask users to whitelist `tracker.oppla.ai`
 - **Not tracking localhost**: Localhost tracking is disabled by default for development
 
