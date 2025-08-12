@@ -9,16 +9,16 @@
   },
   "favicon": "/favicon.ico",
   "metadata": {
-    "title": "Oppla - AI-Powered Product Analytics & User Onboarding",
-    "description": "Oppla is an all-in-one platform for businesses looking to track user behavior, optimize workflows, and make data-driven decisions. Whether you're a marketer, product manager, or part of a customer success team, Oppla provides the tools you need to succeed.",
-    "og:title": "Oppla - AI-Powered Product Analytics & User Onboarding",
-    "og:description": "Oppla is an all-in-one platform for businesses looking to track user behavior, optimize workflows, and make data-driven decisions. Whether you're a marketer, product manager, or part of a customer success team, Oppla provides the tools you need to succeed.",
+    "title": "Oppla - AI-Powered Development Platform & Analytics",
+    "description": "Oppla is an AI-first development platform that combines intelligent code editing with powerful analytics and user onboarding tools. Build smarter, ship faster, and understand your users better.",
+    "og:title": "Oppla - AI-Powered Development Platform & Analytics",
+    "og:description": "Oppla is an AI-first development platform that combines intelligent code editing with powerful analytics and user onboarding tools. Build smarter, ship faster, and understand your users better.",
     "og:image": "/logo/Oppla_Light.png",
     "twitter:card": "summary_large_image",
-    "twitter:title": "Oppla - AI-Powered Product Analytics & User Onboarding",
-    "twitter:description": "Oppla is an all-in-one platform for businesses looking to track user behavior, optimize workflows, and make data-driven decisions. Whether you're a marketer, product manager, or part of a customer success team, Oppla provides the tools you need to succeed.",
+    "twitter:title": "Oppla - AI-Powered Development Platform & Analytics",
+    "twitter:description": "Oppla is an AI-first development platform that combines intelligent code editing with powerful analytics and user onboarding tools. Build smarter, ship faster, and understand your users better.",
     "twitter:image": "/logo/Oppla_Light.png",
-    "keywords": "AI-powered analytics, product analytics, user onboarding, user behavior tracking, product tours, customer success, data-driven decisions, workflow optimization, user engagement, product management"
+    "keywords": "AI development platform, AI code editor, intelligent IDE, AI-powered analytics, product analytics, user onboarding, AI coding assistant, developer tools, code intelligence, machine learning IDE"
   },
   "navigation": {
     "tabs": [
@@ -30,6 +30,37 @@
             "pages": [
               "index",
               "quickstart"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "IDE",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "ide/general/getting-started",
+              "ide/general/system-requirements"
+            ]
+          },
+          {
+            "group": "AI Features",
+            "pages": [
+              "ide/ai/overview"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "ide/configuration/themes",
+              "ide/configuration/key-bindings"
+            ]
+          },
+          {
+            "group": "Extensions",
+            "pages": [
+              "ide/extensions/overview"
             ]
           }
         ]

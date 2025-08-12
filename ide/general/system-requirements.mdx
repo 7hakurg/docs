@@ -1,0 +1,125 @@
+---
+title: "System Requirements"
+description: "Hardware and software requirements for running Oppla's AI-powered development platform"
+icon: "computer"
+---
+
+## Apple
+
+### macOS
+
+Oppla's AI-powered features are optimized for modern macOS systems. We support the following macOS releases:
+
+| Version       | Codename | Apple Status   | Oppla Status        | AI Features |
+| ------------- | -------- | -------------- | ------------------- | ----------- |
+| macOS 15.x    | Sequoia  | Supported      | Fully Supported     | Full AI     |
+| macOS 14.x    | Sonoma   | Supported      | Fully Supported     | Full AI     |
+| macOS 13.x    | Ventura  | Supported      | Fully Supported     | Full AI     |
+| macOS 12.x    | Monterey | EOL 2024-09-16 | Supported           | Full AI     |
+| macOS 11.x    | Big Sur  | EOL 2023-09-26 | Partially Supported | Limited AI  |
+| macOS 10.15.x | Catalina | EOL 2022-09-12 | Partially Supported | Basic AI    |
+| macOS 10.14.x | Mojave   | EOL 2021-10-25 | Unsupported         | None        |
+
+<Info>
+The macOS releases labeled "Partially Supported" (Big Sur and Catalina) have limited AI collaboration features. Advanced screen sharing and real-time AI pair programming features require macOS 12 (Monterey) or newer for optimal performance.
+</Info>
+
+### Mac Hardware
+
+Oppla's intelligent features leverage modern hardware capabilities. We support machines with Intel (x86_64) or Apple Silicon (aarch64) processors that meet the above macOS requirements:
+
+- **MacBook Pro** (Early 2015 and newer) - AI features optimized for M-series chips
+- **MacBook Air** (Early 2015 and newer) - Best AI performance on M1/M2/M3 models
+- **MacBook** (Early 2016 and newer)
+- **Mac Mini** (Late 2014 and newer) - Excellent for AI model processing
+- **Mac Pro** (Late 2013 or newer) - Ideal for large-scale AI operations
+- **iMac** (Late 2015 and newer)
+- **iMac Pro** (all models) - Superior AI computation capabilities
+- **Mac Studio** (all models) - Premium AI performance
+
+<Note>
+**AI Performance Note**: Apple Silicon (M1, M2, M3) processors provide significantly enhanced AI inference speeds, up to 3x faster than Intel-based Macs for certain AI operations.
+</Note>
+
+## Linux
+
+Oppla's AI engine supports 64-bit Intel/AMD (x86_64) and 64-bit ARM (aarch64) processors, bringing intelligent development to Linux users.
+
+### Requirements
+
+Oppla requires:
+- **Vulkan 1.3 driver** - For accelerated AI rendering and computation
+- **8GB RAM minimum** (16GB recommended for optimal AI performance)
+- **2GB available disk space** for core installation
+- **Additional 2-4GB** for AI models (downloaded on first use)
+
+### Required Desktop Portals
+
+The following desktop portals are required for full functionality:
+- `org.freedesktop.portal.FileChooser` - For intelligent file selection
+- `org.freedesktop.portal.OpenURI` - For smart link handling
+- `org.freedesktop.portal.Secret` or `org.freedesktop.Secrets` - For secure AI API key storage
+
+### Recommended Distributions
+
+Oppla's AI features are tested and optimized on:
+- Ubuntu 20.04 LTS and newer
+- Fedora 38 and newer
+- Arch Linux (rolling release)
+- Debian 11 and newer
+- openSUSE Tumbleweed
+
+## Windows
+
+<Info>
+**Coming Soon**: Native Windows support is under active development. Our AI-powered features are being optimized for Windows 11's advanced capabilities. 
+
+For early access, you can [build from source](../development/windows.mdx).
+</Info>
+
+## FreeBSD
+
+Not yet available as an official download. Advanced users can [build from source](../development/freebsd.mdx).
+
+## Web
+
+<Info>
+**Future Development**: We're exploring web-based access to Oppla's AI capabilities. This would allow you to use Oppla's intelligent features from any device with a modern browser.
+
+Track progress on our [Platform Support roadmap](https://github.com/oppla/oppla/issues/platform-support).
+</Info>
+
+## AI Model Requirements
+
+### Local AI Processing
+
+For optimal local AI model performance:
+- **RAM**: 16GB minimum, 32GB recommended
+- **GPU**: Optional but recommended for faster inference
+  - NVIDIA GPUs with CUDA support
+  - Apple Silicon GPUs (automatic on M-series Macs)
+  - AMD GPUs with ROCm support (Linux)
+- **Storage**: 10GB+ for larger language models
+
+### Cloud AI Processing
+
+For cloud-based AI features:
+- **Internet**: Stable broadband connection (10 Mbps+)
+- **Latency**: <100ms to AI servers for best experience
+- **API Keys**: Valid credentials for chosen AI providers
+
+## Performance Recommendations
+
+### For Best AI Experience
+
+- **Apple Silicon Macs**: Native optimization provides fastest AI inference
+- **NVIDIA GPU Systems**: Enable CUDA acceleration for 5-10x speed improvements
+- **High-Speed SSD**: Reduces model loading times significantly
+- **32GB+ RAM**: Allows running larger, more capable AI models locally
+
+### Network Requirements
+
+Oppla's AI features can work offline with local models, but for the full experience:
+- Stable internet for cloud AI providers
+- Low latency for real-time AI collaboration
+- Sufficient bandwidth for model downloads (first-time setup)

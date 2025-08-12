@@ -1,0 +1,123 @@
+---
+title: "Getting Started"
+description: "Welcome to Oppla - Your AI-powered development platform"
+icon: "rocket"
+---
+
+Welcome to Oppla! We're excited to have you join the future of AI-powered development. This guide will help you get up and running with Oppla's intelligent development environment.
+
+## Download Oppla
+
+### macOS
+
+Get the latest stable builds via [the download page](https://oppla.ai/download). Oppla's AI-enhanced features are optimized for modern macOS systems, providing seamless integration with your development workflow. After the first manual installation, Oppla will intelligently check for updates and notify you when enhancements are available.
+
+You can also install Oppla stable via Homebrew:
+
+```sh
+brew install --cask oppla
+```
+
+As well as Oppla preview for early access to our latest AI features:
+
+```sh
+brew install --cask oppla@preview
+```
+
+<Note>
+  **[PLACEHOLDER: Installation screenshot for macOS]**
+  
+  *This image will show: Oppla installation process on macOS with AI setup wizard*
+  
+  *Dimensions: 1200x800*
+  
+  *Priority: High*
+</Note>
+
+### Linux
+
+For most Linux users, the easiest way to install Oppla is through our intelligent installation script that automatically detects your system configuration:
+
+```sh
+curl -f https://oppla.ai/install.sh | sh
+```
+
+If you'd like to help us test our new AI-powered features, you can also install our preview build:
+
+```sh
+curl -f https://oppla.ai/install.sh | OPPLA_CHANNEL=preview sh
+```
+
+This script supports `x86_64` and `AArch64`, as well as common Linux distributions: Ubuntu, Arch, Debian, RedHat, CentOS, Fedora, and more. Our AI-enhanced installer automatically configures optimal settings for your specific distribution.
+
+If Oppla is installed using this installation script, it can be uninstalled at any time by running the shell command `oppla --uninstall`. The shell will prompt you whether you'd like to keep your AI model preferences and personalization settings or delete them. After making a choice, you should see a message that Oppla was successfully uninstalled.
+
+If this script is insufficient for your use case, you run into problems running Oppla, or there are errors in uninstalling Oppla, please see our [Linux-specific documentation](./linux.mdx).
+
+## Command Palette with AI Intelligence
+
+The Command Palette is your gateway to Oppla's AI-powered functionality. It's not just a command runner - it's an intelligent assistant that learns your patterns and suggests actions based on your context. The keybinding is the first one you should familiarize yourself with. To open it, hit: `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Linux).
+
+<Note>
+  **[PLACEHOLDER: Command Palette with AI suggestions]**
+  
+  *This image will show: Oppla's Command Palette showing AI-powered suggestions and context-aware commands*
+  
+  *Dimensions: 1200x600*
+  
+  *Priority: High*
+</Note>
+
+Try it! Open the Command Palette and type in `new file`. Watch as Oppla's AI not only filters commands but also suggests file types based on your recent work patterns. You should see the list of commands being intelligently filtered to `workspace: new file` along with AI-suggested templates. Hit return and you'll get a new buffer with smart defaults based on your project context.
+
+Any time you see instructions that include commands of the form `oppla: ...` or `editor: ...` and so on, that means you need to execute them in the Command Palette. Our AI assistant will help you discover related commands and workflows.
+
+## CLI with Intelligent Automation
+
+Oppla has a powerful CLI that leverages AI to understand your intent and automate repetitive tasks. On Linux, this comes with the distribution's Oppla package. For macOS, the CLI comes in the same package with the editor binary, and can be installed into the system with the `cli: install` Oppla command which will create a symlink to `/usr/local/bin/oppla`.
+
+Use `oppla --help` to see the full list of capabilities enhanced by AI.
+
+General highlights:
+
+- **Opening another Oppla window with AI context**: `oppla` - Opens with your most recent project context
+- **Opening a file or directory with intelligent setup**: `oppla /path/to/entry` (use `-n` to open in a new window) - Oppla automatically configures the workspace based on project type
+- **AI-powered stdin processing**: `ps axf | oppla -` - Oppla intelligently formats and highlights the input
+- **Starting Oppla with diagnostic AI**: `oppla --foreground` - Runs with AI-powered performance monitoring
+- **Clean uninstallation**: `oppla --uninstall` - Safely removes Oppla and optionally preserves your AI training data
+
+## Configure Oppla with AI Assistance
+
+To open your custom settings with AI-powered recommendations for fonts, formatting settings, per-language configurations, and more, use the `Cmd+,` (macOS) or `Ctrl+,` (Linux) keybinding.
+
+Oppla's AI will analyze your coding patterns and suggest optimal settings. To see all available settings with intelligent descriptions, open the Command Palette with `Cmd+Shift+P` and search for `oppla: open default settings`.
+
+You can also explore all configuration options in the [Configuring Oppla](./configuring-oppla.mdx) documentation, where our AI assistant provides personalized recommendations.
+
+## Configure AI in Oppla
+
+Oppla is built from the ground up as an AI-first development platform. Our intelligent features seamlessly integrate throughout the editor, from predictive code completion to context-aware refactoring.
+
+Visit [the AI overview page](./ai/overview.mdx) to learn how to quickly get started with Oppla's advanced AI capabilities, including:
+
+- **Intelligent Code Completion** - Context-aware suggestions that understand your entire project
+- **AI Agent Panel** - Your coding assistant that can write, refactor, and explain code
+- **Predictive Editing** - Anticipates your next changes based on patterns
+- **Smart Refactoring** - AI-powered code improvements that maintain your style
+
+## Set Up Your Key Bindings with AI Optimization
+
+To open your custom keymap with AI-suggested bindings based on your workflow, use the keybinding for opening keymaps.
+
+Oppla's AI can analyze your usage patterns and suggest optimal key binding configurations. To access the default key binding set with intelligent tooltips, open the Command Palette and search for "oppla: open default keymap". See [Key Bindings](./key-bindings.mdx) for more information about our AI-enhanced keyboard optimization.
+
+## Next Steps
+
+Now that you have Oppla installed and configured, here are some recommended next steps to unlock the full power of AI-assisted development:
+
+1. **Set up AI providers** - Configure your preferred language models in [AI Configuration](./ai/configuration.mdx)
+2. **Explore AI features** - Discover all the ways AI can accelerate your workflow in [AI Overview](./ai/overview.mdx)
+3. **Install extensions** - Enhance Oppla with extensions from our marketplace in [Extensions](./extensions.mdx)
+4. **Customize your workspace** - Make Oppla yours with [Visual Customization](./visual-customization.mdx)
+
+Welcome to the future of development with Oppla!
