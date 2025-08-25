@@ -1,0 +1,161 @@
+---
+title: "AI Configuration"
+description: "Configure AI providers, local models, and privacy settings for Oppla"
+icon: "robot"
+---
+
+This page explains how to configure AI providers and local models in Oppla. It's a concise, actionable reference for developers and users who want to get AI features working quickly while maintaining control over privacy and cost.
+
+If you're new to Oppla, start with the AI Overview: [AI Overview](./overview.mdx)
+
+## Supported Providers (summary)
+
+Oppla supports both cloud and local AI providers. Choose one based on your latency, privacy, and cost needs.
+
+- Cloud providers
+  - OpenAI (GPT family)
+  - Anthropic (Claude)
+  - Google AI (Gemini)
+  - Azure OpenAI
+  - AWS Bedrock
+- Local providers
+  - Ollama
+  - LLama-based runtimes (llama.cpp, GGML variants)
+  - Custom HTTP endpoints (self-hosted inference)
+- Note: Provider availability depends on your Oppla build channel (stable/preview) and platform.
+
+## Quick setup (2–5 minutes)
+
+1. Open Oppla → Preferences → AI or open the Command Palette and run `oppla: Open AI Settings`.
+2. Select your provider (Cloud or Local).
+3. Add credentials (API key or local endpoint). Prefer using OS secret stores or environment variables (see below).
+4. Choose the default model for completions and the model for heavier tasks (agents, refactoring).
+5. Save and test the connection via the "Test Provider" button.
+
+## Configuration locations
+
+- GUI: Preferences → AI
+- CLI / config file: your Oppla settings file (user-level)
+  - macOS / Linux: `~/.config/oppla/settings.json`
+  - Windows (when supported): `%APPDATA%\Oppla\settings.json`
+
+(If you prefer config files or automation, you can provision these settings in your settings JSON — see example below.)
+
+## Credentials and secrets (best practices)
+
+- Do not store API keys in plain text in your project repositories.
+- Use platform secret stores:
+  - macOS Keychain
+  - Linux: Secret Service / GNOME Keyring / pass
+  - Environment variables for CI: OPPLA_AI_PROVIDER, OPPLA_AI_API_KEY
+- Oppla will prompt to store keys in the OS secret store by default.
+- For self-hosted endpoints, use HTTPS and certificate validation; provide an access token instead of an API key when available.
+
+## Example settings (user-level)
+
+This example shows the keys commonly used in the Oppla settings file. Adapt to your environment and provider.
+
+```json
+{
+  "ai": {
+    "provider": "openai",
+    "providers": {
+      "openai": {
+        "api_key_env": "OPENAI_API_KEY",
+        "default_model": "gpt-4o-mini",
+        "timeout_ms": 30000,
+        "max_tokens": 2048
+      },
+      "anthropic": {
+        "api_key_env": "ANTHROPIC_API_KEY",
+        "default_model": "claude-2.1"
+      },
+      "ollama": {
+        "endpoint": "http://localhost:11434",
+        "default_model": "llama2-13b"
+      }
+    },
+    "privacy": {
+      "send_code": "opt_in",        // options: opt_in | opt_out | allow_local_only
+      "telemetry": false,
+      "local_model_preferred": true
+    },
+    "agent": {
+      "enabled": true,
+      "default_timeout_seconds": 300
+    }
+  }
+}
+```
+
+Notes:
+- `api_key_env` references an environment variable. Using env vars avoids storing secrets in plain files.
+- `local_model_preferred: true` prefers local models when available.
+
+## Local models & on-premises
+
+To run models locally:
+- Install and run your chosen runtime (Ollama, llama.cpp frontend, or containerized inference).
+- Point Oppla to the runtime endpoint in settings (e.g., `http://localhost:11434`).
+- For large models, ensure you meet the hardware and storage requirements (see System Requirements).
+- If you operate in an air-gapped environment, enable "local only" mode in AI settings. This prevents any outbound requests.
+
+## Privacy & security highlights
+
+- Data residency: When using cloud providers, code context sent to the provider may be logged according to the provider's policy — review provider privacy docs.
+- Granular control: Use per-project privacy settings to limit what is shared with cloud providers.
+- Audit logging: Enterprise installs can enable audit logs for AI requests and agent actions.
+- Secure endpoints: For custom endpoints, use HTTPS and validate certificates. Rotate tokens frequently and use short-lived credentials where possible.
+
+## Cost & usage controls
+
+- Configure model choice per task (cheap, fast models for completion; larger models for agents).
+- Set per-user or per-team quotas in enterprise environments.
+- Monitor usage in the Oppla dashboard or via provider billing dashboards.
+
+## Troubleshooting
+
+- "Test Provider" fails:
+  - Verify API key / token is valid and not expired.
+  - Ensure network connectivity and low latency to provider endpoints.
+  - Check OS secret store permissions.
+- Slow suggestions or high latency:
+  - Switch to a lower-latency or local model.
+  - Reduce requested context window or tokens.
+- Unsatisfactory completions:
+  - Try a different model or tweak temperature/settings.
+  - Provide more relevant context files in the editor.
+- Local model not found:
+  - Confirm runtime is running and endpoint is reachable (curl / HTTP request).
+  - Check logs for model-loading errors and memory availability.
+
+## Recommended defaults
+
+- Completions: fast, small model (low cost, low latency)
+- Refactoring / code transforms: medium-sized model with higher reasoning capability
+- Agents & multi-file tasks: powerful model or enterprise-hosted model
+
+## Links & next steps
+
+- AI Overview: [AI Overview](./overview.mdx)
+- AI edit prediction (coming soon): [Edit Prediction (stub)](./edit-prediction.mdx)
+- Agent Panel (coming soon): [Agent Panel (stub)](./agent-panel.mdx)
+- Privacy & security (recommended — create page): [Privacy & Security (stub)](./privacy-and-security.mdx)
+- Themes and keybindings are separate configs:
+  - [Key Bindings](../configuration/key-bindings.mdx)
+  - [Themes](../configuration/themes.mdx)
+
+## Audit & validation
+
+Before publishing specific latency or accuracy claims:
+- Run benchmarks on representative hardware and network conditions.
+- Document test environment, date, and methodology.
+
+---
+
+If you want, I can:
+- Create small stubs for the referenced pages (edit-prediction, agent-panel, privacy-and-security) so these links resolve.
+- Add an OS-specific credential-storage guide with commands.
+- Provide example curl tests for each provider to validate connectivity.
+
+Which would you like me to create next?

@@ -1,0 +1,128 @@
+---
+title: "Edit Prediction"
+description: "How Oppla's Edit Prediction anticipates and suggests your next code edits"
+icon: "lightning"
+---
+
+Edit Prediction is Oppla's low-latency, context-aware feature that surfaces likely next edits as you type or navigate code. It blends language-model completions with predictive heuristics so suggestions feel proactive and relevant to your current intent.
+
+This page is a practical stub with conceptual details, setup, and troubleshooting for engineers and power users. Full examples and UX screenshots will be added soon.
+
+## What is Edit Prediction?
+
+Edit Prediction predicts your next changes in-place — not just completing a token, but suggesting whole edits, ranges, and intent-aware transformations such as:
+- Completing multi-line constructs (loops, function bodies)
+- Proposing import additions and automatic reordering
+- Fixing off-by-one or common logic mistakes
+- Suggesting refactor steps (rename, extract function) as a preview
+
+It is optimized for minimal latency so predictions appear while you type, and for correctness by using project-wide context.
+
+## How it works (high-level)
+
+1. Context collection: Oppla constructs a lightweight context window from the active file, open buffers, and important project files (imports, configs).
+2. Local heuristics: Fast, local heuristics apply to produce immediate suggestions for trivial edits.
+3. Model scoring: If deeper reasoning is required, the configured model scores candidate edits and ranks them by confidence.
+4. Presentation: The top predictions are shown inline or in a suggestion strip; accept, cycle, or dismiss them.
+
+Key considerations:
+- Privacy: By default, context sent to cloud models is minimized; local models avoid outbound traffic.
+- Safety: Predictions are suggestions — they require explicit acceptance to modify files unless configured otherwise.
+
+## Quick start
+
+1. Open AI Settings: Command Palette → `oppla: Open AI Settings` (or Preferences → AI)
+2. Ensure an AI provider or local model is configured (see AI Configuration).
+3. Enable Edit Prediction:
+   - Preferences → AI → Enable "Edit Prediction"
+4. Try it: Open a source file and start typing a function or a common pattern. Watch for inline predictions.
+
+## Keyboard & UX
+
+- Accept inline prediction: `Tab` (configurable)
+- Accept in suggestion strip: `Cmd-Enter` / `Ctrl-Enter`
+- Next suggestion: `Cmd-Right` / `Ctrl-Right`
+- Previous suggestion: `Cmd-Left` / `Ctrl-Left`
+- Dismiss: `Esc`
+- Toggle Edit Prediction on/off: Command Palette → `AI: Toggle Edit Prediction`
+
+You can customize these bindings in your keymap. See Key Bindings.
+
+## Configuration (example)
+
+Add or edit your user settings (~/.config/oppla/settings.json) to tweak how Edit Prediction behaves:
+
+```docs/ide/ai/edit-prediction.mdx#L1-120
+{
+  "ai": {
+    "edit_prediction": {
+      "enabled": true,
+      "local_first": true,
+      "max_suggestions": 3,
+      "accept_key": "tab",
+      "confidence_threshold": 0.65,
+      "context_window_lines": 400,
+      "prefetch_on_file_open": true,
+      "auto_apply_low_risk": false
+    }
+  }
+}
+```
+
+Field notes:
+- local_first: Prefer local runtime when available (reduces latency & improves privacy).
+- confidence_threshold: Minimum confidence to show a suggestion (0–1).
+- auto_apply_low_risk: When true, low-risk single-line fixes (e.g., missing semicolon) can be applied automatically — use with caution.
+
+## Privacy & security
+
+- Default behavior minimizes remote context: only line ranges and a short surrounding window are sent to cloud providers unless you opt in to broader context.
+- For sensitive projects, enable `local_first` and run models locally (Ollama, llama.cpp, etc.).
+- Audit logs: Enterprise builds can record prediction requests for compliance — check Privacy & Security docs for configuration details.
+- Always review edits before accepting. Predictions are heuristics and may be incorrect.
+
+## Developer & integration notes
+
+- Edit Prediction exposes an internal API for extensions to register custom predictors (planned). Extensions may provide domain-specific suggestions (e.g., SQL snippets, test generation).
+- Prediction scoring uses a hybrid model: a lightweight local scorer for immediate suggestions plus server/model scoring for higher-quality options.
+- If you're building tooling that interacts with predictions, prefer non-blocking callbacks and provide opt-out settings to users.
+
+## Troubleshooting
+
+- No suggestions appearing:
+  - Confirm `ai.edit_prediction.enabled` is true.
+  - Check your provider is configured and reachable (AI Configuration).
+  - If using local models, ensure the local runtime is running and reachable.
+- Suggestions are low quality:
+  - Increase context by opening relevant files (Edit Prediction prefers open buffers).
+  - Try a different model or adjust `confidence_threshold`.
+  - Disable any experimental rules that modify code structure.
+- High latency:
+  - Enable `local_first`.
+  - Reduce `context_window_lines` or set `prefetch_on_file_open` to false.
+- Unexpected auto-applies:
+  - Ensure `auto_apply_low_risk` is false; if true, set to false while debugging.
+
+## Best practices
+
+- Let Edit Prediction learn: use defaults for a week before heavy customization.
+- Use `local_first` on private codebases.
+- Combine with AI Rules to constrain behaviors (e.g., disallow certain automated edits).
+- Keep open only files relevant to the task — smaller context often leads to better suggestions.
+
+## Related pages
+
+- AI Overview: [AI Overview](./overview.mdx)
+- AI Configuration: [AI Configuration](./configuration.mdx)
+- Agent Panel: [Agent Panel](./agent-panel.mdx)
+- Key Bindings: [Key Bindings](../configuration/key-bindings.mdx)
+- Themes: [Themes](../configuration/themes.mdx)
+- Privacy & Security (stub): [Privacy & Security](./privacy-and-security.mdx)
+
+## Feedback
+
+This is a living feature. If Edit Prediction behaves unexpectedly or you have ideas for improvements (acceptance UX, confidence tuning, domain-specific predictors), please open a docs or feature request.
+
+---
+
+Note: This page is a functional stub. Full UX examples, GIFs, and benchmarked latency/accuracy numbers will be added after engineering provides measurement artifacts.

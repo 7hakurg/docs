@@ -1,0 +1,136 @@
+---
+title: "FreeBSD"
+description: "Build, install, and run Oppla on FreeBSD — guidance for contributors and advanced users"
+icon: "freebsd"
+---
+
+This page is a practical stub with guidance for running Oppla on FreeBSD systems. FreeBSD is not a primary target for packaged releases for many desktop-first projects, so this document focuses on recommended approaches: using the ports collection or packages where possible, running in Linux compatibility layers, containers or VMs for runtimes that are Linux-first (local model runtimes), and building from source for contributors.
+
+Status
+- Target: Provide workable paths to run Oppla and its AI features on FreeBSD.
+- Current: FreeBSD support is community-driven. Expect more manual steps than Linux/macOS.
+- Recommended for most users: run Oppla inside a Linux VM/container on FreeBSD (bhyve, Docker via Linux emulation) for best compatibility with model runtimes and GPU acceleration.
+
+Supported FreeBSD releases
+- Aim for FreeBSD 13.x and 14.x (release and stable branches). Adjust for your environment and kernel modules.
+- Verify availability of required packages and drivers for your target release.
+
+Quick overview (recommended options)
+1. Easiest (recommended): Run Oppla in a Linux VM (bhyve / bhyveload + cloud image) or a container runtime that can run Linux images on FreeBSD.
+2. Intermediate: Build Oppla from source on FreeBSD when dependencies are available as packages/ports.
+3. Advanced: Try native run with the FreeBSD Linux compatibility layer for specific Linux-only runtimes — expect limitations and additional troubleshooting.
+
+Prerequisites & tooling
+- pkg: FreeBSD package manager
+- ports collection (optional): for packages not available as prebuilt binaries
+- git: source control
+- build tools: cmake, make, gmake, gcc/clang, pkgconf
+- language runtimes: Python, Node.js, Rust toolchains — depending on project build system
+- virtualization/container: bhyve + cloud images, or Linux container support via sysutils/docker (limited), or use iocage/jails for isolation
+- GPU drivers (optional, advanced): vendor drivers for NVIDIA/AMD; additional setup often required
+
+Install common developer tools
+Example (as root or using sudo):
+
+pkg update
+pkg install git cmake pkgconf python node rust npm gmake
+
+If a package is not available, use the ports collection:
+
+portsnap fetch extract
+cd /usr/ports/devel/`<portname>`
+make install clean
+
+Build-from-source (high-level)
+Note: exact build steps depend on Oppla repository build system (Electron/Node, Rust, or mixed). The following is a generic guide.
+
+1. Clone the repository:
+git clone https://github.com/oppla/oppla.git
+cd oppla
+
+2. Read the repository README for platform-specific notes. Install any prerequisites listed there.
+
+3. Install Node/npm dependencies (if applicable):
+npm install
+# or
+yarn install
+
+4. Build native components:
+# Example for a generic build that uses a build script
+npm run build
+
+5. Package / run:
+npm start
+# or run built binary from provided output directory
+
+If the project uses Rust for native backends, ensure rustup and cargo are installed:
+pkg install rust
+rustup default stable
+cargo build --release
+
+Notes for package authors and contributors
+- Provide a Makefile or simple build script that documents FreeBSD-specific prerequisites.
+- Prefer portable build tools: CMake + Ninja or cross-platform Node build scripts.
+- Include a minimal list of pkg packages required to build on FreeBSD.
+
+Local AI model runtimes & GPU support on FreeBSD
+- Many popular local model runtimes (Ollama, llama.cpp wrappers, LM Studio) are Linux-first.
+- FreeBSD has limited support for GPU toolchains (CUDA/ROCm) and fewer prebuilt inference runtimes.
+- Recommended approaches:
+  - Run local model runtimes in a Linux VM (bhyve) or container to use vendor drivers and established runtimes.
+  - For CPU-only evaluation, llama.cpp and other C/C++ based runtimes may be buildable on FreeBSD — expect to compile dependencies (BLAS, SSE/AVX flags) and tune build flags.
+  - NVIDIA: FreeBSD supports the proprietary NVIDIA driver in some versions. GPU-accelerated inference on FreeBSD is an advanced path and may require Linux compatibility layers or running models in a Linux VM with GPU passthrough.
+  - AMD ROCm: Generally not available on FreeBSD.
+- If your organization requires on-host local models, prefer a Linux VM for reliability.
+
+Linux compatibility & containers
+- FreeBSD provides a Linux compatibility layer (linuxulator) for running some Linux binaries — but effectiveness varies by binary and kernel.
+- For more robust compatibility, use a Linux VM via bhyve or a small VM image (Ubuntu) to run Oppla or local model servers.
+- Docker support on FreeBSD is limited. Use VM-based workflows for containerized runtimes.
+
+Security & sandboxing
+- Run unfamiliar builds in isolated environments (jails or VMs).
+- For local model runtimes and agent tools, prefer running them under a dedicated user or container and restrict filesystem/network access.
+- Use FreeBSD jails (iocage or ezjail) for lightweight isolation of tool runtimes when full VM is overkill.
+
+Network & firewall considerations
+- Ensure outbound HTTPS is allowed for cloud AI providers if you choose cloud models.
+- For local-only or air-gapped setups, configure `ai.privacy.mode` to `local_only` in Oppla settings and host model runtimes in the private network or VM accessible only to authorized hosts.
+
+Troubleshooting
+- Build issues:
+  - Missing libraries: install corresponding -devel ports or packages.
+  - Incorrect toolchain: ensure CFLAGS and linker flags are appropriate for FreeBSD (some projects expect glibc-specific behavior).
+- Runtime issues:
+  - GUI issues: ensure a compatible X11/Wayland/desktop environment and runtime dependencies (GTK/Qt) are installed.
+  - Missing binary compat: if a bundled Linux binary fails, prefer running in a Linux VM.
+- Local model connectivity:
+  - Check that the local model server is reachable from the host (curl http://localhost:PORT/health).
+  - For VMs, verify port forwarding and network interfaces (bhyve bridged networking or host-only with forwarded ports).
+
+CI & packaging recommendations
+- Add a FreeBSD build job in CI to smoke-test compilation steps (ports or packages).
+- Provide a simple packaging recipe (pkg or ports) for easier installs by users.
+- When distributing release artifacts, provide checksums and signatures; document verification steps.
+
+Developer & contribution checklist
+- Add a README section: FreeBSD notes, required pkg/packages, known limitations.
+- Provide scripts to install build deps via pkg or ports.
+- Maintain a minimal test that runs headless features (CLI) so FreeBSD CI can exercise core functionality.
+- Document recommended approach for local models (VM vs native) for contributors.
+
+Related documentation
+- System Requirements: ../ide/general/system-requirements.mdx
+- Linux guide (for VM-based approach): ../ide/general/linux.mdx
+- AI Configuration & Privacy: ../ide/ai/configuration.mdx and ../ide/ai/privacy-and-security.mdx
+- Development guide: ../development.mdx
+
+Next steps for docs team (suggested)
+- Add concrete build/test commands specific to this repo (once maintainers provide build steps).
+- Add example bhyve VM image or a small script to create a Linux VM preconfigured for Oppla and local models.
+- Track known-good package versions and document any third-party runtimes that are known to work on FreeBSD.
+
+If you'd like, I can:
+- Draft a step-by-step FreeBSD port/PKG recipe based on the repository build system.
+- Produce a bhyve VM provisioning script (cloud-init or Packer) that sets up a Linux environment optimized for running Oppla and local models.
+- Add a small CI job example that runs basic smoke tests on FreeBSD in your CI provider.

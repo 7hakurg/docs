@@ -1,0 +1,218 @@
+---
+title: "Model Context Protocol (MCP)"
+description: "Spec and developer guide for Oppla's Model Context Protocol — how AI agents securely call tools and services"
+icon: "plug"
+---
+
+The Model Context Protocol (MCP) is Oppla's standardized integration layer that lets AI agents and features call deterministic tools, services, and extension-provided capabilities in a safe, auditable, and structured way.
+
+This page is a technical stub that outlines MCP's purpose, key concepts, message patterns, security model, and example registration/invocation schemas. Full API references, SDK samples, and end-to-end tutorials will be added in subsequent docs.
+
+Core goals
+- Provide a consistent, machine-readable contract for tools so models and agents can rely on structured outputs.
+- Ensure tool calls run in sandboxed environments with fine-grained permissions and audit logging.
+- Make tool outputs deterministic and parseable (JSON schemas preferred) for reliable downstream processing.
+- Support synchronous, asynchronous, and streaming tool interactions.
+
+Key concepts
+- Tool: Any deterministic operation an agent may request (linters, test runners, formatters, vulnerability scanners, CI triggers).
+- Tool Registration: Metadata that advertises a tool's capabilities, input schema, output schema, and required scopes.
+- Invocation: A single call from an agent (or UI) to a registered tool through the MCP broker.
+- Broker: The MCP runtime inside Oppla that validates requests, enforces AI Rules and permissions, runs the tool, and returns structured results.
+- Schema-first: Tools should expose JSON schemas for inputs and outputs to make parsing and validation reliable.
+- Audit: Every invocation is logged with requester, arguments (redacted per rules), and results for traceability.
+
+MCP message patterns
+- Synchronous request/response
+  - Agent sends a single request; the broker runs the tool and returns a JSON result or error.
+- Asynchronous job
+  - Useful for long-running tasks (test suites, large builds). Broker returns a job ID; the agent polls or subscribes to status updates.
+- Streaming
+  - For progressively-emitted outputs (test progress, build logs). Broker streams events while the agent consumes them.
+- Dry-run vs apply
+  - Tools should support a `dry_run` mode that returns proposed changes without applying them. Agents should default to dry-run for high-risk operations.
+
+Tool registration (recommended fields)
+- id: Stable tool identifier (string)
+- name: Human-friendly name
+- description: Short description of what the tool does
+- inputs: JSON Schema for the tool input
+- outputs: JSON Schema for tool output
+- scopes: Permissions required (read_workspace, write_workspace, run_tests, network)
+- dry_run_supported: boolean
+- timeout_seconds: recommended max runtime
+- example_invocations: small examples to help model planning
+
+Example tool registration (recommended minimal manifest)
+
+```docs/ide/ai/mcp.mdx#L1-40
+{
+  "id": "jest-runner",
+  "name": "Jest Test Runner",
+  "description": "Run jest on a list of files or a workspace; returns structured test results",
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "files": { "type": "array", "items": { "type": "string" } },
+      "ci": { "type": "boolean", "default": false },
+      "dry_run": { "type": "boolean", "default": true }
+    },
+    "required": ["files"]
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "exit_code": { "type": "integer" },
+      "duration_ms": { "type": "integer" },
+      "results": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "file": { "type": "string" },
+            "test_name": { "type": "string" },
+            "status": { "type": "string", "enum": ["passed", "failed", "skipped"] },
+            "error": { "type": ["string", "null"] }
+          }
+        }
+      }
+    }
+  },
+  "scopes": ["read_workspace"],
+  "dry_run_supported": true,
+  "timeout_seconds": 120
+}
+```
+
+Invocation flow (high-level)
+1. Agent composes a plan and determines required tool(s).
+2. Agent issues an MCP invocation: { tool_id, arguments, request_context }.
+3. Broker validates:
+   - Tool exists and is registered
+   - Caller has the required scopes (AI Rules & RBAC)
+   - Inputs validate against tool input schema
+   - No redaction policy violations
+4. Broker runs tool in sandbox:
+   - Constrains filesystem access, network, CPU/memory, and time
+   - Optionally runs inside container / ephemeral environment
+5. Tool returns structured output (or job ID for async)
+6. Broker validates output schema, redacts sensitive fields if necessary, logs the invocation, and returns the result to the agent.
+
+Example synchronous invocation (payload)
+
+```docs/ide/ai/mcp.mdx#L41-96
+{
+  "request_id": "req-2025-0001",
+  "tool_id": "jest-runner",
+  "arguments": {
+    "files": ["packages/api/__tests__/user.test.js"],
+    "dry_run": true
+  },
+  "caller": {
+    "type": "agent",
+    "id": "agent-42",
+    "user": "alice@example.com"
+  },
+  "context": {
+    "repo": "acme/starship",
+    "commit": "a1b2c3d"
+  }
+}
+```
+
+Example synchronous response
+
+```docs/ide/ai/mcp.mdx#L97-160
+{
+  "request_id": "req-2025-0001",
+  "status": "success",
+  "result": {
+    "exit_code": 0,
+    "duration_ms": 3400,
+    "results": [
+      { "file": "packages/api/__tests__/user.test.js", "test_name": "creates user", "status": "passed", "error": null }
+    ]
+  },
+  "metadata": {
+    "worker_id": "worker-7",
+    "started_at": "2025-08-01T12:34:56Z",
+    "completed_at": "2025-08-01T12:35:00Z"
+  }
+}
+```
+
+Asynchronous invocation (job pattern)
+- Agent requests a long-running job; broker returns job_id.
+- Agent polls `mcp/jobs/{job_id}` or receives event notifications.
+- Broker enforces timeouts, retries, and job cancellation semantics.
+
+Security & permissions
+- Principle of least privilege: Tools declare required scopes; MCP enforces requester permissions before invocation.
+- AI Rules are evaluated before any outbound request or tool run. Rules can:
+  - Block invocations on certain paths
+  - Redact or transform arguments
+  - Override provider selection (local-only enforcement)
+- Sandboxing:
+  - Tools run with confined access (container, chroot, restricted user).
+  - Filesystems mounted read-only unless write access is explicitly requested and permitted.
+- Network access:
+  - By default, tool network access is restricted. If a tool requires outbound access, it must declare that scope and be explicitly allowed by project/organization policy.
+- Secrets & redaction:
+  - Tool inputs/outputs are scanned for secrets per AI Rules; redaction happens before logs or outbound transmissions.
+- Audit logging:
+  - Every invocation and result is logged with requester, tool_id, redaction decisions, and outcome. Enterprise installations must configure retention policies.
+
+Developer guidance & best practices
+- Prefer structured outputs (JSON) with stable schemas. Avoid free-form text where machines need to act on the data.
+- Provide a `dry_run` mode to enable previewing changes (patches) without applying them.
+- Keep outputs small and paginated if needed; prefer references (artifact IDs) for large logs or binaries.
+- Return meaningful error codes and structured error objects for deterministic handling.
+- Include `example_invocations` and small fixtures to help AI planning and prompt engineering.
+- Implement idempotent operations and safe rollback semantics for applying changes.
+- Validate inputs aggressively to avoid injection or command-execution vulnerabilities.
+
+Example output schema for a "format" tool (suggested)
+
+```docs/ide/ai/mcp.mdx#L161-220
+{
+  "type": "object",
+  "properties": {
+    "exit_code": { "type": "integer" },
+    "files_modified": {
+      "type": "array",
+      "items": { "type": "object", "properties": { "path": { "type": "string" }, "diff": { "type": "string" } } }
+    },
+    "errors": { "type": ["array", "null"], "items": { "type": "string" } }
+  }
+}
+```
+
+Observability & troubleshooting
+- Correlate MCP `request_id` to agent traces and audit logs.
+- Broker should expose a `mcp/health` and `mcp/jobs` endpoints for diagnostics.
+- Provide a developer `dry-run` harness to validate registrations locally.
+- Surface structured tool logs in developer UI and keep large logs as downloadable artifacts.
+
+Integration patterns
+- Extension authors: register tools via an extension manifest and expose a stable endpoint (local binary, HTTP, or via Oppla extension API).
+- CI integration: use MCP to run CI checks deterministically and return results for agents to act on (e.g., apply suggested fixes if CI passes).
+- Agents: plan -> ask MCP for verification (lint/tests) -> receive structured results -> propose final patches.
+
+Next steps (docs & implementation)
+- Create detailed API reference for MCP endpoints (REST/HTTP + event/websocket schemas).
+- Provide SDK samples in TypeScript/Python for:
+  - Tool registration
+  - Tool invocation (sync/async/stream)
+  - Debugging harness
+- Publish a set of example tools (jest-runner, eslint-runner, prettier-format) with manifests and test fixtures.
+
+Related pages (stubs to create)
+- Inline Assistant: ../ai/inline-assistant.mdx
+- Subscription & billing: ../ai/subscription.mdx
+- Visual customization: ../general/visual-customization.mdx
+- Extensions index: ../extensions/index.mdx
+
+If you'd like, I can:
+- Draft the MCP API reference (endpoints, request/response examples) next.
+- Generate sample extension code that registers a tool and a matching test harness.
+- Create the related stub pages (inline-assistant, subscription, visual-customization, extensions index) to resolve cross-links.

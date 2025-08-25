@@ -1,0 +1,214 @@
+---
+title: "Privacy & Security"
+description: "How Oppla handles AI data, secrets, local models, audit logging, and enterprise controls"
+icon: "shield"
+---
+
+This page explains Oppla's privacy and security model for AI features. It covers what context may be shared with AI providers, how to run models locally (local-only mode), secret-management best practices, audit logging, AI Rules for redaction and approvals, and enterprise controls (RBAC, retention, compliance).
+
+If you're evaluating Oppla for sensitive codebases, read this page first and consult your security team. For configuration basics, see: [AI Configuration](./configuration.mdx). For rules and enforcement, see: [AI Rules](./rules.mdx).
+
+## Data flow overview
+
+- Local context collection: Oppla constructs a context window from the active file, open buffers, and an optional set of relevant repository files.
+- Local vs. remote decision: Based on your AI settings and AI Rules, Oppla chooses between local runtimes or cloud providers.
+- Outbound requests: When using cloud providers, Oppla sends a minimized context payload unless a broader context is explicitly enabled.
+- Tool invocations: Agents or tools (linters, test runners) run inside a sandboxed environment; results are kept local unless explicitly uploaded.
+
+Design goals:
+- Least privilege: send the minimum required context to providers.
+- Auditability: log model requests and agent actions for traceability.
+- Configurability: allow per-project and per-user privacy settings.
+- Local-first support: prefer local models when policy requires it.
+
+## What Oppla may send to AI providers
+
+By default Oppla aims to minimize exposure. Typical payloads include:
+- Short snippets from the active buffer (line range configurable)
+- Filenames and contextual metadata (not full repository by default)
+- Explicitly included files or folders when agents are asked to run project-wide tasks (only after user confirmation or via approved AI Rules)
+
+Sensitive data that should not be sent without explicit opt-in:
+- Secrets (API keys, private keys, tokens, passwords)
+- Ever-changing credentials files (e.g., .env)
+- Personal data or PII unless explicitly authorized and logged
+
+## Local-only & local-first modes
+
+Local-first: prefer a configured local runtime; fall back to cloud when local is unavailable.
+
+Local-only mode: disallow any outbound requests. Use this mode for air-gapped or highly regulated environments.
+
+Enable local-only via settings (example):
+
+```docs/ide/ai/privacy-and-security.mdx#L1-20
+{
+  "ai": {
+    "privacy": {
+      "mode": "local_only",       // options: local_only | local_first | cloud_allowed
+      "send_code": "never"        // never | opt_in | opt_out
+    }
+  }
+}
+```
+
+Notes:
+- local_only prevents outbound network calls to cloud providers and mutes automatic fallback behavior.
+- In local_only mode, you must configure and run a local runtime (Ollama, llama.cpp server, etc.) and point Oppla at the endpoint.
+
+## Secret management best practices
+
+- Never check API keys or secrets into source code repositories.
+- Use OS-native secret storage:
+  - macOS: Keychain
+  - Linux: Secret Service / GNOME Keyring / pass
+  - Windows: Credential Manager (when supported)
+- For CI or automated systems use short-lived tokens and environment variables (OPPLA_AI_API_KEY, etc.)
+- When configuring custom endpoints, prefer token-based auth with limited scope.
+
+Example: prefer env vars over inline keys:
+
+```docs/ide/ai/privacy-and-security.mdx#L21-60
+{
+  "ai": {
+    "providers": {
+      "openai": {
+        "api_key_env": "OPENAI_API_KEY"
+      }
+    }
+  }
+}
+```
+
+## Redaction and AI Rules
+
+Use AI Rules to prevent sensitive files or patterns from being sent to providers. Typical patterns:
+- Block files by path globs (e.g., **/*.env, secret/**)
+- Block by regex on content (api_key|secret|password|token)
+- Redact matched content before any outbound request
+
+Example AI Rule for redaction (author as `.oppla/ai-rules.json`):
+
+```docs/ide/ai/rules.mdx#L1-60
+{
+  "version": "1.0",
+  "rules": [
+    {
+      "id": "no-secret-exfiltration",
+      "type": "privacy",
+      "match": {
+        "paths": ["**/*.env", "**/secrets/**"],
+        "content_regex": "(?i)(api_key|secret|password|token)"
+      },
+      "action": {
+        "on_violation": "redact_and_warn",
+        "redaction_placeholder": "[REDACTED_SECRET]"
+      }
+    }
+  ]
+}
+```
+
+Behavior:
+- Matches trigger redaction before any outbound request.
+- Violations are logged; admins can configure whether to block or require approval.
+
+## Audit logging & retention
+
+Oppla supports configurable audit logs for AI requests and agent actions. Logs typically include:
+- Who triggered the action (user identity)
+- When it occurred (timestamp)
+- Which model/provider and model name were used
+- What files or ranges were included (redacted as necessary)
+- Diffs proposed and applied (if any)
+- Approval decisions and approver identity
+
+Retention and export:
+- Configure retention policy per-organization (e.g., 90 days, 365 days)
+- Support for export to SIEM or centralized logging (S3, Elasticsearch, or similar)
+- Secure access control to logs (RBAC)
+
+Example audit settings (high level):
+
+```docs/ide/ai/privacy-and-security.mdx#L61-110
+{
+  "audit": {
+    "enabled": true,
+    "retention_days": 365,
+    "export": {
+      "type": "s3",
+      "bucket": "oppla-audit-logs",
+      "path_prefix": "org-123/"
+    }
+  }
+}
+```
+
+## Enterprise controls (RBAC, approvals, quotas)
+
+- Role-based access control: define roles (owner, maintainer, developer, auditor) and map actions to roles (run agents, approve high-risk changes).
+- Approval gates: require human approval for high-risk changes (paths matching infra, auth, deploy).
+- Quotas: per-user and per-project quotas for model usage and agent runs to control cost and risk.
+- Organization policies: enforce project-wide rules (e.g., local_only for certain repositories).
+
+## Compliance & regulatory considerations
+
+- GDPR / Data residency: For EU data residency concerns, prefer local-only or region-scoped cloud endpoints. Document what data is transmitted and retention windows.
+- SOC2 / ISO: Provide audit trails and access controls to help meet compliance needs.
+- Export controls: If operating in jurisdictions with export restrictions, use local-only deployments or approved cloud regions.
+
+Always consult legal/compliance teams before enabling cloud model usage on regulated datasets.
+
+## Tooling & Model Context Protocol (MCP) security
+
+- Tools invoked by agents run in sandboxed environments with limited filesystem access.
+- MCP should validate all tool inputs to prevent command injection.
+- Tools should run with least privilege and provide dry-run modes.
+- Restrict network access for tool containers unless explicitly required and authorized.
+
+## Incident response & breach handling
+
+- If accidental exfiltration is detected:
+  1. Rotate compromised keys immediately.
+  2. Revoke tokens and update AI Rules to block the offending patterns.
+  3. Review audit logs to identify scope of exposure.
+  4. Notify affected stakeholders per your incident response policy.
+- Maintain runbooks for handling model-provider incidents (provider key compromise, unexpected data retention behavior).
+
+## Developer guidance (for extension & tool authors)
+
+- Return structured, non-sensitive outputs where possible.
+- Avoid tooling that requires sending full repository contents to external services.
+- Respect AI Rules and follow secure defaults (dry-run, audit-only modes).
+- Document what data your extension/tool needs and why.
+
+## Troubleshooting & FAQs
+
+Q: How do I ensure nothing leaves my network?
+A: Enable `local_only` mode and configure a local runtime or internal model server. Disable cloud providers and verify no fallback is configured.
+
+Q: My agent needs to run tests — will it send test output to the cloud?
+A: Only if the agent's workflow or AI Rules allow that. Use project-level rules to disallow outbound sends for test artifacts.
+
+Q: How are audit logs protected?
+A: Audit logs are secured by access control and encryption at rest. Configure S3/remote stores behind VPCs or private network access where required.
+
+Q: Can I redact files automatically?
+A: Yes — define redaction rules in AI Rules. Oppla will redact before sending context to providers and log the redaction.
+
+## Links & next steps
+
+- AI Configuration: ./configuration.mdx
+- AI Rules: ./rules.mdx
+- Agent Panel: ./agent-panel.mdx
+- Edit Prediction: ./edit-prediction.mdx
+- Available Models: ./models.mdx
+- Text Threads: ./text-threads.mdx
+
+## Want help?
+If you'd like, I can:
+- Add UI screenshots for privacy settings and audit-log configuration
+- Create a step-by-step onboarding doc for enterprise security teams
+- Produce a sample `.oppla/ai-rules.json` set tuned for strict privacy (audit-only, then block)
+
+Please indicate which you'd like me to add next.

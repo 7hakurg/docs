@@ -1,0 +1,125 @@
+---
+title: "Inline Assistant"
+description: "In-context AI help directly inside your editor — suggestions, explanations, and quick fixes"
+icon: "sparkles"
+---
+
+The Inline Assistant brings Oppla's AI directly into your code editor so you can get context-aware help without leaving the file. Use it for quick explanations, suggested edits, one-line fixes, documentation generation, and other small-scale tasks that benefit from immediate, low-latency assistance.
+
+This page is a concise, actionable stub that explains core concepts, usage patterns, configuration options, privacy considerations, and troubleshooting. Full UX screenshots and GIFs will be added later.
+
+## What is the Inline Assistant?
+
+- Lightweight, in-place AI that analyzes the current buffer and surrounding context.
+- Designed for short interactions: explain this function, suggest a fix, write a docstring, or convert a code snippet.
+- Works with local or cloud models depending on your AI Configuration and AI Rules.
+- Complements Edit Prediction (predicts edits as you type) and the Agent Panel (for multi-file or higher-risk tasks).
+
+## Core capabilities
+
+- Explain code: produce concise, line-by-line or function-level explanations.
+- Quick fixes: propose single-file, low-risk edits (format, small refactors).
+- Documentation: generate docstrings, README snippets, or code comments.
+- Examples: produce example usage for functions or APIs.
+- Small refactor hints: suggest variable renames or extract helpers (applied only with approval).
+- Test suggestions: propose simple unit test templates for the current function.
+
+## Quick start
+
+1. Open a code file in Oppla.
+2. Place the cursor on a symbol, select a code range, or highlight a function.
+3. Invoke Inline Assistant:
+   - Command Palette: `AI: Inline Assist`
+   - Default keybinding: `Cmd-Shift-A` (macOS) / `Ctrl-Shift-A` (Linux)
+4. Choose the action (Explain, Suggest Fix, Generate Tests, Add Docstring).
+5. Inline suggestions will appear as ephemeral edits or as a preview panel — review before accepting.
+
+Tip: Inline Assistant prefers small scopes (a single function or a code block) for the best results and lowest latency.
+
+## Keyboard & UX
+
+- Open Inline Assistant: Command Palette → `AI: Inline Assist`
+- Accept inline suggestion: `Tab`
+- Apply suggestion as patch: `Cmd-Enter` / `Ctrl-Enter`
+- Dismiss: `Esc`
+- Cycle alternatives: `Cmd-Right` / `Cmd-Left` (configurable)
+- Trigger contextual help hover: `Alt-Enter` (or platform equivalent)
+
+Customize these in your keymap. See Key Bindings for examples and advanced configuration.
+
+## Configuration & settings
+
+Inline Assistant settings live in the AI section of your settings file or preferences UI. Example settings (user-level):
+
+```json
+{
+  "ai": {
+    "inline_assistant": {
+      "enabled": true,
+      "local_first": true,
+      "max_context_lines": 200,
+      "suggestion_confidence_threshold": 0.6,
+      "auto_accept_trivial_fixes": false
+    }
+  }
+}
+```
+
+- local_first: Prefer a configured local runtime for privacy and lower latency.
+- max_context_lines: How much surrounding code to send to the model.
+- auto_accept_trivial_fixes: When true, trivial single-token or formatting fixes can be applied automatically (use with caution).
+
+## Integration with other AI features
+
+- Edit Prediction: Use inline suggestions for immediate edits while Edit Prediction offers next-step predictions as you type.
+- Agent Panel: When a task requires multi-file changes or high-risk operations, the Inline Assistant will recommend using the Agent Panel instead.
+- AI Rules: Inline Assistant respects AI Rules — any suggestion that would violate a rule is blocked or redacted.
+- MCP & Tools: For verification (e.g., run tests), Inline Assistant can invoke tools via the Model Context Protocol if allowed by project settings.
+
+## Privacy & security
+
+- Default behavior: minimal outgoing context. Only the selected lines and a short surrounding window are sent to the model.
+- Use local-only mode for air-gapped or sensitive projects (see AI Configuration).
+- For cloud providers, the user must configure and permit provider usage. Inline Assistant will not send secrets or files matching AI Rules patterns.
+- Audit logs: enterprise installs can log inline requests and responses for review (subject to redaction policies).
+
+## Best practices
+
+- Scope requests narrowly: select the function or block you want help with instead of the whole file.
+- Review suggestions: always review AI edits before applying them, especially for security- or correctness-critical code.
+- Use local-first on proprietary codebases to reduce risk of exfiltration.
+- Combine with linters and tests: treat AI suggestions as first drafts and validate them with existing tooling.
+
+## Troubleshooting
+
+- No suggestions appear:
+  - Ensure `ai.inline_assistant.enabled` is true.
+  - Check AI provider availability and that credentials are configured (AI Configuration).
+  - If using a local runtime, verify it is running and reachable.
+- Suggestions are low quality:
+  - Provide more focused context (open related files or select a larger range).
+  - Try a different model or increase the confidence threshold.
+- High latency:
+  - Enable local_first or choose a lower-latency model.
+  - Reduce `max_context_lines`.
+- Suggestions blocked:
+  - AI Rules may be redacting or blocking the required context (check project `.oppla/ai-rules.json`).
+
+## Developer notes
+
+- Extensions can implement custom inline handlers to provide domain-specific suggestions (for example, language-aware autofixes). Prefer structured suggestion outputs (patches, ranges, replacements).
+- Keep outputs small and machine-friendly (JSON patches) to allow reliable application by the editor.
+- Provide dry-run and preview modes for any extension-provided inline actions.
+
+## Links & next steps
+
+- AI Configuration: [AI Configuration](./configuration.mdx)
+- Edit Prediction: [Edit Prediction](./edit-prediction.mdx)
+- Agent Panel: [Agent Panel](./agent-panel.mdx)
+- AI Rules: [AI Rules](./rules.mdx)
+- Privacy & Security: [Privacy & Security](./privacy-and-security.mdx)
+- Model Context Protocol: [MCP](./mcp.mdx)
+
+---
+
+This is a stub intended to resolve missing links and provide immediate guidance. I can add UI screenshots, GIFs for common flows, or full step-by-step examples for specific languages next. Would you like a walkthrough for JavaScript, Python, or another language first?

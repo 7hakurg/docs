@@ -1,0 +1,173 @@
+---
+title: "Visual Customization"
+description: "Customize Oppla's appearance, themes, icons, fonts, and workspace layout for an optimal AI-assisted development experience"
+icon: "palette"
+---
+
+This guide helps you tailor Oppla's visual experience — from themes and syntax highlighting to panel layouts, icons, fonts, and accessibility options. It explains quick actions, configuration snippets, accessibility checks, and best practices so you and your team get a predictable, readable UI that works well with AI features.
+
+Why this matters
+- Visual clarity improves comprehension and reduces cognitive load when using AI suggestions.
+- Consistent styling helps teams review AI-generated diffs and makes automated suggestions easier to validate.
+- Accessibility ensures everyone can use Oppla effectively (contrast, font sizes, keyboard navigation).
+
+Quick links
+- Theme configuration: ../configuration/themes.mdx
+- Key bindings (shortcuts): ../configuration/key-bindings.mdx
+- AI styling & accessibility: ../ai/privacy-and-security.mdx
+- Extensions & theme development: ../extensions/developing-extensions.mdx
+
+1 — Getting started: Pick or enable an adaptive theme
+-----------------------------------------
+Oppla ships with AI-aware themes and an adaptive mode that can switch themes based on time of day, ambient conditions, or your activity. To enable adaptive themes:
+
+1. Open Preferences → Settings → Theme
+2. Choose mode: `system`, `dark`, `light`, or `ai_adaptive`
+3. Optionally set light/dark fallbacks
+
+Example (user settings snippet)
+```docs/ide/configuring-oppla.mdx#L1-60
+{
+  "theme": {
+    "mode": "ai_adaptive",
+    "light": "Oppla Light",
+    "dark": "Oppla Dark",
+    "experimental.theme_overrides": {
+      "editor.background": "#0f1724",
+      "ai.suggestion.background": "#10203a",
+      "ai.suggestion.border": "#F5A742"
+    }
+  }
+}
+```
+
+Tip: Use `ai_adaptive` on laptops to reduce eye strain during long sessions. The AI recommends theme adjustments when enabled.
+
+2 — Theme overrides & AI-specific colors
+-----------------------------------------
+Oppla supports custom theme attributes to highlight AI suggestions distinctly from user code. Use `experimental.theme_overrides` to tweak these attributes.
+
+Common AI-specific tokens:
+- `ai.suggestion.background` — background color for AI suggestion blocks
+- `ai.suggestion.border` — border for suggestion previews
+- `ai.inline.hint` — inline hint text color
+- `ai.completion.highlight` — highlight for accepted AI completions
+
+Example theme override (local theme file)
+```docs/ide/configuration/themes.mdx#L1-40
+{
+  "name": "my-ai-theme",
+  "colors": {
+    "editor.background": "#0b1220",
+    "editor.foreground": "#dbe7ff",
+    "ai.suggestion.background": "#122033",
+    "ai.suggestion.border": "#F5A742",
+    "ai.inline.hint": "#9fb2ff"
+  }
+}
+```
+
+Store local themes in `~/.config/oppla/themes/` and restart Oppla (or reload themes from the command palette) to load them.
+
+3 — Workspace layout & panels
+-----------------------------------------
+Optimize panel layout for AI workflows:
+
+- Recommended layout for agent-heavy workflows:
+  - Left: Project tree / Explorer
+  - Center: Editor (multi-tab)
+  - Right: Agent Panel / Text Threads
+  - Bottom: Terminal / Test Runner / Output
+  - Top: Command Palette (pop-up)
+
+Use the View menu or drag panels to create and save workspace layouts. Save workspace presets for different tasks (development, code review, debugging).
+
+Keyboard-driven layout changes
+- Use the Command Palette (`Cmd/Ctrl+Shift+P`) and search "Layout: Save Workspace" or "Layout: Toggle Panel".
+
+4 — Fonts, ligatures, and sizing
+-----------------------------------------
+Choose fonts that maximize code readability at your preferred size. Recommended fonts:
+- Inter / Inter UI (UI & variable fonts)
+- JetBrains Mono (monospace, excellent for ligatures)
+- Fira Code (popular with ligatures)
+- Source Code Pro (classic, wide support)
+
+Performance tip: When using Edit Prediction and inline AI hints, prefer a monospaced font with clear punctuation to avoid subtle glyph confusion in suggested edits.
+
+Example font settings
+```docs/ide/configuring-oppla.mdx#L61-120
+{
+  "editor": {
+    "fontFamily": "JetBrains Mono, Menlo, monospace",
+    "fontSize": 14,
+    "fontLigatures": true,
+    "lineHeight": 1.5
+  }
+}
+```
+
+5 — Icons & file decorations
+-----------------------------------------
+File icons help quick visual parsing of repositories. You can:
+- Enable built-in icon set (Preferences → Appearance → File Icons)
+- Install or enable icon extensions via the marketplace (see ../extensions/overview.mdx)
+- Configure badge styles for AI-suggested edits, lint errors, and test status in the Tree view
+
+6 — Accessibility checklist
+-----------------------------------------
+Before shipping a theme or recommending a team-wide layout, validate these items:
+
+- Contrast ratios: Ensure foreground/background pass WCAG AA (4.5:1 for normal text). Use automated checks on theme colors.
+- Focus outlines: Keyboard focus must be visible for panels and interactive controls.
+- Scalable UI: UI scales properly when font sizes or OS scaling changes.
+- High-contrast mode: Provide a high-contrast variant or follow OS high-contrast settings.
+- Screen reader labels: Panels and controls should expose accessible names.
+
+Accessibility testing action items:
+- Run an automated contrast checker on theme palette.
+- Manually test keyboard-only navigation for common flows (open file, accept AI suggestion, run agent).
+- Validate screen reader output on macOS VoiceOver and Linux Orca where possible.
+
+7 — Visual treatment for AI content (guidelines)
+-----------------------------------------
+Design recommendations when highlighting AI-generated content:
+
+- Use a subtle background tint rather than saturated color.
+- Provide a clear "suggested by AI" label with optional source model/provider metadata for transparency.
+- Use borders and small icons (e.g., a robot spark) to distinguish AI suggestions from user edits.
+- Provide dismiss and accept affordances inline (Tab = accept by default, Esc = dismiss), configurable in keybindings. See ../configuration/key-bindings.mdx.
+
+8 — Themes for collaboration & reviews
+-----------------------------------------
+When teams review AI-generated patches, prefer themes that:
+- Keep diffs clear (strong color separation for additions/deletions).
+- Highlight language-specific tokens (function names, types) consistently.
+- Emphasize comments and TODOs (so reviewers can spot unsafe auto-changes quickly).
+
+9 — Creating a theme for Oppla marketplace
+-----------------------------------------
+If you plan to publish themes, follow these best practices:
+- Provide a README with accessibility notes (contrast checks & font guidance).
+- Include a "Preview" image and alt text.
+- Expose `ai.*` token overrides to make your theme AI-friendly.
+- Test your theme with common languages in Oppla and show before/after screenshots.
+
+10 — Troubleshooting & tips
+-----------------------------------------
+- Theme not applying? Restart Oppla or reload the window.
+- Inline hints overlap code? Adjust `editor.lineHeight` and `ai.inline.hint` spacing in theme overrides.
+- Suggestions hard to see on your monitor: tweak `ai.suggestion.border` and `ai.suggestion.background` for stronger separation.
+- Want team consistency? Store a recommended theme file in your repo under `.oppla/theme.json` and document a "Use this theme" step in your CONTRIBUTING.md.
+
+Related pages & next steps
+- Themes: ../configuration/themes.mdx
+- Key bindings & shortcuts: ../configuration/key-bindings.mdx
+- AI Configuration: ../ai/configuration.mdx
+- Extensions & theme development: ../extensions/developing-extensions.mdx
+- Accessibility & privacy: ../ai/privacy-and-security.mdx
+
+If you want, I can:
+- Produce ready-to-use theme JSON files (dark/light/high-contrast).
+- Generate screenshot assets and alt text for the theme gallery.
+- Create a linter/checker that validates contrast ratios for custom themes.

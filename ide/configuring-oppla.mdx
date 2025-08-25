@@ -1,0 +1,172 @@
+---
+title: "Configuring Oppla"
+description: "How to configure Oppla: settings file locations, AI providers, keymaps, themes, and CLI configuration"
+icon: "gear"
+---
+
+This page explains where Oppla stores its configuration, how to edit settings (GUI and file-based), and provides practical examples for common tasks referenced elsewhere in the docs (key bindings, themes, AI provider setup).
+
+If you're coming from the Getting Started or Key Bindings guide, this is the canonical reference for configuring Oppla.
+
+## Where settings live
+
+Oppla stores configuration at user and project scope. Use the GUI preferences for most tasks or the settings files for automation and reproducibility.
+
+- User settings (per-user)
+  - macOS / Linux: `~/.config/oppla/settings.json`
+  - Windows (planned): `%APPDATA%\Oppla\settings.json`
+- Project settings (per-repository)
+  - Repository root: `.oppla/settings.json`
+  - Project settings override user settings for that repository.
+
+Oppla also uses OS-native secret storage for API keys and sensitive tokens (Keychain, Secret Service, etc.). See the Privacy & Security page for details.
+
+## Open settings
+
+- GUI: Preferences → Settings (or Command Palette → `oppla: Open Settings`)
+- File: Open `~/.config/oppla/settings.json` (or project `.oppla/settings.json`) in the editor
+
+Note: Settings can be provisioned by dotfiles or CI when onboarding developers.
+
+## Common configuration areas
+
+### AI providers and models
+Configure cloud or local AI providers, preferred models, and privacy options. Use environment variables for secrets (recommended).
+
+Example (user settings snippet):
+```json
+{
+  "ai": {
+    "provider": "openai",
+    "providers": {
+      "openai": {
+        "api_key_env": "OPENAI_API_KEY",
+        "default_model": "gpt-4o-mini",
+        "timeout_ms": 30000
+      },
+      "ollama": {
+        "endpoint": "http://localhost:11434",
+        "default_model": "llama2-13b-q4"
+      }
+    },
+    "privacy": {
+      "mode": "local_first",
+      "send_code": "opt_in"
+    }
+  }
+}
+```
+
+Key notes:
+- Use `api_key_env` to point to env vars rather than storing keys in files.
+- `privacy.mode` can be `local_only`, `local_first`, or `cloud_allowed`.
+- Configure task-specific models in `task_model_overrides` (see Available Models page).
+
+### Key bindings / keymaps
+Oppla reads user keymaps from `~/.config/oppla/keymap.json`. You can set a `base_keymap` in settings to adopt a familiar layout (VSCode, Emacs, Vim, etc.).
+
+Example:
+```json
+{
+  "keymap": {
+    "base_keymap": "VSCode",
+    "vim_mode": false,
+    "ai_keymap_learning": {
+      "enabled": true,
+      "suggest_after_days": 7
+    }
+  }
+}
+```
+
+- Open default keymap: Command Palette → `oppla: open default keymap`
+- For debugging: run `dev: Open Key Context View`
+- To enable AI-optimized learning, allow `ai_keymap_learning.enabled`.
+
+See the Key Bindings guide for syntax and examples.
+
+### Themes & visual customization
+Theme preferences live in settings; Oppla supports `ai_adaptive` mode that auto-adjusts based on time of day and activity.
+
+Example:
+```json
+{
+  "theme": {
+    "mode": "ai_adaptive",
+    "light": "Oppla Light",
+    "dark": "Oppla Dark",
+    "experimental.theme_overrides": {
+      "editor.background": "#0f1724",
+      "ai.suggestion.background": "#10203a"
+    }
+  }
+}
+```
+
+To load local themes, place theme JSON files under `~/.config/oppla/themes/`.
+
+### CLI settings & installation
+- CLI binary (when installed) integrates with your system shell.
+- To install CLI on macOS: `oppla: cli install` (creates a symlink to `/usr/local/bin/oppla`)
+- For automated installs, prefer signed release assets and verify checksums.
+
+Security note: Avoid piping remote install scripts directly (`curl | sh`) without verifying signatures in production environments.
+
+## Secret management & environment variables
+
+Preferred approaches:
+- Local dev: store secrets in OS secret stores (Oppla prompts to save keys securely).
+- CI: set provider keys as environment variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.).
+- Project automation: use a secrets manager and reference tokens with `api_key_env`.
+
+Example environment variable reference in settings:
+```json
+"providers": {
+  "openai": { "api_key_env": "OPENAI_API_KEY" }
+}
+```
+
+## Project-level configuration and AI Rules
+
+Project-level AI behavior and enforcement (AI Rules) should live in `.oppla/ai-rules.json` in the repository root. Use project rules to:
+- Prevent sending sensitive files to cloud providers
+- Require approvals for high-risk paths
+- Restrict allowed providers or models
+
+Rules are applied before agent runs or outbound model requests.
+
+## Troubleshooting
+
+- Settings not applied:
+  - Confirm you're editing the correct scope (user vs. project).
+  - Restart Oppla or reload the window after manual edits.
+- API key errors:
+  - Verify env var is set and contains a valid key.
+  - Check OS secret store permissions and that Oppla can read the secret.
+- Keymap conflicts:
+  - Use `dev: Open Key Context View` and run "AI: Analyze Keymap Usage".
+- Slow AI responses:
+  - Switch to `local_first`, reduce context window size, or pick a lower-latency local model.
+
+## Best practices checklist
+
+- Use OS secret stores or environment variables for API keys.
+- Start AI keymap learning with a default period (7 days) before applying suggestions.
+- Prefer local-first or local-only mode for sensitive codebases.
+- Keep project-level rules under source control for reproducibility.
+- Document any non-standard settings in the repository README for contributors.
+
+## Related documentation
+
+- Key Bindings: docs/ide/configuration/key-bindings.mdx
+- Themes: docs/ide/configuration/themes.mdx
+- AI Overview & configuration: docs/ide/ai/overview.mdx, docs/ide/ai/configuration.mdx
+- Privacy & Security: docs/ide/ai/privacy-and-security.mdx
+- Agent Panel, Rules, Tools: docs/ide/ai/agent-panel.mdx, docs/ide/ai/rules.mdx, docs/ide/ai/tools.mdx
+
+---
+
+If you want, I can:
+- Add step-by-step screenshots for common configuration flows.
+- Provide example automation scripts to provision settings for teams.
+- Add validation rules and a sample `oppla: validate-config` CLI snippet to check config health.

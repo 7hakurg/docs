@@ -1,0 +1,130 @@
+---
+title: "Agent Panel"
+description: "Interact with autonomous AI agents to perform multi-file tasks, refactors, and intelligent code actions"
+icon: "robot"
+---
+
+The Agent Panel is Oppla's interactive workspace for autonomous and semi-autonomous AI agents. Agents are specialized AI workflows that can understand project context, execute multi-step tasks, and produce or modify code across files while respecting your project rules and permissions.
+
+This page is a stub that describes the Agent Panel's core concepts, primary workflows, security considerations, and links to related AI features. Full how-tos and deep-dive guides will be added soon.
+
+## Quick summary
+
+- Purpose: Run focused AI agents to automate complex developer tasks (refactors, migrations, bulk edits, documentation generation, testing).
+- Access: Command Palette → "AI: Open Agent Panel" or use the keyboard shortcut (configurable).
+- Safety: Agents run in a constrained environment with granular permissions and audit logging.
+- Integrations: Works with AI Rules, Model Context Protocol (MCP), and external tools for enhanced capabilities.
+
+<Note>
+  **[PLACEHOLDER: Agent Panel UI screenshot]**
+  
+  *This image will show: the Agent Panel UI with agent list, task builder, logs, and a preview of file changes.*
+  
+  *Dimensions: 1400x900*
+  
+  *Priority: High*
+</Note>
+
+## Open the Agent Panel
+
+1. Open the Command Palette (Cmd+Shift+P / Ctrl+Shift+P).
+2. Run: `AI: Open Agent Panel`.
+3. Choose an agent from the gallery or create a new one using the "New Agent" button.
+4. Provide the task prompt or select a predefined workflow (e.g., "Refactor imports", "Migrate to async/await", "Add unit tests for module").
+
+Tip: You can pin frequently used agents to the panel for quick access.
+
+## Core agent capabilities
+
+- Project-aware analysis: Agents inspect the repository to build context (imports, modules, tests).
+- Multi-file edits: Propose and apply changes across many files with preview and staged commits.
+- Rules-aware behavior: Agents follow AI Rules that enforce style, safety, or project-specific constraints. See [AI Rules](./rules.mdx).
+- Tool usage: Agents can call configured tools (linters, formatters, test runners) via the Model Context Protocol. See [AI Tools](./tools.mdx) and [Models](./models.mdx).
+- Conversational control: Use a conversational thread to refine agent behavior while the task is running. See [Text Threads](./text-threads.mdx).
+- Dry run / preview mode: Always preview changes before applying; use the built-in diff viewer.
+
+## Typical agent workflows
+
+1. Single-file task (quick fix)
+   - Use an inline assistant or the Agent Panel to request a concise fix (e.g., "Simplify this function").
+   - Agent proposes a patch; review and apply.
+
+2. Multi-file refactor (medium risk)
+   - Select "Refactor" agent and describe the transformation.
+   - Review the agent's proposed changes across files in the staged preview.
+   - Run unit tests with the agent before applying changes.
+
+3. Full migration or architecture change (high risk)
+   - Create an agent workflow that includes planning, a staged rollout, and tests.
+   - Use "Canary" or "Incremental apply" options to apply changes in small batches.
+   - Enable audit logging and require human approval before final commit.
+
+4. Test generation and validation
+   - Generate unit or integration tests for a target module.
+   - Agent runs tests in an isolated sandbox and reports failures with suggestions.
+
+## Configuration & customization
+
+- Default model: Choose which model agents use for planning vs. execution in AI settings. See [AI Configuration](./configuration.mdx).
+- Agent templates: Create and save project-specific agent templates for recurring tasks.
+- Timeouts and retries: Configure per-agent timeouts and retry policies to avoid runaway tasks.
+- Human-in-the-loop: Require approvals for changes above a given risk threshold.
+
+## Permissions & safety
+
+Oppla enforces layered safety controls for agents:
+
+- Per-project permissions: Restrict which users or roles can run or approve agents.
+- Scopes: Agents must request explicit scopes (read, write, run-tests, access-secrets). Admins can whitelist or blacklist scopes.
+- Audit logging: Every agent run can be logged (who ran it, what model/provider was used, diffs proposed, approvals).
+- Dry-run-first default: Agents open in preview mode by default; changes are not applied until explicitly approved.
+- Rate limits & quotas: Prevent excessive automated changes by enforcing quotas.
+
+See [Privacy & Security](./privacy-and-security.mdx) for details on data handling and encryption.
+
+## Integrations
+
+- Tools (linters, formatters, test runners): Agents can call external tools via the Model Context Protocol. See [AI Tools](./tools.mdx).
+- Extension hooks: Extensions can register agent-aware hooks to add custom capabilities or validation steps.
+- CI/CD: Export agent-produced patches as PRs or link them to your CI pipeline for validation.
+
+## Troubleshooting & tips
+
+- Agent produces unexpected changes:
+  - Check the preview diff and rollback.
+  - Re-run the agent with a narrower scope or explicit constraints.
+  - Use AI Rules to encode prohibited transformations.
+
+- Agent fails due to model limits:
+  - Switch to a larger model for planning or enable multi-pass execution.
+  - Reduce context size by focusing the agent on specific files.
+
+- Tests fail after applying agent changes:
+  - Use the Agent Panel to revert the last applied change.
+  - Iterate with an agent configured to prioritize test passing.
+
+## Best practices
+
+- Start small: Run agents on unit-sized scopes before broad refactors.
+- Use rules: Encode coding standards and safety checks to guide agents.
+- Review diffs: Human review of proposed changes is essential for maintainability.
+- Combine tools: Run linters and tests inside agent workflows to validate output.
+- Track provenance: Keep notes in commits indicating which agent and prompt produced the changes.
+
+## Links & next steps
+
+- AI Overview: [Overview](./overview.mdx)
+- Configure AI providers: [AI Configuration](./configuration.mdx)
+- Related AI pages (stubs — content to be added):
+  - Edit Prediction: [Edit Prediction](./edit-prediction.mdx)
+  - AI Rules: [Rules](./rules.mdx)
+  - AI Tools: [Tools](./tools.mdx)
+  - Available Models: [Models](./models.mdx)
+  - Privacy & Security: [Privacy & Security](./privacy-and-security.mdx)
+  - Text Threads: [Text Threads](./text-threads.mdx)
+
+## Feedback & contribution
+
+This page is a stub. If you have feature requests, bug reports, or design suggestions for the Agent Panel, please file an issue in the docs repo or contact the AI docs team.
+
+---

@@ -1,0 +1,81 @@
+---
+title: "Extensions"
+description: "Discover, install, and build extensions for Oppla"
+icon: "puzzle"
+---
+
+Oppla ships with deep extension support so you can customize language features, UI themes, developer tools, and AI integrations. This index collects the essential info for users and extension authors: where to find extensions today, how to install and manage them, and how to prepare extensions to be Oppla-native and AI-ready.
+
+Quick links
+- Overview & marketplace: [Extensions Overview](./overview.mdx)
+- Dev guide: [Developing Extensions](./developing-extensions.mdx)
+- Browse online: https://oppla.ai/extensions
+- Support: mailto:extensions@oppla.ai
+
+Current state: where to get extensions
+- Today: Oppla integrates with the Zed extension marketplace and supports installing Zed-compatible extensions out of the box. See the Extensions Overview for details on compatibility and the migration plan.
+- Marketplace: The public Oppla extensions gallery (linked above) provides curated, AI-aware extensions, themes, and tools.
+- Local & private: You can install extensions from local packages for private or experimental workflows.
+
+Install & manage extensions (quick start)
+1. Open the Command Palette (Cmd/Ctrl+Shift+P) → `oppla: Extensions` or open the Extensions view.
+2. Install an extension:
+```docs/ide/extensions/index.mdx#L1-6
+# Install an extension from the CLI (example)
+oppla extensions install <extension-name>
+```
+3. Manage installed extensions: enable/disable per project, view logs, and configure settings from the Extensions view.
+4. Debugging: use the extension logs and `dev: Open Key Context View` for keybinding-related extension issues.
+
+Recommended extension categories
+- Languages: syntax highlighting, LSP adapters, and language-specific tooling (Python, TypeScript, Rust)
+- Themes: AI-aware themes that improve suggestion contrast and readability
+- Tools: linters, formatters, test runners (provide structured JSON outputs for MCP)
+- Debuggers & runtimes: enhanced debugging integration for complex stacks
+- Productivity: file explorers, todo managers, and snippet tools
+- AI: tools that expose structured outputs (lint results, test summaries) so Oppla's agents and AI features can consume them
+
+Best practices for extension authors
+- Structured outputs: return JSON schemas for any programmatic tool (linters, test runners, formatters). Agents and MCP rely on structured results for deterministic behavior.
+- Dry-run & idempotence: provide a dry-run mode so agents can preview proposed patches safely.
+- Explicit capabilities: declare capabilities and required scopes in your manifest (see the Developing Extensions guide).
+- Security & permissions: minimize permissions by design, document network calls, and support sandboxed execution or dry-run modes.
+- Accessibility: ensure UI contributions are keyboard navigable and have proper ARIA labels.
+
+Manifest & output example (see the developer guide for full details)
+```docs/ide/extensions/developing-extensions.mdx#L1-40
+{
+  "name": "oppla-example-extension",
+  "displayName": "Oppla Example Extension",
+  "version": "0.1.0",
+  "capabilities": { "aiTool": true, "mcpCompatible": true }
+}
+```
+
+Preparing for Oppla-native marketplace
+- Compatibility: keep supporting Zed-style manifests today so your extension works in Oppla's compatibility layer.
+- AI-ready: add machine-callable endpoints (dry-run JSON outputs), declare tool schemas, and register as MCP-compatible where appropriate.
+- SDK & monetization: sign up for the developer preview to be first in the Oppla-native marketplace (see the Extensions Overview for preview timing and the waitlist).
+
+Security, privacy & compliance
+- Clearly document what data your extension sends externally.
+- Respect AI Rules and the project's privacy settings (don't exfiltrate secrets).
+- Provide configuration options to disable network calls or run in dry-run-only mode for sensitive projects.
+- Follow guidance in the Developing Extensions doc for secure, auditable integrations.
+
+Contribute & support
+- Want to get listed or request features for the Oppla marketplace? Contact extensions@oppla.ai.
+- Community: join the forum and share extension ideas or examples (see the Overview for community links).
+- Feedback: file docs or feature issues in the docs repository when a cross-link or guide needs improvement.
+
+Next steps for teams
+- Users: Explore the Extensions Overview, install popular extensions, and enable per-project settings.
+- Authors: Read the Developing Extensions guide and update your manifests to include structured outputs and dry-run modes.
+- Ops & security: Review the privacy & AI Rules pages before enabling cloud-model-based extension functionality in sensitive projects.
+
+If you want, I can:
+- Generate a sample extension scaffold (manifest + dry-run tool) for Oppla,
+- Create example MCP tool manifests for common tools (eslint/jest/prettier),
+- Or run a link-check across the IDE docs and produce a report of any remaining references to missing pages.
+
+Which would you like next?

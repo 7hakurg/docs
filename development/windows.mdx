@@ -1,0 +1,115 @@
+---
+title: "Windows"
+description: "Windows-specific build, install, and troubleshooting notes for Oppla (preview)"
+icon: "windows"
+---
+
+Note: Native Windows support for Oppla is under active development. This page is a practical stub with guidance for developers and advanced users who want to run Oppla on Windows (native build or via WSL). It includes prerequisites, build-from-source tips, GPU/AI runtime notes, and troubleshooting steps. We'll expand this with signed installer instructions, CI recipes, and full troubleshooting flows.
+
+Status
+- Goal: Full native Windows 11 support with GPU acceleration and CLI integration.
+- Current: Preview and build-from-source guidance available. Native packaged installers will follow in future releases.
+- Workarounds: WSL2 and containerized builds are recommended for earlier/experimental Windows setups.
+
+Quick overview (recommended approaches)
+1. Easiest (recommended today for many users): Run Oppla inside WSL2 (Ubuntu or Debian) with GUI support (WSLg or an X server). This leverages Linux packaging and is simpler for local-model workloads.
+2. Native build: Build from source on Windows — supported but requires Visual Studio toolchain, correct native dependencies, and GPU drivers. Best for contributors and QA.
+3. Container: Use a Linux container (Docker Desktop) with device / GPU passthrough (NVIDIA) for testing local models.
+
+Prerequisites (developer/build environment)
+- OS: Windows 10 (1909+) / Windows 11 recommended for best WSL2 and GPU support.
+- Windows Subsystem for Linux (WSL2) recommended:
+  - Install WSL2 and a Linux distro (Ubuntu LTS recommended).
+  - Ensure WSLg (graphic support) or an X server is available for GUI forwarding.
+- Native toolchain (for building from source on Windows):
+  - Visual Studio 2022 or newer with "Desktop development with C++" workload.
+  - CMake (recent version)
+  - Git (for source checkout)
+  - Python 3.x (if the build uses Python tools)
+  - Node.js / npm or Rust toolchain depending on native components (check the repository README)
+- GPU & AI runtimes:
+  - NVIDIA: CUDA toolkit + drivers (for CUDA-enabled local inference). Install the latest drivers compatible with your GPU and CUDA version.
+  - DirectML or Windows ML: For DirectML-backed model runtimes, ensure DirectX/DirectML support — verify via Microsoft's guidance.
+  - Vulkan: If Oppla uses Vulkan acceleration on Windows, install the latest GPU Vulkan drivers from vendor (NVIDIA/AMD/Intel).
+- Signing & verification tools (for packagers / release authors):
+  - signtool.exe (Windows SDK) for code signing
+  - GPG / SHA256 utilities for release verification
+
+WSL2 (recommended for faster setup)
+- Why WSL2:
+  - You can use the Linux packaging, dependencies, and runtimes that the project primarily targets.
+  - Easier to run local model runtimes that are Linux-first (llama.cpp, Ollama, etc.)
+  - GUI support via WSLg enables a native-like graphical experience.
+- Setup notes:
+  1. Enable WSL and install a distro (e.g., Ubuntu 22.04 LTS).
+  2. Install required Linux dependencies inside WSL (build-essential, cmake, libvulkan*, etc.)
+  3. Install and configure local model runtime (e.g., ollama) in WSL.
+  4. Launch Oppla from the WSL environment and use WSLg for GUI — or run headless server and connect from Windows client.
+- GPU passthrough:
+  - NVIDIA supports CUDA in WSL2 via the CUDA on WSL driver stack; follow NVIDIA docs to enable GPU acceleration inside WSL.
+
+Building from source (native Windows)
+- General flow (high-level):
+  1. Clone repository: git clone `<repo-url>`
+  2. Install required SDKs/toolchains (Visual Studio with C++ workload, CMake, Python).
+  3. Follow repository README build steps (project-specific flags, dependencies).
+  4. Build native binaries and package them (MSIX/NSIS/Wix/Cab as appropriate).
+- Common tips:
+  - Use the Visual Studio Developer x64 Command Prompt when running build scripts that expect MSVC toolchain.
+  - Ensure environment variables point to correct SDK locations (e.g., VCPKG_ROOT if using vcpkg).
+  - For Electron/Node frontends, ensure Node version matches the repo requirements and run npm/yarn install from a POSIX-compatible shell if necessary (Git Bash or WSL may simplify).
+  - Be prepared to install or build native dependencies (libvulkan, OpenSSL, etc.) for Windows.
+
+Local model / inference runtime notes on Windows
+- Many inference runtimes are Linux-first. Check whether the runtime you want (Ollama, llama.cpp wrappers, etc.) has a Windows build or run it inside WSL.
+- If using NVIDIA for local inference, install CUDA and the cuDNN versions required by your model runtime.
+- For AMD GPUs, Windows ROCm support is limited — prefer Linux for ROCm-based acceleration.
+- DirectML can be used as an alternative GPU backend on Windows for some runtimes; check compatibility.
+
+Packaging & distribution
+- When creating Windows installers or packages:
+  - Sign installers and binaries (signtool) to reduce antivirus/SmartScreen friction.
+  - Provide SHA256 checksums and GPG signatures for release artifacts.
+  - Offer both native installers and a portable ZIP distribution when possible.
+  - Consider publishing a Microsoft Store or winget package once stable.
+
+Security & privacy notes
+- Avoid running untrusted install scripts (copy-paste `curl | sh`) without validating signatures.
+- For cloud AI providers, follow the same privacy model as other platforms: use environment variables / OS credential stores for keys and prefer local-only mode for sensitive projects.
+- Audit logging and enterprise RBAC may require extra configuration in Windows deployments (file storage locations, secure transports).
+
+Troubleshooting (common issues)
+- Oppla won't start / crashes on launch:
+  - Run the binary from a terminal to capture stderr/stdout.
+  - Check `%LOCALAPPDATA%\Oppla\logs` or `~/.config/oppla/logs` (WSL) for logs.
+  - Verify GPU drivers and runtime libraries (Vulkan, CUDA) are installed.
+- GUI rendering issues:
+  - If running natively, check GPU driver and Vulkan / DirectX versions.
+  - If using WSLg, ensure WSL and your distro are up to date; try toggling WSLg vs. an external X server.
+- Local models not reachable:
+  - Confirm runtime is running and listening on the expected endpoint.
+  - In WSL, check localhost/port mapping — consider using `wsl --shutdown` and restarting if networking acts odd.
+- High latency for cloud models:
+  - Verify network connectivity and low-latency routing to provider endpoints; consider regional endpoints.
+- Build failures:
+  - Ensure Visual Studio workloads and CMake are installed.
+  - Inspect build logs for missing libraries; install required SDKs and ensure PATH includes required tools.
+
+Developer notes & contribution checklist
+- Provide a CONTRIBUTING.md at repo root describing Windows build steps and recommended tool versions.
+- Add CI job for Windows build & smoke tests to catch regressions.
+- Include a small "hello world" native example that verifies the runtime and GPU acceleration on Windows.
+- Maintain a signed installer process and publish checksums/signatures for releases.
+
+Related docs
+- Linux-specific guidance: docs/ide/general/linux.mdx
+- System Requirements: docs/ide/general/system-requirements.mdx
+- AI Configuration & Privacy: docs/ide/ai/configuration.mdx and docs/ide/ai/privacy-and-security.mdx
+- If you need FreeBSD notes, see docs/development/freebsd.mdx (stub to be created)
+
+Want me to:
+- Add a step-by-step native Windows build recipe tailored to this repo (with exact CMake flags, dependencies, and dev env commands)?
+- Create a signed-installer checklist and CI jobs for Windows builds?
+- Create the FreeBSD stub now as well?
+
+Select which and I'll produce the next file or detailed build script.

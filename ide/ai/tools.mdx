@@ -1,0 +1,122 @@
+---
+title: "AI Tools"
+description: "How Oppla exposes and integrates external tools for AI agents and workflows"
+icon: "tool"
+---
+
+This page is a stub for Oppla's AI Tools documentation. It explains the high-level concepts, how tools are surfaced to AI agents (via the Model Context Protocol), and best practices for tool integration, security, and troubleshooting. Full developer guides and API references will be added soon.
+
+## What are AI Tools?
+
+AI Tools are external commands, services, or extension-provided capabilities that Oppla's AI agents and features can call to gather information, execute code analysis, run tests, or apply transformations. Examples include linters, formatters, test runners, language servers, and custom HTTP services.
+
+Tools extend AI capabilities by providing deterministic operations (run tests, format code, run static analysis) that complement the probabilistic outputs of language models.
+
+<Note>
+  **[PLACEHOLDER: AI Tools UI screenshot]**
+
+  *This image will show: the Tools configuration UI listing available tools, their scopes, and permission controls.*
+
+  *Dimensions: 1200x700*
+
+  *Priority: Medium*
+</Note>
+
+## How tools integrate with AI workflows
+
+Oppla uses the Model Context Protocol (MCP) to let models request and receive structured data from external tools. MCP is an abstraction layer that:
+
+- Defines how agents call tools (input/output schemas)
+- Controls which tools are available to an agent run
+- Enforces sandboxing, timeouts, and resource limits
+- Logs tool usage for auditability
+
+Typical flow:
+1. Agent composes a plan and identifies required tool calls.
+2. Oppla checks AI Rules and project permissions to determine allowed tools and scopes.
+3. Requested tools run in a sandboxed environment (local or containerized) and return structured results.
+4. The agent uses the results to produce a final proposal (patches, test reports, refactor plan).
+
+## Common types of tools
+
+- Linters and static analyzers (ESLint, Flake8, Clang-Tidy)
+- Formatters (Prettier, Black, rustfmt)
+- Test runners (pytest, jest, go test)
+- Package managers & build tools (npm, pip, cargo)
+- Language-specific analysis tools (type checkers, doc generators)
+- Custom HTTP services (security scanners, dependency vulnerability APIs)
+- CI hooks: create PRs, run CI pipelines, annotate failures
+
+## Example tool usage
+
+- "Run unit tests for module X and return failed tests with stack traces."
+- "Run ESLint on changed files and return the top 10 issues grouped by severity."
+- "Format the proposed patch with the project's formatter before presenting the diff."
+
+## Security, permissions & privacy considerations
+
+Because tools may access sensitive project data or run commands that modify code, Oppla enforces layered safety controls:
+
+- Scope & permissions: Admins and project owners specify which tools are allowed and which users/roles can invoke them.
+- Rule enforcement: AI Rules can block calls to specific tools for certain paths (for example, disallow running network scanners on private code).
+- Sandboxing: Tools run in isolated environments with limited file-system access and resource constraints.
+- Least privilege: Prefer read-only tool modes when possible (e.g., test-run-only vs. allow-write).
+- Audit logging: All tool invocations (who, when, arguments, results) are logged for traceability.
+- Secrets handling: Tools should never receive raw secrets unless explicitly allowed and handled through secure channels (secret stores, short-lived tokens).
+- Rate limiting & quotas: Prevent runaway tool usage via per-user or per-project quotas.
+
+## Developer integration (for extension authors)
+
+Oppla will provide an API for extensions and internal components to register tools for use by agents and other AI features. Integration points will include:
+
+- Tool registration metadata (name, description, input schema, output schema, recommended timeout)
+- Run-time hooks for validation, pre-processing and post-processing of results
+- Permission declarations (what scopes the tool requires)
+- Test harnesses to validate tool behavior against sample repositories
+- Examples: register a `python-test-runner` tool that runs pytest in a temp environment and returns structured JSON of test results
+
+Developer guidance (preview):
+- Author tools to return structured JSON rather than free-form text.
+- Always include meaningful error codes and messages.
+- Provide a dry-run mode to validate behavior without state changes.
+- Validate inputs from the MCP layer to avoid command injection.
+
+## Best practices
+
+- Prefer deterministic tools for validation steps (linters, tests) rather than relying solely on model outputs.
+- Combine tools with AI reasoning: use the model to generate a patch and tools to verify or refine it.
+- Keep tool outputs small and structured for reliable downstream processing.
+- Start with audit-only runs for new tools before enabling automatic application of tool-assisted changes.
+- Document tool expectations (required binaries, versions, environment variables) in repository docs.
+
+## Troubleshooting
+
+- Tool not available to agent:
+  - Check project/tool permissions and AI Rules.
+  - Ensure the tool registration metadata is correct and the tool binary/service is installed.
+- Tool runs but fails with environment errors:
+  - Verify runtime environment (PATH, node/python versions) and containerization settings.
+  - Ensure necessary project dependencies are installed in the tool's execution environment.
+- Unexpected or malformed results:
+  - Confirm the tool returns the expected schema. Add a post-processing validation step.
+  - Run the tool manually in the configured environment to replicate the issue.
+- Excessive latency:
+  - Increase tool timeouts with care or pre-run expensive analyses as part of CI and surface results to agents.
+
+## Related pages (stubs & next steps)
+
+- AI Configuration: ./configuration.mdx
+- Agent Panel: ./agent-panel.mdx
+- AI Rules: ./rules.mdx
+- Edit Prediction: ./edit-prediction.mdx
+- Models: ./models.mdx
+- Privacy & Security: ./privacy-and-security.mdx
+- Text Threads: ./text-threads.mdx
+- Model Context Protocol (MCP): ./mcp.mdx (planned)
+
+---
+
+If you'd like, I can:
+- Create example tool registration JSON and a sample extension that registers a `jest-runner` tool.
+- Draft the MCP API spec to show request/response schemas.
+- Add a security checklist for tool authors and ops teams.

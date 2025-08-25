@@ -1,0 +1,138 @@
+---
+title: "Text Threads"
+description: "Persistent, context-aware conversational threads tied to your project and code"
+icon: "chat"
+---
+
+Text Threads are persistent, project-scoped conversations that let developers, AI agents, and collaborators discuss code in context. Threads remain attached to specific files, ranges, PRs, or the repository as a whole so conversations stay useful and discoverable over time.
+
+This page is a practical stub that explains core concepts, typical workflows, privacy considerations, keyboard shortcuts, and integration points with Agent Panel and AI features. Full UX screenshots and example GIFs will be added later.
+
+## Key Concepts
+
+- Thread: A persistent conversation that can include humans and AI participants.
+- Context: Threads can be linked to files, line ranges, commits, or pull requests. Context provides the AI necessary project awareness.
+- Visibility: Threads can be private (project-only), team-visible, or public (if your org allows it).
+- Persistence: Threads are stored with configurable retention; audit logs track key events.
+- Actions: Threads can trigger agent tasks, create issues, generate PRs, or be pinned to files.
+
+## Typical Workflows
+
+1. Quick code question
+   - Select a code range, open the Text Thread, ask a question (human or AI reply).
+   - Accept or apply AI suggestions from the thread into the editor.
+
+2. Agent-driven work
+   - Start a thread to plan a multi-file refactor.
+   - Use the Agent Panel to run an agent with the thread as the instruction source.
+   - Review the agent's staged changes in the thread and approve them.
+
+3. PR-linked discussion
+   - Link a thread to a PR to keep conversational context with code review comments and AI-suggested fixes.
+   - Threads can create suggested commits or CI-run requests.
+
+## Creating and Managing Threads
+
+- From the editor: Select code → Right-click → "Start Text Thread" (or use Command Palette).
+- From Agent Panel: Create a planning thread to serve as an agent's instruction source.
+- From the command line / CLI: use `oppla thread create` (CLI docs TBD).
+
+Example thread creation payload (API/CLI payload example):
+
+```docs/ide/ai/text-threads.mdx#L1-40
+{
+  "title": "Migrate auth module to async",
+  "context": {
+    "repo": "my-org/my-repo",
+    "files": ["src/auth/*.py"],
+    "file_ranges": [
+      { "path": "src/auth/session.py", "start_line": 1, "end_line": 240 }
+    ],
+    "pr": null
+  },
+  "visibility": "team",
+  "participants": ["alice@example.com"],
+  "initial_message": "Plan incremental migration to async for auth flows. List steps and potential breaking changes."
+}
+```
+
+## Linking Threads to Files and PRs
+
+- Attach to a file or range so the thread surfaces when that file is opened.
+- Link to a PR so comments and suggested fixes are visible in both places.
+- Pin a thread to the Project Panel for high-importance discussions.
+
+## AI Integration
+
+- AI can join a thread as an assistant or be used to summarize long threads.
+- Use threads to seed Agent Panel runs — the agent will reference the thread history and approvals.
+- AI replies and suggested patches from threads follow AI Rules and privacy settings. See the Privacy & Security page: [Privacy & Security](./privacy-and-security.mdx).
+
+## Permissions, Auditing & Retention
+
+- Thread visibility respects repository and org permissions.
+- Actions that apply code changes from a thread require explicit approval (configurable).
+- All thread events (creation, edits, agent runs, approvals) are logged for auditability.
+- Retention is configurable via org settings; consider compliance requirements when enabling public or long-lived threads.
+
+## Keyboard Shortcuts
+
+- Start thread for selection: Cmd/Ctrl-Shift-T
+- Open thread panel: Cmd/Ctrl-Shift-Alt-T
+- Reply in thread: Enter
+- Pin/unpin thread: Cmd/Ctrl-P
+
+(Shortcuts are configurable in Key Bindings: [Key Bindings](../configuration/key-bindings.mdx))
+
+## Developer & Extension Integration
+
+- Extensions can create, read, and update threads via the Oppla docs API (planned).
+- Recommended pattern: expose a dry-run and structured JSON responses for any extension-provided actions that post or modify threads.
+- Extensions should respect thread visibility and AI Rules; never post secrets into threads.
+
+Thread message example showing an AI suggestion and a suggested patch:
+
+```docs/ide/ai/text-threads.mdx#L41-80
+{
+  "message_id": "msg-12345",
+  "author": "oppla-ai",
+  "type": "suggestion",
+  "content": "Replace sync function `get_user()` with `async def get_user_async()` and update callers.",
+  "suggested_patch": {
+    "file": "src/auth/session.py",
+    "edits": [
+      { "start_line": 12, "end_line": 18, "replacement": "async def get_user_async(...):\n    ..." }
+    ]
+  }
+}
+```
+
+## Privacy & Security Notes
+
+- Threads may contain code context; use AI Rules to redact or block sensitive content before any outbound request.
+- For highly sensitive projects, enable local-only mode: AI will not call cloud providers. See: [Privacy & Security](./privacy-and-security.mdx).
+- Admins can configure thread retention and export rules for compliance.
+
+## Troubleshooting
+
+- Thread not visible in file: confirm thread is attached to the exact file path and range; check project visibility settings.
+- AI suggestions not shown: verify AI provider configured in AI Configuration: [AI Configuration](./configuration.mdx) and that AI Rules permit the action.
+- Thread actions failing to apply patches: ensure user has write permissions and required approvals are granted.
+
+## Related Pages
+
+- AI Overview: [AI Overview](./overview.mdx)
+- Agent Panel: [Agent Panel](./agent-panel.mdx)
+- AI Rules: [AI Rules](./rules.mdx)
+- AI Configuration: [AI Configuration](./configuration.mdx)
+- Privacy & Security: [Privacy & Security](./privacy-and-security.mdx)
+- Key Bindings: [Key Bindings](../configuration/key-bindings.mdx)
+
+---
+
+This is a stub. Next steps:
+- Add UI screenshots and GIFs for thread creation and agent-driven workflows
+- Document API endpoints and CLI commands for thread operations
+- Provide example workflows for teams and enterprise retention policies
+
+If you'd like, I can create the CLI examples and the API reference pages next.

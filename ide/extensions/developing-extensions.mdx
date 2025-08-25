@@ -1,0 +1,114 @@
+---
+title: "Developing Extensions"
+description: "Guidelines for building Oppla-ready extensions and preparing for Oppla-native marketplace"
+icon: "puzzle"
+---
+
+This is a practical starter guide for extension authors who want to build or adapt extensions for Oppla. It covers the extension manifest, recommended outputs and schemas for AI consumption, security and permission guidance, testing tips, and the migration path from Zed-compatible extensions to Oppla-native extensions.
+
+If you're already familiar with Zed's extension APIs, you can continue using the same APIs today. This document focuses on what to do differently to make your extension "AI-ready" and future-proof for Oppla's native marketplace.
+
+Why this matters
+- Oppla enables AI agents, rules, and tools to call extensions programmatically. Extensions that expose structured outputs, clear capabilities, and safe execution models will unlock more powerful integrations.
+- Building with AI in mind improves automation, testability, and discoverability in Oppla's upcoming native marketplace.
+
+Quick checklist
+- [ ] Provide a clear manifest with metadata and capabilities
+- [ ] Return structured JSON for programmatic calls (avoid plain text where possible)
+- [ ] Declare required permissions and scopes explicitly
+- [ ] Add a dry-run mode and idempotent operations for safety
+- [ ] Add tests that run in CI and in a sandboxed environment
+- [ ] Provide documentation and examples for AI workflows
+
+Extension manifest (example)
+Use a concise manifest that declares commands, contributions, and any tool endpoints your extension exposes. Provide a human-readable description and structured capability flags.
+
+```docs/ide/extensions/developing-extensions.mdx#L1-40
+{
+  "name": "oppla-example-extension",
+  "displayName": "Oppla Example Extension",
+  "version": "0.1.0",
+  "publisher": "your-org",
+  "description": "Adds an example AI-aware code analysis tool and a testable CLI endpoint.",
+  "capabilities": {
+    "aiTool": true,
+    "allowsTooling": ["lint", "format", "test-run"],
+    "mcpCompatible": true
+  },
+  "commands": [
+    {
+      "id": "example.runLinter",
+      "title": "Run Example Linter",
+      "description": "Runs the linter and returns structured JSON results."
+    }
+  ],
+  "permissions": ["read_workspace", "run_commands"]
+}
+```
+
+Design for structured outputs
+- When exposing programmatic tooling (linters, test runners, analyzers), return JSON with a stable schema:
+  - Use arrays for issues with fields: file, line, col, severity, code, message, suggestion
+  - Include a machine-friendly `exit_code` and `metadata` block (runtime version, execution time)
+- Agents and AI tools can parse these outputs reliably to surface fixes, create PRs, or provide code actions.
+
+Example structured linter output
+
+```docs/ide/extensions/developing-extensions.mdx#L41-80
+{
+  "exit_code": 0,
+  "metadata": { "tool": "example-linter", "version": "1.2.0", "duration_ms": 340 },
+  "issues": [
+    {
+      "file": "src/foo.js",
+      "line": 12,
+      "col": 8,
+      "severity": "warning",
+      "code": "EX100",
+      "message": "Prefer const over var",
+      "suggestion": { "type": "edit", "range": [12, 8, 12, 11], "replacement": "const" }
+    }
+  ]
+}
+```
+
+AI integration patterns
+- Provide idempotent, dry-run APIs. Agents should be able to request a preview patch without applying changes.
+- Expose a `--dry-run --format=json` mode for CLI tools that returns the same structured schema.
+- Provide a short "capability" endpoint (or metadata field) so Oppla can discover what your extension can do without running heavy commands.
+
+Command & tool registration recommendations
+- Register commands with explicit schema for arguments and return values.
+- If your extension spawns jobs (tests, builds), return job ids and provide a `status` endpoint with structured events (started, progress, finished, artifacts).
+
+Security & permissions
+- Declare minimal required permissions. Avoid broad "write" or network scopes unless strictly necessary.
+- For tools that run arbitrary code (formatters, test runners), run them sandboxed (container, restricted user) and provide options for admins to restrict what tools can be invoked via agents.
+- Document any network calls your extension makes and allow enterprise installs to opt-out or proxy traffic.
+
+Testing & CI
+- Provide unit tests for logic and end-to-end tests that run in a sandbox environment.
+- Add sample fixtures and a reproducible environment (Dockerfile or setup script).
+- Add an "acceptance" test that simulates an agent calling your extension's dry-run endpoint and verifies schema compliance.
+
+Migration & compatibility notes
+- Today: Support Zed extension APIs so your extension works in Oppla's integration layer.
+- Prepare: Add manifest `capabilities` and structured endpoints as shown above to enable richer Oppla integrations.
+- Future: When Oppla native marketplace and SDK are available, you'll be able to register AI-specific hooks, richer MCP integrations, and monetization metadata. Design with a clear separation between UI-only commands and machine-callable tool endpoints.
+
+Publishing & discoverability
+- Provide rich metadata (tags, languages, capability flags) so Oppla can recommend extensions based on developer workflows.
+- Include examples and "AI-ready" badges in your README showing supported commands and schemas.
+
+Accessibility & UX
+- Keep command names clear and brief.
+- Provide helpful error messages and fallback guidance for missing dependencies.
+- Ensure keyboard navigability and localized strings where applicable.
+
+Resources & next steps
+- Create a `README.md` that documents the dry-run JSON schema, CLI examples, and sample invocation patterns.
+- Add a `/examples` folder with a minimal repo demonstrating extension usage with Oppla agents and AI workflows.
+- If you'd like, we can produce a sample extension scaffold, a test harness for schema validation, and an MCP draft for tool registration.
+
+Feedback & contact
+- File issues or feature requests in the docs repo or contact extensions@oppla.ai for SDK access and roadmap questions.

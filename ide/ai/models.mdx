@@ -1,0 +1,149 @@
+---
+title: "Available Models"
+description: "Overview of supported AI models (cloud and local), selection guidance, and configuration examples"
+icon: "cubes"
+---
+
+This page describes Oppla's supported language and reasoning models, guidance for choosing models based on task, and configuration examples. It also includes short stubs and links for related privacy & security and text-threads pages (create separate files for full docs).
+
+## Supported Model Categories
+
+Oppla supports two broad model deployment modes:
+
+- Cloud providers (hosted by third parties)
+  - OpenAI (GPT family)
+  - Anthropic (Claude family)
+  - Google AI (Gemini)
+  - Azure OpenAI
+  - AWS Bedrock
+- Local / on-prem runtimes
+  - Ollama
+  - llama.cpp / GGML-based runtimes
+  - LM Studio-style local servers
+  - Custom HTTP endpoints (self-hosted inference)
+
+Each category has tradeoffs in latency, cost, privacy, and reasoning capability. Choose the model that matches your workflow and constraints.
+
+## Recommendations by Task
+
+- Completions & Inline Assist
+  - Priority: low latency, low cost
+  - Recommended: small, fast models (small GPT-family, Gemini-lite, local quantized models)
+- Refactoring & Code Transformations
+  - Priority: accuracy and code-understanding
+  - Recommended: mid-to-large models with strong code capabilities (GPT-4 style, Claude-instant/2)
+- Agents & Multi-file Workflows
+  - Priority: strong reasoning, context handling
+  - Recommended: larger or specialized models that can handle multi-step planning; consider cloud models for scale or on-prem larger models for privacy
+- Test Generation & Explanations
+  - Priority: correctness & explainability
+  - Recommended: reasoning-capable models; consider multi-pass (draft + verify) with deterministic tool checks
+
+## Cost, Latency & Privacy Tradeoffs
+
+- Cloud models typically offer best reasoning per token but incur API costs and outbound data considerations.
+- Local models reduce outbound data risk and latency for some workflows but may require significant local hardware and maintenance.
+- A hybrid strategy often works best: use local/fast models for everyday completions; use powerful cloud models for heavy reasoning tasks when policy permits.
+
+## Model Selection Strategies
+
+- Multi-model strategy: route simple completions to fast models, heavy tasks to powerful models.
+- Context window management: larger context windows help for agents and multi-file tasks; but increase cost and latency.
+- Adaptive selection: configure default models per task in AI Configuration and allow per-agent overrides.
+- Fallbacks: define fallbacks (e.g., if local model unavailable, use approved cloud provider) and surface policy to users.
+
+## Example configuration snippets
+
+Example: default model settings in your user settings file.
+
+```docs/ide/ai/models.mdx#L221-300
+{
+  "ai": {
+    "default_provider": "ollama",
+    "providers": {
+      "openai": {
+        "default_model": "gpt-4o-mini",
+        "timeout_ms": 30000
+      },
+      "anthropic": {
+        "default_model": "claude-2.1",
+        "timeout_ms": 30000
+      },
+      "ollama": {
+        "endpoint": "http://localhost:11434",
+        "default_model": "llama2-13b-q4"
+      }
+    },
+    "task_model_overrides": {
+      "completion": "ollama::llama2-13b-q4",
+      "refactor": "openai::gpt-4o-mini",
+      "agent_planning": "anthropic::claude-2.1"
+    }
+  }
+}
+```
+
+Notes:
+- Use environment variables or OS secret stores for provider keys.
+- Keep model choices explicit per task to control cost and behavior.
+
+## Validation & Benchmarking
+
+Before publishing hard performance numbers:
+- Run representative benchmarks on target hardware/network.
+- Document the test environment (hardware, model version, dataset, date).
+- Measure latency, throughput, and failure modes.
+
+## Best Practices
+
+- Prefer "local_first" on sensitive projects to reduce exfiltration risk.
+- Use model-specific temperature and max-token tuning per task.
+- Combine models with deterministic tools (linters, test runners) to verify results.
+- Record provenance: which model and prompt produced a change.
+
+## Model Safety Controls
+
+- Limit model capabilities via AI Rules (e.g., forbid external network calls, restrict provider usage).
+- Use redaction rules to remove secrets or PII before sending context to cloud providers.
+- Enable audit logging for all model requests in enterprise installs.
+
+## Related pages (stubs)
+
+The following related pages should exist as separate docs. If they don't yet exist, create them with matching filenames listed below.
+
+- Privacy & Security (stub)
+  - Filename: ./privacy-and-security.mdx
+  - Short description: Covers data handling, encryption, local-only modes, audit logs, and enterprise controls.
+  - Inline stub (brief):
+    - Oppla supports local-only model modes, OS secret stores, and audit logging. Create a dedicated page (docs/ide/ai/privacy-and-security.mdx) to document:
+      - What context is sent to providers by default
+      - How to enable local-only mode
+      - Secret storage best practices
+      - Audit/logging and compliance features
+      - Example: configuration to disable outbound model requests
+- Text Threads (stub)
+  - Filename: ./text-threads.mdx
+  - Short description: Persistent conversational threads tied to project context (for agent interactions, history, and collaboration).
+  - Inline stub (brief):
+    - Text Threads let you have persistent, context-rich chats about code. Create docs/ide/ai/text-threads.mdx to cover:
+      - Creating and pinning threads
+      - Linking threads to files or PRs
+      - Retention and export options
+      - Privacy controls (who can read / write threads)
+
+## Quick creation checklist (for docs team)
+
+- Create docs/ide/ai/privacy-and-security.mdx with:
+  - Detailed privacy model
+  - Local-only configuration examples
+  - Audit log configuration
+  - Enterprise controls & RBAC
+- Create docs/ide/ai/text-threads.mdx with:
+  - UX flows, keyboard shortcuts
+  - Thread lifecycle and retention
+  - Integration with Agent Panel and PRs
+- Keep model docs up to date with provider changes and recommended model names.
+
+---
+
+If you'd like, I can also produce the two separate stub files (privacy-and-security.mdx and text-threads.mdx) content next.

@@ -27,10 +27,7 @@
         "groups": [
           {
             "group": "Introduction",
-            "pages": [
-              "index",
-              "quickstart"
-            ]
+            "pages": ["index", "quickstart"]
           }
         ]
       },
@@ -41,26 +38,61 @@
             "group": "Getting Started",
             "pages": [
               "ide/general/getting-started",
-              "ide/general/system-requirements"
+              "ide/general/system-requirements",
+              "ide/general/linux",
+              "ide/general/visual-customization"
             ]
           },
           {
             "group": "AI Features",
             "pages": [
-              "ide/ai/overview"
+              "ide/ai/overview",
+              "ide/ai/models",
+              "ide/ai/agent-panel",
+              "ide/ai/inline-assistant",
+              "ide/ai/edit-prediction",
+              "ide/ai/text-threads",
+              "ide/ai/tools",
+              "ide/ai/configuration",
+              "ide/ai/rules",
+              "ide/ai/mcp",
+              "ide/ai/privacy-and-security",
+              "ide/ai/subscription"
             ]
           },
           {
             "group": "Configuration",
             "pages": [
+              "ide/configuration/index",
               "ide/configuration/themes",
-              "ide/configuration/key-bindings"
+              "ide/configuration/key-bindings",
+              "ide/configuring-oppla"
+            ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "ide/advanced/keybindings"
             ]
           },
           {
             "group": "Extensions",
             "pages": [
-              "ide/extensions/overview"
+              "ide/extensions/overview",
+              "ide/extensions/index",
+              "ide/extensions/developing-extensions"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Development",
+        "groups": [
+          {
+            "group": "Platform Setup",
+            "pages": [
+              "development/windows",
+              "development/freebsd"
             ]
           }
         ]
@@ -120,10 +152,7 @@
           },
           {
             "group": "Advanced Features",
-            "pages": [
-              "tours/compare",
-              "tours/disable-tracking"
-            ]
+            "pages": ["tours/compare", "tours/disable-tracking"]
           }
         ]
       },
@@ -180,8 +209,8 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/oppla",
-      "linkedin": "https://linkedin.com/company/oppla"
+      "github": "https://github.com/Oppla-AI/oppla",
+      "linkedin": "https://www.linkedin.com/company/opplaai/"
     }
   }
 }

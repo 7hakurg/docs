@@ -1,0 +1,120 @@
+---
+title: "Subscription Plans"
+description: "Oppla subscription tiers, usage billing, and enterprise options for AI-enabled development"
+icon: "credit-card"
+---
+
+This page summarizes Oppla's subscription and billing model for individual developers, teams, and enterprises using AI features. It explains tiers, usage-based billing, quotas, trial options, and who to contact for enterprise plans.
+
+## Overview
+
+Oppla offers flexible plans to match different needs:
+
+- Free — ideal for exploration, lightweight usage, and open-source contributors
+- Individual (Pro) — for power users who want higher quotas, prioritized support, and advanced AI models
+- Team — collaboration features, shared quotas, and centralized billing
+- Enterprise — on-premise/local deployments, SSO & RBAC, audit logging, and dedicated support
+
+AI features (completions, agents, edit prediction, model-hosting) are metered separately and may be subject to usage-based billing depending on provider and plan.
+
+## Free Tier
+
+- Access to core editor features and basic AI assistance
+- Limited daily/monthly inference quota for cloud models
+- Local models can be used without cloud billing (subject to hardware)
+- Great for testing and onboarding — sign up to start a free trial of Pro features
+
+## Individual (Pro)
+
+- Higher model quotas and priority queuing for cloud requests
+- Access to premium models and higher context windows (where available)
+- Advanced agent features and extended audit history
+- Monthly subscription billed via credit card or invoice (where supported)
+
+Recommended for single developers who rely on AI for productivity and want predictable billing.
+
+## Team
+
+- Centralized team billing and quota pooling
+- Role-based access controls and shared workspace limits
+- Team admin console for monitoring usage, assigning seats, and policy controls
+- Per-seat or pooled billing models (configurable)
+
+Designed for small to medium engineering teams that need collaboration, governance, and cost control.
+
+## Enterprise
+
+- On-premise / air-gapped deployment options and local-only model support
+- Enterprise-grade security: audit trails, encryption, SSO (SAML / OIDC), and RBAC
+- Custom pricing, committed usage discounts, and dedicated onboarding
+- SLA, priority engineering support, and professional services for migration/ops
+
+Contact sales via enterprise@oppla.ai to discuss architecture, procurement, and compliance requirements.
+
+## Usage-Based Billing & Quotas
+
+- Cloud model usage is typically metered by input tokens, output tokens, or inference calls depending on the provider.
+- Oppla surfaces usage in the team dashboard with per-user and per-project breakdowns.
+- Quotas and soft limits are configurable at org and project level to prevent runaway costs.
+- For local models, there is no cloud provider billing from Oppla — only operational costs for hosting models.
+
+## Billing, Invoices & Payments
+
+- Payment methods: Credit card (Stripe), invoicing for eligible teams, and purchase orders for enterprise customers.
+- Invoices include line items for subscription seats and usage charges (if applicable).
+- Billing portal available for admins to download invoices, update payment methods, and view usage history.
+- Contact billing@oppla.ai for invoice support, tax documents, or billing disputes.
+
+## Trial, Upgrade & Downgrade
+
+- New accounts may be eligible for a free Pro trial for a limited period.
+- Upgrades take effect immediately; prorated billing applies when switching plans mid-cycle.
+- Downgrades are scheduled at the end of the current billing period to avoid data loss or abrupt quota changes.
+- Admins can provision seats and set defaults for team onboarding.
+
+## Enterprise Compliance & Procurement
+
+- We support SOC2/ISO-ready practices for enterprise customers (deployment options and audit logs).
+- For regulated environments, Oppla recommends local-only model deployments and review of the Privacy & Security documentation.
+- Procurement and contract templates are available on request through enterprise@oppla.ai.
+
+## Cost Controls & Best Practices
+
+- Use a multi-model strategy: route cheap, fast models for everyday completions and reserve powerful models for heavy reasoning tasks.
+- Configure per-project AI Rules and quotas to prevent accidental data exfiltration and cost spikes.
+- Monitor usage dashboards and set alerts for high spend or anomalous usage patterns.
+- Prefer local-first or local-only modes for sensitive codebases to minimize cloud provider traffic.
+
+## Support & Escalation
+
+- Self-service: Docs, FAQs, and community forums (see links below)
+- Billing & account: billing@oppla.ai
+- Enterprise & sales: enterprise@oppla.ai
+- Technical support: support@oppla.ai (or use your team admin console to open tickets)
+
+## Frequently Asked Questions
+
+Q: Are AI model costs included in my subscription?
+A: Subscription tiers include seat-level features and baseline quotas. Model inference costs may be usage-based depending on model/provider and plan. Check your plan's detailed pricing page or contact billing.
+
+Q: Can I use my own cloud provider account for model billing?
+A: In some enterprise setups, you can route calls through your provider accounts. Contact sales for configuration details and supported providers.
+
+Q: How do I prevent unexpected AI usage?
+A: Configure per-project quotas and AI Rules, enable alerts on usage dashboards, and use local-only mode for sensitive projects.
+
+## Related Documentation
+
+- AI Configuration: ./configuration.mdx
+- Privacy & Security: ./privacy-and-security.mdx
+- Agent Panel & AI Features: ./overview.mdx, ./agent-panel.mdx
+- Extensions & Marketplace: ../extensions/overview.mdx
+
+---
+
+If you want, I can:
+- Add a detailed pricing table with feature-by-feature comparisons for each plan
+- Create sample invoices and billing portal screenshots
+- Draft enterprise onboarding/checklist for procurement and security reviews
+
+Which of those would you like next?

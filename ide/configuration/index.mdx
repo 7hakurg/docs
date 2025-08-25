@@ -1,0 +1,88 @@
+---
+title: "Configuration"
+description: "Central guide to configure Oppla: AI providers, key bindings, themes, and best practices"
+icon: "cog"
+---
+
+Welcome to the Configuration hub for Oppla. This page collects the most important configuration topics so you can quickly set up AI providers, customize key bindings, and choose or create themes. Use the quick links below to jump to detailed pages or follow the short walkthrough to get configured in minutes.
+
+Quick links
+- Key Bindings: ./key-bindings.mdx
+- Themes: ./themes.mdx
+- AI Configuration (providers, local models): ../ai/configuration.mdx
+- AI Rules, Agent and other AI features: ../ai/overview.mdx
+
+Getting started (2–5 minutes)
+1. Open Preferences → Configuration (or Command Palette → `oppla: Open Settings`).
+2. Configure AI provider: choose cloud provider or local runtime. See: ../ai/configuration.mdx
+3. Set up key bindings: open ./key-bindings.mdx and pick a base keymap or enable AI-optimized keymap learning.
+4. Pick a theme: open ./themes.mdx and enable ai_adaptive mode if you want automatic theme adjustments.
+5. Test: open a file and try an AI action (inline assist / completion) to validate settings.
+
+Where settings live
+- GUI: Preferences → Settings → Search for `ai`, `keymap`, or `theme`
+- User config file:
+  - macOS / Linux: ~/.config/oppla/settings.json
+  - Windows (when supported): %APPDATA%\Oppla\settings.json
+
+Example settings (user-level)
+Use environment variables for secrets and prefer OS secret stores. Example snippet (adapt to your environment):
+
+```docs/ide/configuration/index.mdx#L1-60
+{
+  "ai": {
+    "provider": "openai",
+    "providers": {
+      "openai": { "api_key_env": "OPENAI_API_KEY", "default_model": "gpt-4o-mini" },
+      "ollama": { "endpoint": "http://localhost:11434", "default_model": "llama2-13b" }
+    },
+    "privacy": {
+      "send_code": "opt_in",
+      "local_model_preferred": true,
+      "telemetry": false
+    },
+    "edit_prediction": { "enabled": true, "local_first": true }
+  },
+  "keymap": {
+    "base_keymap": "VSCode",
+    "vim_mode": false
+  },
+  "theme": {
+    "mode": "ai_adaptive",
+    "dark": "Oppla AI Dark",
+    "light": "Oppla AI Light"
+  }
+}
+```
+
+Best practices
+- Secrets: Do not embed API keys in repository files. Use OS secret stores or environment variables.
+- Local-first: For sensitive codebases enable `local_model_preferred` to avoid outbound context.
+- Learning period: Let AI keymap learning run for ~7 days before applying automatic optimizations.
+- Multi-model strategy: Use small, fast models for inline completions and larger models for heavy reasoning/agents.
+- Audit & rules: Use AI Rules to enforce privacy, approvals, and constraints in team or enterprise repos.
+
+Troubleshooting (quick)
+- AI actions failing: Check provider credentials, network connectivity, and OS secret store permissions.
+- Slow completions: Toggle `local_first` or switch to a lower-latency local model; reduce context window size.
+- Keymap conflicts: Use `dev: Open Key Context View` and run "AI: Analyze Keymap Usage" to surface conflicts.
+- Theme readability issues: Use theme overrides to adjust `ai.suggestion.background` and increase contrast for accessibility.
+
+Missing or additional configuration pages
+We recommend adding or reviewing these pages (if you maintain docs):
+- Advanced keybinding guide: ../advanced/keybindings.mdx
+- Visual customization and theme authoring: ../extensions/themes.mdx
+- Platform-specific configuration (Linux / Windows guides)
+If a referenced page is missing, please create a stub at that path and mark it as "coming soon" so cross-links don't 404.
+
+Security & compliance notes
+- Document your data exfiltration policy for cloud providers (what gets sent, retention).
+- For enterprise installs, configure audit logging and role-based approval for high-risk agent operations.
+- Prefer short-lived credentials or token-based access for custom endpoints.
+
+Want me to fix links automatically?
+I can:
+- Create a configuration index (this page) and stubs for any missing referenced pages so internal links resolve.
+- Run a link audit and list remaining 404s and recommended fixes.
+
+Choose next: create missing stubs, run a link audit, or draft full step-by-step how-tos for AI provider setup.

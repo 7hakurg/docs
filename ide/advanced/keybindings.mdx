@@ -1,0 +1,162 @@
+---
+title: "Advanced Keybindings"
+description: "Deep dive: keymap syntax, contexts, conflict resolution, AI-aware modifiers, and debugging"
+icon: "keyboard"
+---
+
+This guide is for power users and extension authors who need precise control over Oppla keymaps. It complements the user-facing Key Bindings page and shows advanced patterns, context expressions, conflict resolution rules, and troubleshooting steps.
+
+If you're new to keymaps, start with the user guide: ../configuration/key-bindings.mdx
+
+## Where keymaps live
+
+- User keymap: `~/.config/oppla/keymap.json`
+- Project keymap (optional): `.oppla/keymap.json` (project-specific overrides)
+- Default keymaps: packaged with the app (read-only)
+
+User keymaps merge with defaults; project keymaps take precedence for that workspace.
+
+## Keymap JSON schema (overview)
+
+Keymaps are arrays of entries. Each entry can contain:
+- `bindings`: map of key sequences to action names or [action, args]
+- `context`: optional context expression (see below)
+- `description`: optional human-friendly description
+
+Example: (structured example below)
+
+```docs/ide/advanced/keybindings.mdx#L1-60
+{
+  "bindings": {
+    "ctrl-right": "editor::SelectLargerSyntaxNode",
+    "ctrl-left": "editor::SelectSmallerSyntaxNode",
+    "cmd-shift-a": "ai::InlineAssist",
+    "cmd-enter": "ai::AcceptSuggestion"
+  }
+}
+```
+
+> Note: Use environment-appropriate modifier names (`cmd-` on macOS, `super-`/`win-` on Windows).
+
+## Key sequence syntax
+
+- Keys are lowercased, modifiers prefixed (e.g., `cmd-`, `ctrl-`, `alt-`, `shift-`).
+- Multi-key sequences use space separation: `"cmd-k cmd-s"` means press Cmd-K, then Cmd-S.
+- Double-tap: `"shift shift"` maps a double Shift press.
+- Special `ai-` modifier: maps to your platform's AI modifier (default: `cmd-shift`), useful for AI-specific shortcuts.
+
+## Context expressions
+
+Contexts scope bindings to specific UI states or editor modes. They follow a simple boolean expression language:
+
+- Basic: `Editor`, `ProjectPanel`, `ai_panel_focused`
+- Predicates: `mode=full`, `extension=py`
+- Logical operators: `&&` (and), `||` (or), `!` (not)
+- Example: `Editor && mode=full && !ai_suggestion_active`
+
+Context specificity rules:
+- More specific contexts win over generic ones.
+- When multiple bindings match, the one with the most specific context expression (highest number of positive clauses) takes precedence.
+- User keymaps override defaults regardless of specificity.
+
+## AI-aware contexts & modifiers
+
+Oppla introduces several AI-specific contexts and actions; keep these in mind for smooth AI UX:
+
+Common AI contexts:
+- `ai_suggestion_active`
+- `ai_panel_focused`
+- `ai_refactoring`
+- `ai_generating`
+
+Common AI actions:
+- `ai::InlineAssist`
+- `ai::AcceptSuggestion`
+- `ai::DismissSuggestion`
+- `ai::NextSuggestion`
+- `ai::PreviousSuggestion`
+
+Use contexts to avoid conflicts between regular editor bindings and AI suggestions (e.g., map `tab` to `ai::AcceptSuggestion` only in `ai_suggestion_active`).
+
+## Conflict resolution & timing
+
+- Prefix conflicts: If you have `ctrl-w` and `ctrl-w left`, Oppla uses a smart delay based on learned typing speed. You can configure wait time via settings.
+- User bindings override packaged defaults.
+- For ambiguous multi-key sequences, prefer explicit contexts or longer sequences to disambiguate.
+
+## Debugging keymaps
+
+- From Command Palette: `dev: Open Key Context View` — shows current context tree and active bindings.
+- Run "AI: Analyze Keymap Usage" after a week of usage to generate suggested remaps.
+- When bindings don't fire:
+  - Check context expression (negations and scope).
+  - Ensure there are no higher-priority bindings in project or default maps.
+  - Use the Key Context View to trace the evaluated contexts.
+
+## Best practices
+
+- Keep ergonomic frequency in mind: bind common actions to easily reachable keys.
+- Use `ai_keymap_learning` sparingly for teams; require review before applying org-wide changes.
+- Prefer sequential combos (`cmd-k cmd-s`) for rarely used or destructive commands.
+- Provide `--dry-run` or preview actions for AI-powered shortcuts that apply multi-file changes.
+
+## Examples
+
+Keymap example (project-level) showing context use, AI actions, and action arguments:
+
+```docs/ide/advanced/keybindings.mdx#L61-140
+[
+  {
+    "description": "Editor selection helpers",
+    "bindings": {
+      "ctrl-right": "editor::SelectLargerSyntaxNode",
+      "ctrl-left": "editor::SelectSmallerSyntaxNode"
+    }
+  },
+  {
+    "context": "Editor && ai_suggestion_active",
+    "bindings": {
+      "tab": "ai::AcceptSuggestion",
+      "escape": "ai::DismissSuggestion",
+      "cmd-right": "ai::NextSuggestion",
+      "cmd-left": "ai::PreviousSuggestion"
+    }
+  },
+  {
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      "o": "project_panel::Open",
+      "a": "ai::AnalyzeFile"
+    }
+  },
+  {
+    "description": "AI-refactor with args and approval requirement",
+    "context": "ai_refactoring && user_role=maintainer",
+    "bindings": {
+      "cmd-shift-r": ["ai::Refactor", { "style": "functional", "require_approval": true }]
+    }
+  }
+]
+```
+
+## Migration tips (from other editors)
+
+- Map common chords (VSCode `ctrl-k ctrl-s`) to sequential combos to preserve muscle memory.
+- Provide a compatibility base keymap in `base_keymap` settings and layer project overrides.
+- Audit conflicts by exporting your current keymap and running the Key Context View to surface conflicts.
+
+## Troubleshooting
+
+- After edits, restart or reload Oppla to ensure changes are applied.
+- If keys behave differently across OSes, check `use_key_equivalents` and platform-specific modifiers.
+- If AI accepts `Tab` unexpectedly, constrain `tab` binding to `ai_suggestion_active` context.
+
+## Further reading
+
+- User guide: ../configuration/key-bindings.mdx
+- Configuration reference: ../configuring-oppla.mdx
+- AI Overview & related features: ../ai/overview.mdx
+
+If you want, I can:
+- Produce a linter that validates keymap JSON and context expressions.
+- Generate a sample migration script that converts a VSCode keybindings.json into Oppla's format.

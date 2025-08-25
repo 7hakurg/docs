@@ -1,0 +1,162 @@
+---
+title: "AI Rules"
+description: "Define project-specific rules that guide Oppla's AI behavior (safety, style, privacy, and automation)"
+icon: "gavel"
+---
+
+This page is a stub for Oppla's AI Rules feature. AI Rules let teams codify constraints and best practices so Oppla's AI agents, Edit Prediction, and other AI features behave predictably and safely across a codebase.
+
+Use this page to:
+- Understand the purpose and types of AI Rules
+- See the canonical rule schema and examples
+- Learn how rules interact with agents, tools, and models
+- Find links to related stubs (Tools, Models, Privacy, Text Threads)
+
+Note: This is an initial technical stub. Full UX screenshots, policy templates, and enforcement guides will be added in subsequent iterations.
+
+## Why AI Rules?
+
+AI Rules provide an auditable, machine-readable way to:
+- Prevent the AI from performing unsafe transformations
+- Enforce coding standards and style consistency
+- Restrict what code and data can be sent to remote providers
+- Define approval gates and human-in-the-loop behavior
+- Integrate with CI and audit logging for compliance
+
+AI Rules are intended for projects, teams, and enterprises that want deterministic AI-assisted workflows.
+
+## Rule Types
+
+Common rule categories:
+
+- Safety & Security: Disallow edits that remove authentication checks, leak secrets, or expose credentials.
+- Privacy & Data Handling: Block or redact code snippets or files from being sent to cloud providers.
+- Style & Linting: Enforce formatting, naming, or architectural patterns (e.g., "no var", "use async/await").
+- Behavioral Constraints: Limit actions an agent can take (e.g., "no automated commits without approval").
+- Resource & Cost Controls: Limit model choices or token usage for specific tasks.
+- Approval & Workflow: Require human sign-off for high-risk changes.
+
+## Rule Schema (example)
+
+Rules are authored as structured JSON or YAML in the repository under `.oppla/ai-rules.json` or configured via project settings. Below is a minimal example illustrating safety, privacy, and approval rules.
+
+```docs/ide/ai/rules.mdx#L1-60
+{
+  "version": "1.0",
+  "metadata": {
+    "name": "default-project-rules",
+    "description": "Baseline rules for CI and agent operations",
+    "created_by": "team-name",
+    "created_at": "2025-08-01T00:00:00Z"
+  },
+  "rules": [
+    {
+      "id": "no-secret-exfiltration",
+      "type": "privacy",
+      "description": "Prevent sending files that match secret patterns to remote providers",
+      "match": {
+        "paths": ["**/*.env", "**/secrets/**", "config/*.yml"],
+        "content_regex": "(?i)(api_key|secret|password|token)"
+      },
+      "action": {
+        "on_violation": "redact_and_warn",
+        "redaction_placeholder": "[REDACTED_SECRET]"
+      }
+    },
+    {
+      "id": "require-human-approval-high-risk",
+      "type": "approval",
+      "description": "Require explicit human approval for changes touching infra or auth",
+      "match": {
+        "paths": ["infra/**", "auth/**", "deploy/**"]
+      },
+      "action": {
+        "on_violation": "require_approval",
+        "approval_roles": ["owner", "security_lead"]
+      }
+    },
+    {
+      "id": "restrict-models-to-local",
+      "type": "privacy",
+      "description": "Force local model usage for private monorepo",
+      "match": {
+        "projects": ["internal/monorepo"]
+      },
+      "action": {
+        "on_violation": "override_provider",
+        "allowed_providers": ["ollama", "local_llama"]
+      }
+    }
+  ]
+}
+```
+
+Notes:
+- "match" supports glob paths, file-type filters, regex on content, or project-scoped matching.
+- "action" defines what the AI system should do when a rule matches: ignore, warn, redact, block, require approval, or override provider/settings.
+
+## Enforcement & Precedence
+
+Rules may exist at multiple scopes:
+1. Global defaults (system/organization)
+2. Project-level rules (repo `.oppla/ai-rules.json`)
+3. User overrides (local settings - for non-binding suggestions)
+
+Precedence:
+- More specific scope wins (project-level overrides global).
+- Explicit enforcement actions (block, require_approval) cannot be overridden by users without admin permission.
+- Rules marked as "audit-only" will not change behavior but will log violations for review.
+
+## How Rules Interact with Agents, Tools & Models
+
+- Agent Panel: Agents evaluate rules before planning and before applying edits. If a proposed change violates a rule, the agent will either stop, redact, or require approval depending on the rule action.
+- Tools (linters, formatters, test runners): Rules can mandate running certain tools as part of an agent workflow (for example, run `eslint` and require zero errors before applying JS changes).
+- Model selection: Rules can constrain which models/providers are allowed for a given project or task (e.g., force local models for sensitive projects).
+- Model Context Protocol (MCP): Rules can control which external services the MCP can call during an agent run.
+
+## Example: Deny sending PII to cloud providers
+
+An enterprise can create a rule that inspects buffer content for PII patterns and redacts those segments before any outbound request is made. Violations can be logged and flagged for security review.
+
+## Admin Features & Auditability
+
+- Rule authoring UI (planned): A visual editor with test harness to evaluate rules against sample files.
+- Audit logs: Every rule match should be logged with context, who triggered the action, and timestamp.
+- Approvals: Integrate with SSO / IAM to map approvers to roles.
+- Dry-run mode: Validate how rules affect agents without enforcing actions (useful during onboarding).
+
+## Best Practices
+
+- Start with audit-only mode for new rules to measure false positives.
+- Use narrow matches before broad regexes; tune incrementally.
+- Combine rules: use a privacy rule to redact secrets and a separate approval rule for infra changes.
+- Include test fixtures in repo to verify rule behavior as part of CI.
+- Document rules in a repository README so contributors understand constraints.
+
+## Troubleshooting
+
+- Rule not firing:
+  - Check glob/path scope and ensure files match.
+  - Ensure the project config file is in the repository root or configured project root.
+- False positives:
+  - Narrow the regex or add an allowlist path.
+  - Switch to audit-only while tuning.
+- Overly permissive:
+  - Use "require_approval" for high-risk paths until confidence is high.
+
+## Related pages & next steps
+
+Create or consult these stubs for full integration details:
+- AI Tools (stub): ./tools.mdx
+- Available Models (stub): ./models.mdx
+- Privacy & Security (stub): ./privacy-and-security.mdx
+- Text Threads (stub): ./text-threads.mdx
+- Agent Panel (already stubbed): ./agent-panel.mdx
+- AI Configuration (already present): ./configuration.mdx
+
+If you want, I can:
+- Create the remaining stubs (tools, models, privacy-and-security, text-threads) so these links resolve.
+- Add a rule authoring UI spec and test harness example.
+- Add CI example that validates rules as part of PR checks.
+
+---
